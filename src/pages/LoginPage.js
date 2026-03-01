@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 export default function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
-  const [bgUrl, setBgUrl] = useState(null);
+  const [bgUrl, setBgUrl] = useState('');
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
 

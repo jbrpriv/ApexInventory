@@ -20,7 +20,7 @@ export default function Dashboard() {
   const [showPasswords, setShowPasswords] = useState({});
   const [sortField, setSortField] = useState('createdAt');
   const [sortDir, setSortDir] = useState('desc');
-  const [bgUrl, setBgUrl] = useState(null);
+  const [bgUrl, setBgUrl] = useState('');
 
   // Load background from Cloudinary/DB
   useEffect(() => {
