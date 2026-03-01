@@ -1,24 +1,28 @@
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
-export const AuthContext = React.createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  const [user, setUser] = useState(localStorage.getItem('user'));
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
+  const [user, setUser] = useState(() => {
+    const u = localStorage.getItem('user');
+    try { return u ? JSON.parse(u) : null; } catch { return null; }
+  });
 
-  const login = (token, username) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', username);
-    setToken(token);
-    setUser(username);
-  };
+  const login = useCallback((tkn, userData) => {
+    localStorage.setItem('token', tkn);
+    const userObj = typeof userData === 'string' ? { username: userData } : userData;
+    localStorage.setItem('user', JSON.stringify(userObj));
+    setToken(tkn);
+    setUser(userObj);
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setToken(null);
     setUser(null);
-  };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ token, user, login, logout, isAuthenticated: !!token }}>
