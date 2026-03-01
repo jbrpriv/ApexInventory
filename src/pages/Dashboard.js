@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import api from '../api';
 import AccountModal from '../components/AccountModal';
 import BackgroundUpload from '../components/BackgroundUpload';
