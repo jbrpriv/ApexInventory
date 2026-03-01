@@ -29,3 +29,5 @@ export const uploadBackground = (formData) => api.post('/api/settings/background
   headers: { 'Content-Type': 'multipart/form-data' }
 });
 export const resetBackground = () => api.delete('/api/settings/background');
+
+export default api;
