@@ -24,27 +24,27 @@ export default function StatsPage() {
   return (
     <div className="fade-in" style={{ padding: '28px 20px', maxWidth: 1000, margin: '0 auto' }}>
       <div style={{ marginBottom: 28 }}>
-        <div style={{ fontSize: 11, color: 'var(--primary-light)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>Analytics</div>
-        <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 800, color: 'var(--text)' }}>Statistics</h1>
+        <div style={{ fontSize: 11, color: 'var(--primary)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4, fontWeight: 600 }}>Analytics</div>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 28, fontWeight: 800, color: 'var(--text)' }}>Statistics</h1>
       </div>
 
-      {/* Overview */}
+      {/* Overview — each card has its own color via colorKey */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 12, marginBottom: 28 }}>
         {[
-          { label: 'Total Accounts', value: stats.total    || 0, color: 'var(--primary-light)' },
-          { label: 'Unbanned',       value: stats.unbanned || 0, color: 'var(--green)' },
-          { label: 'Banned',         value: stats.banned   || 0, color: 'var(--red)' },
-          { label: 'New',            value: stats.new      || 0, color: 'var(--blue)' },
-          { label: 'Sold',           value: stats.sold     || 0, color: 'var(--yellow)' },
-          { label: 'Unsold',         value: stats.unsold   || 0, color: 'var(--text2)' },
-          { label: 'Avg Level',      value: stats.avgLevel || 0, color: 'var(--cyan)' },
+          { label: 'Total Accounts', value: stats.total    || 0, colorKey: 'primary' },
+          { label: 'Unbanned',       value: stats.unbanned || 0, colorKey: 'green'   },
+          { label: 'Banned',         value: stats.banned   || 0, colorKey: 'red'     },
+          { label: 'New',            value: stats.new      || 0, colorKey: 'blue'    },
+          { label: 'Sold',           value: stats.sold     || 0, colorKey: 'amber'   },
+          { label: 'Unsold',         value: stats.unsold   || 0, colorKey: 'slate'   },
+          { label: 'Avg Level',      value: stats.avgLevel || 0, colorKey: 'violet'  },
         ].map(s => <StatCard key={s.label} {...s} />)}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
 
         {/* Level Distribution */}
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: '20px 22px' }}>
+        <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, padding: '20px 22px', boxShadow: 'var(--sh-sm)' }}>
           <div style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 18, fontWeight: 700 }}>Level Distribution</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {levelDist.map(r => {
@@ -53,14 +53,12 @@ export default function StatsPage() {
                 <div key={r.label}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                     <span style={{ fontSize: 13, color: 'var(--text2)' }}>Level {r.label}</span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary-light)' }}>{r.count} <span style={{ color: 'var(--text3)', fontWeight: 400, fontSize: 11 }}>({pct.toFixed(0)}%)</span></span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)' }}>
+                      {r.count} <span style={{ color: 'var(--text3)', fontWeight: 400, fontSize: 11 }}>({pct.toFixed(0)}%)</span>
+                    </span>
                   </div>
-                  <div style={{ height: 8, background: 'rgba(255,255,255,0.06)', borderRadius: 99 }}>
-                    <div style={{
-                      width: pct + '%', height: '100%',
-                      background: 'linear-gradient(90deg, var(--primary), var(--cyan))',
-                      borderRadius: 99, transition: 'width 0.6s ease',
-                    }} />
+                  <div style={{ height: 8, background: 'var(--bg3)', borderRadius: 99 }}>
+                    <div style={{ width: pct + '%', height: '100%', background: 'linear-gradient(90deg, var(--primary), var(--violet))', borderRadius: 99, transition: 'width 0.6s ease' }} />
                   </div>
                 </div>
               );
@@ -68,8 +66,8 @@ export default function StatsPage() {
           </div>
         </div>
 
-        {/* Recent 7 Days Bar */}
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: '20px 22px' }}>
+        {/* Recent 7 Days */}
+        <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, padding: '20px 22px', boxShadow: 'var(--sh-sm)' }}>
           <div style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 18, fontWeight: 700 }}>Accounts Added — Last 7 Days</div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', height: 120 }}>
             {recent.map(d => {
@@ -77,13 +75,11 @@ export default function StatsPage() {
               const label = new Date(d.date).toLocaleDateString('en', { weekday: 'short', day: 'numeric' });
               return (
                 <div key={d.date} title={d.date + ': ' + d.count} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                  {d.count > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--cyan)' }}>{d.count}</span>}
+                  {d.count > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--primary)' }}>{d.count}</span>}
                   {d.count === 0 && <span style={{ fontSize: 11, color: 'transparent' }}>0</span>}
                   <div style={{
                     width: '100%', height: h,
-                    background: d.count > 0
-                      ? 'linear-gradient(180deg, var(--primary) 0%, var(--cyan) 100%)'
-                      : 'rgba(255,255,255,0.06)',
+                    background: d.count > 0 ? 'linear-gradient(180deg, var(--primary) 0%, var(--violet) 100%)' : 'var(--bg3)',
                     borderRadius: '4px 4px 0 0', transition: 'height 0.5s',
                   }} />
                   <span style={{ fontSize: 9, color: 'var(--text3)', textAlign: 'center', lineHeight: 1.2 }}>{label}</span>
@@ -94,13 +90,13 @@ export default function StatsPage() {
         </div>
 
         {/* Status Breakdown */}
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: '20px 22px' }}>
+        <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 12, padding: '20px 22px', boxShadow: 'var(--sh-sm)' }}>
           <div style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 18, fontWeight: 700 }}>Status Breakdown</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {[
-              { label: 'Unbanned', value: stats.unbanned || 0, color: 'var(--green)',  total: stats.total },
-              { label: 'Banned',   value: stats.banned   || 0, color: 'var(--red)',    total: stats.total },
-              { label: 'New',      value: stats.new      || 0, color: 'var(--blue)',   total: stats.total },
+              { label: 'Unbanned', value: stats.unbanned || 0, color: 'var(--green)' },
+              { label: 'Banned',   value: stats.banned   || 0, color: 'var(--red)'   },
+              { label: 'New',      value: stats.new      || 0, color: 'var(--blue)'  },
             ].map(d => {
               const pct = stats.total > 0 ? (d.value / stats.total) * 100 : 0;
               return (
@@ -112,8 +108,8 @@ export default function StatsPage() {
                     </div>
                     <span style={{ fontSize: 13, fontWeight: 700, color: d.color }}>{d.value}</span>
                   </div>
-                  <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 99 }}>
-                    <div style={{ width: pct + '%', height: '100%', background: d.color, borderRadius: 99, opacity: 0.7, transition: 'width 0.5s' }} />
+                  <div style={{ height: 6, background: 'var(--bg3)', borderRadius: 99 }}>
+                    <div style={{ width: pct + '%', height: '100%', background: d.color, borderRadius: 99, opacity: 0.8, transition: 'width 0.5s' }} />
                   </div>
                 </div>
               );
@@ -123,8 +119,8 @@ export default function StatsPage() {
           <div style={{ borderTop: '1px solid var(--border)', marginTop: 18, paddingTop: 14 }}>
             <div style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12, fontWeight: 700 }}>Sales</div>
             {[
-              { label: 'Sold',   value: stats.sold   || 0, color: 'var(--yellow)' },
-              { label: 'Unsold', value: stats.unsold || 0, color: 'var(--text2)' },
+              { label: 'Sold',   value: stats.sold   || 0, color: 'var(--amber)' },
+              { label: 'Unsold', value: stats.unsold || 0, color: 'var(--slate)' },
             ].map(d => {
               const pct = stats.total > 0 ? (d.value / stats.total) * 100 : 0;
               return (
@@ -133,8 +129,8 @@ export default function StatsPage() {
                     <span style={{ fontSize: 13, color: 'var(--text)' }}>{d.label}</span>
                     <span style={{ fontSize: 13, fontWeight: 700, color: d.color }}>{d.value}</span>
                   </div>
-                  <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 99 }}>
-                    <div style={{ width: pct + '%', height: '100%', background: d.color, borderRadius: 99, opacity: 0.7, transition: 'width 0.5s' }} />
+                  <div style={{ height: 6, background: 'var(--bg3)', borderRadius: 99 }}>
+                    <div style={{ width: pct + '%', height: '100%', background: d.color, borderRadius: 99, opacity: 0.8, transition: 'width 0.5s' }} />
                   </div>
                 </div>
               );

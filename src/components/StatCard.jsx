@@ -7,6 +7,7 @@ const COLOR_MAP = {
   blue:   { bg: 'var(--blue-bg)',   text: 'var(--blue)',   border: 'var(--blue-b)' },
   violet: { bg: 'var(--violet-bg)', text: 'var(--violet)', border: 'var(--violet-b)' },
   slate:  { bg: 'var(--slate-bg)',  text: 'var(--slate)',  border: 'var(--slate-b)' },
+  cyan:   { bg: 'var(--cyan-bg)',   text: 'var(--cyan)',   border: 'var(--cyan-b)'  },
   primary:{ bg: 'var(--primary-pale)', text: 'var(--primary)', border: 'var(--primary-light)' },
 };
 
