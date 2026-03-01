@@ -2,151 +2,129 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const NAV_LINKS = [
-  { to: '/',         label: 'Home',     icon: '⬡' },
-  { to: '/accounts', label: 'Accounts', icon: '◈' },
-  { to: '/stats',    label: 'Stats',    icon: '◎' },
-  { to: '/export',   label: 'Export',   icon: '↓' },
-  { to: '/about',    label: 'About',    icon: '◉' },
-  { to: '/profile',  label: 'Profile',  icon: '◔' },
+const LINKS = [
+  { to: '/',         label: 'Home'     },
+  { to: '/accounts', label: 'Accounts' },
+  { to: '/stats',    label: 'Stats'    },
+  { to: '/export',   label: 'Export'   },
+  { to: '/about',    label: 'About'    },
+  { to: '/profile',  label: 'Profile'  },
 ];
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  const initials = (user?.username?.[0] || 'A').toUpperCase();
+  const handleLogout = () => { logout(); navigate('/login'); };
+  const initial = (user?.username?.[0] || 'A').toUpperCase();
 
   return (
     <>
       <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 300,
         height: 'var(--nav-h)',
-        background: 'rgba(7,7,26,0.85)',
+        background: 'rgba(255,255,255,0.92)',
         backdropFilter: 'blur(20px)',
         borderBottom: '1px solid var(--border)',
         display: 'flex', alignItems: 'center',
-        padding: '0 20px', gap: 16,
+        padding: '0 24px', gap: 12,
+        boxShadow: '0 1px 0 var(--border), 0 4px 16px rgba(79,70,229,0.04)',
       }}>
         {/* Logo */}
-        <NavLink to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+        <NavLink to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
           <div style={{
-            width: 32, height: 32, borderRadius: 8,
-            background: 'linear-gradient(135deg, var(--primary), var(--cyan))',
+            width: 34, height: 34, borderRadius: 10,
+            background: 'linear-gradient(135deg, #4f46e5, #818cf8)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 14, fontWeight: 900, color: '#fff',
-            fontFamily: "'Syne', sans-serif",
-            boxShadow: '0 0 16px rgba(139,92,246,0.4)',
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: 15, fontWeight: 800, color: 'white',
+            boxShadow: '0 2px 10px rgba(79,70,229,0.35)',
           }}>A</div>
-          <span style={{
-            fontFamily: "'Syne', sans-serif", fontSize: 17, fontWeight: 800,
-            letterSpacing: 1, color: 'var(--text)',
-          }}>APEX</span>
-          <span style={{ fontSize: 11, color: 'var(--primary-light)', letterSpacing: 2, opacity: 0.8 }}>MGR</span>
+          <div>
+            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 15, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1 }}>APEX</div>
+            <div style={{ fontSize: 9, color: 'var(--primary-light)', letterSpacing: 2, fontWeight: 600 }}>MANAGER</div>
+          </div>
         </NavLink>
 
         {/* Desktop links */}
-        <div style={{ display: 'flex', gap: 2, flex: 1, justifyContent: 'center' }} className="desktop-nav">
-          {NAV_LINKS.map(link => (
-            <NavLink key={link.to} to={link.to} end={link.to === '/'}
+        <div className="nav-desktop" style={{ display: 'flex', gap: 2, flex: 1, justifyContent: 'center' }}>
+          {LINKS.map(l => (
+            <NavLink key={l.to} to={l.to} end={l.to === '/'}
               style={({ isActive }) => ({
-                textDecoration: 'none',
-                padding: '6px 14px', borderRadius: 8,
-                fontSize: 13, fontWeight: 500, letterSpacing: 0.3,
-                color: isActive ? 'var(--primary-light)' : 'var(--text2)',
-                background: isActive ? 'var(--primary-dim)' : 'transparent',
-                border: isActive ? '1px solid var(--border-accent)' : '1px solid transparent',
+                textDecoration: 'none', padding: '7px 16px', borderRadius: 8,
+                fontSize: 13.5, fontWeight: isActive ? 600 : 500,
+                color: isActive ? 'var(--primary)' : 'var(--text3)',
+                background: isActive ? 'var(--primary-pale)' : 'transparent',
                 transition: 'all 0.18s',
               })}
-            >{link.label}</NavLink>
+              onMouseEnter={e => { if (!e.currentTarget.classList.contains('active')) { e.currentTarget.style.color = 'var(--text2)'; e.currentTarget.style.background = 'var(--bg3)'; } }}
+              onMouseLeave={e => { e.currentTarget.style.color = ''; e.currentTarget.style.background = ''; }}
+            >{l.label}</NavLink>
           ))}
         </div>
 
-        {/* User + Logout */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: 'auto' }} className="desktop-nav">
+        {/* User */}
+        <div className="nav-desktop" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '5px 10px 5px 5px', borderRadius: 20,
-            background: 'var(--card)', border: '1px solid var(--border)',
+            display: 'flex', alignItems: 'center', gap: 8, padding: '5px 12px 5px 6px',
+            background: 'var(--bg3)', borderRadius: 99, border: '1px solid var(--border)',
           }}>
             <div style={{
-              width: 26, height: 26, borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--primary), var(--cyan))',
+              width: 28, height: 28, borderRadius: '50%',
+              background: 'linear-gradient(135deg, #4f46e5, #818cf8)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 11, fontWeight: 700, color: '#fff',
-            }}>{initials}</div>
-            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>{user?.username}</span>
+              fontSize: 12, fontWeight: 700, color: 'white',
+            }}>{initial}</div>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text2)' }}>{user?.username}</span>
           </div>
           <button onClick={handleLogout} style={{
-            background: 'var(--red-dim)', border: '1px solid rgba(244,63,94,0.25)',
-            color: 'var(--red)', padding: '6px 14px', borderRadius: 8,
+            background: 'var(--red-bg)', border: '1.5px solid var(--red-b)',
+            color: 'var(--red)', padding: '7px 16px', borderRadius: 8,
             fontSize: 13, fontWeight: 600, transition: 'all 0.18s',
           }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(244,63,94,0.2)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'var(--red-dim)'}
+            onMouseEnter={e => { e.currentTarget.style.background = '#fee2e2'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--red-bg)'; }}
           >Sign Out</button>
         </div>
 
         {/* Mobile hamburger */}
-        <button onClick={() => setMobileOpen(o => !o)}
-          className="hamburger"
-          style={{
-            marginLeft: 'auto', background: 'var(--card)',
-            border: '1px solid var(--border)', color: 'var(--primary-light)',
-            width: 36, height: 36, borderRadius: 8, fontSize: 16,
-            display: 'none', alignItems: 'center', justifyContent: 'center',
-          }}
-        >{mobileOpen ? '✕' : '☰'}</button>
+        <button onClick={() => setOpen(o => !o)} className="nav-mobile" style={{
+          marginLeft: 'auto', background: 'var(--bg3)',
+          border: '1px solid var(--border)', color: 'var(--text2)',
+          width: 38, height: 38, borderRadius: 9, fontSize: 16,
+          display: 'none', alignItems: 'center', justifyContent: 'center',
+        }}>{open ? '✕' : '☰'}</button>
       </nav>
 
       {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="mobile-drawer slide-down" style={{
-          position: 'fixed', top: 'var(--nav-h)', left: 0, right: 0, zIndex: 199,
-          background: 'rgba(7,7,26,0.98)', borderBottom: '1px solid var(--border)',
-          backdropFilter: 'blur(20px)',
+      {open && (
+        <div className="slide-down" style={{
+          position: 'fixed', top: 'var(--nav-h)', left: 0, right: 0, zIndex: 299,
+          background: 'rgba(255,255,255,0.98)', borderBottom: '1px solid var(--border)',
+          backdropFilter: 'blur(20px)', paddingBottom: 8,
         }}>
-          {NAV_LINKS.map(link => (
-            <NavLink key={link.to} to={link.to} end={link.to === '/'}
-              onClick={() => setMobileOpen(false)}
+          {LINKS.map(l => (
+            <NavLink key={l.to} to={l.to} end={l.to === '/'} onClick={() => setOpen(false)}
               style={({ isActive }) => ({
-                textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12,
-                padding: '14px 20px', fontSize: 15, fontWeight: 500,
-                color: isActive ? 'var(--primary-light)' : 'var(--text2)',
-                background: isActive ? 'var(--primary-dim)' : 'transparent',
-                borderLeft: isActive ? '3px solid var(--primary)' : '3px solid transparent',
+                display: 'block', textDecoration: 'none',
+                padding: '13px 24px', fontSize: 15, fontWeight: isActive ? 600 : 500,
+                color: isActive ? 'var(--primary)' : 'var(--text2)',
+                background: isActive ? 'var(--primary-pale)' : 'transparent',
+                borderLeft: `3px solid ${isActive ? 'var(--primary)' : 'transparent'}`,
               })}
-            >
-              <span style={{ opacity: 0.7 }}>{link.icon}</span>
-              {link.label}
-            </NavLink>
+            >{l.label}</NavLink>
           ))}
-          <div style={{ padding: '12px 20px 16px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 13, color: 'var(--text2)' }}>@{user?.username}</span>
-            <button onClick={handleLogout} style={{
-              background: 'var(--red-dim)', border: '1px solid rgba(244,63,94,0.25)',
-              color: 'var(--red)', padding: '7px 16px', borderRadius: 8,
-              fontSize: 13, fontWeight: 600,
-            }}>Sign Out</button>
+          <div style={{ padding: '10px 24px 4px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 13, color: 'var(--text3)', fontWeight: 500 }}>@{user?.username}</span>
+            <button onClick={handleLogout} className="btn-danger" style={{ padding: '7px 16px', fontSize: 13 }}>Sign Out</button>
           </div>
         </div>
       )}
 
       <style>{`
-        @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-          .hamburger { display: flex !important; }
-        }
-        @media (min-width: 769px) {
-          .hamburger { display: none !important; }
-          .mobile-drawer { display: none !important; }
-        }
+        @media (max-width: 768px) { .nav-desktop{display:none!important} .nav-mobile{display:flex!important} }
+        @media (min-width: 769px) { .nav-mobile{display:none!important} }
       `}</style>
     </>
   );

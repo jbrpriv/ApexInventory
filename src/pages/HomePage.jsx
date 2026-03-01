@@ -1,9 +1,94 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getOverviewStats, getLevelDist, getRecentStats, getBackground } from '../api';
 import StatCard from '../components/StatCard';
 import BackgroundUpload from '../components/BackgroundUpload';
 import LoadingScreen from '../components/LoadingScreen';
+
+/* ── Animated Pie Chart ──────────────────────── */
+function PieChart({ segments, size = 160 }) {
+  const [animated, setAnimated] = useState(false);
+  const ref = useRef();
+  useEffect(() => {
+    const t = setTimeout(() => setAnimated(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  const cx = size / 2, cy = size / 2, r = size * 0.38, hole = size * 0.22;
+  const total = segments.reduce((s, d) => s + d.value, 0) || 1;
+  const circ = 2 * Math.PI * r;
+
+  let cumPct = 0;
+  return (
+    <svg ref={ref} width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      {total === 0
+        ? <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={size * 0.14}/>
+        : segments.map((seg, i) => {
+            const pct = seg.value / total;
+            const offset = circ * (1 - cumPct);
+            const dash = animated ? circ * pct : 0;
+            cumPct += pct;
+            return (
+              <circle key={i} cx={cx} cy={cy} r={r}
+                fill="none" stroke={seg.color} strokeWidth={size * 0.14}
+                strokeDasharray={`${dash} ${circ}`}
+                strokeDashoffset={offset}
+                style={{ transition: `stroke-dasharray ${0.7 + i * 0.1}s cubic-bezier(.22,.68,0,1) ${0.1 + i * 0.05}s` }}
+                transform={`rotate(-90 ${cx} ${cy})`}
+              />
+            );
+          })
+      }
+      <circle cx={cx} cy={cy} r={hole} fill="white"/>
+    </svg>
+  );
+}
+
+/* ── Animated Bar ──────────────────────────── */
+function Bar({ value, max, color, label }) {
+  const [animated, setAnimated] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setAnimated(true), 200); return () => clearTimeout(t); }, []);
+  const heightPct = max > 0 ? (value / max) : 0;
+  const barH = animated ? Math.max(6, heightPct * 100) : 0;
+  return (
+    <div style={{ flex: 1, display:'flex', flexDirection:'column', alignItems:'center', gap: 6 }}>
+      <span style={{ fontSize:14, fontWeight:700, color, fontFamily:"'Plus Jakarta Sans',sans-serif" }}>{value}</span>
+      <div style={{ width:'100%', height:110, display:'flex', alignItems:'flex-end', justifyContent:'center' }}>
+        <div style={{
+          width: '65%', height: barH + '%', minHeight: value > 0 ? 6 : 0,
+          background: `linear-gradient(180deg, ${color} 0%, ${color}88 100%)`,
+          borderRadius: '6px 6px 0 0',
+          transition: 'height 0.8s cubic-bezier(.22,.68,0,1)',
+          boxShadow: value > 0 ? `0 -4px 12px ${color}44` : 'none',
+        }}/>
+      </div>
+      <span style={{ fontSize:11.5, color:'var(--text3)', fontWeight:500 }}>{label}</span>
+    </div>
+  );
+}
+
+/* ── Animated Horizontal Bar ─────────────────── */
+function HBar({ label, value, total, color, delay = 0 }) {
+  const [pct, setPct] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setPct(total > 0 ? (value / total) * 100 : 0), 300 + delay);
+    return () => clearTimeout(t);
+  }, [value, total, delay]);
+  return (
+    <div>
+      <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5, alignItems:'center' }}>
+        <span style={{ fontSize:13, color:'var(--text2)', fontWeight:500 }}>{label}</span>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <span style={{ fontSize:13, fontWeight:700, color }}>{value}</span>
+          <span style={{ fontSize:11, color:'var(--text4)', fontWeight:400 }}>{pct.toFixed(0)}%</span>
+        </div>
+      </div>
+      <div style={{ height:8, background:'var(--bg3)', borderRadius:99, overflow:'hidden' }}>
+        <div style={{ width: pct + '%', height:'100%', background: color, borderRadius:99, transition:'width 0.9s cubic-bezier(.22,.68,0,1)' }}/>
+      </div>
+    </div>
+  );
+}
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -15,18 +100,10 @@ export default function HomePage() {
 
   const loadAll = useCallback(async () => {
     try {
-      const [s, l, r, bg] = await Promise.all([
-        getOverviewStats(), getLevelDist(), getRecentStats(), getBackground()
-      ]);
-      setStats(s.data);
-      setLevelDist(l.data);
-      setRecent(r.data);
-      setBgUrl(bg.data.url || '');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+      const [s, l, r, bg] = await Promise.all([getOverviewStats(), getLevelDist(), getRecentStats(), getBackground()]);
+      setStats(s.data); setLevelDist(l.data); setRecent(r.data); setBgUrl(bg.data.url || '');
+    } catch (err) { console.error(err); }
+    finally { setLoading(false); }
   }, []);
 
   useEffect(() => { loadAll(); }, [loadAll]);
@@ -34,173 +111,193 @@ export default function HomePage() {
   if (loading) return <LoadingScreen message="Loading dashboard..." />;
 
   const maxRecent = Math.max(...recent.map(d => d.count), 1);
-  const totalLevel = levelDist.reduce((sum, r) => sum + r.count, 0) || 1;
+  const statusMax = Math.max(stats.unbanned || 0, stats.banned || 0, stats.new || 0, 1);
+  const totalLevels = levelDist.reduce((s, r) => s + r.count, 0) || 1;
 
   const statCards = [
-    { label: 'Total',    value: stats.total    || 0, color: 'var(--primary-light)' },
-    { label: 'Unbanned', value: stats.unbanned || 0, color: 'var(--green)' },
-    { label: 'Banned',   value: stats.banned   || 0, color: 'var(--red)' },
-    { label: 'New',      value: stats.new      || 0, color: 'var(--blue)' },
-    { label: 'Sold',     value: stats.sold     || 0, color: 'var(--yellow)' },
-    { label: 'Unsold',   value: stats.unsold   || 0, color: 'var(--text2)' },
-    { label: 'Avg Level',value: stats.avgLevel || 0, color: 'var(--cyan)' },
+    { label:'Total Accounts', value: stats.total    || 0, colorKey:'primary', delay:0.05 },
+    { label:'Unbanned',       value: stats.unbanned || 0, colorKey:'green',   delay:0.1  },
+    { label:'Banned',         value: stats.banned   || 0, colorKey:'red',     delay:0.15 },
+    { label:'New',            value: stats.new      || 0, colorKey:'blue',    delay:0.2  },
+    { label:'Sold',           value: stats.sold     || 0, colorKey:'amber',   delay:0.25 },
+    { label:'Unsold',         value: stats.unsold   || 0, colorKey:'slate',   delay:0.3  },
+    { label:'Avg Level',      value: stats.avgLevel || 0, colorKey:'violet',  delay:0.35 },
+  ];
+
+  const pieSegments = [
+    { label:'Unbanned', value: stats.unbanned || 0, color:'#059669' },
+    { label:'Banned',   value: stats.banned   || 0, color:'#dc2626' },
+    { label:'New',      value: stats.new      || 0, color:'#2563eb' },
+  ];
+  const salesSegments = [
+    { label:'Sold',   value: stats.sold   || 0, color:'#d97706' },
+    { label:'Unsold', value: stats.unsold || 0, color:'#94a3b8' },
   ];
 
   return (
-    <div className="fade-in">
-      {/* Hero */}
+    <div>
+      {/* ── Full-height Hero ───────────────────────────── */}
       <div style={{
-        position: 'relative', height: 260,
-        background: bgUrl ? `url(${bgUrl}) center/cover no-repeat` : 'linear-gradient(135deg, #0d0730 0%, #130a50 50%, #0a0730 100%)',
+        position: 'relative',
+        height: 'calc(100vh - var(--nav-h))',
+        minHeight: 500,
+        background: bgUrl
+          ? `url(${bgUrl}) center/cover no-repeat`
+          : 'linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #4c1d95 60%, #1e1b4b 100%)',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
       }}>
+        {/* Overlay */}
         <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(180deg, rgba(7,7,26,0.3) 0%, rgba(7,7,26,0.9) 100%)',
-        }} />
-        {/* Grid overlay */}
+          position:'absolute', inset:0,
+          background:'linear-gradient(180deg, rgba(15,23,42,0.25) 0%, rgba(15,23,42,0.6) 100%)',
+        }}/>
+        {/* Grid texture */}
         <div style={{
-          position: 'absolute', inset: 0, opacity: 0.06,
-          backgroundImage: 'linear-gradient(rgba(139,92,246,1) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,1) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }} />
-        <div style={{
-          position: 'absolute', inset: 0, display: 'flex',
-          flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
-        }}>
-          <div style={{ color: 'var(--primary-light)', fontSize: 11, letterSpacing: 5, textTransform: 'uppercase', opacity: 0.8 }}>
+          position:'absolute', inset:0, opacity:0.06,
+          backgroundImage:'linear-gradient(white 1px,transparent 1px),linear-gradient(90deg,white 1px,transparent 1px)',
+          backgroundSize:'48px 48px',
+        }}/>
+
+        {/* Content */}
+        <div className="fade-up" style={{ position:'relative', zIndex:1, textAlign:'center', padding:'0 20px', maxWidth:700 }}>
+          <div style={{ fontSize:11, fontWeight:600, letterSpacing:5, textTransform:'uppercase', color:'rgba(255,255,255,0.6)', marginBottom:16 }}>
             Apex Legends Inventory
           </div>
           <h1 style={{
-            fontFamily: "'Syne', sans-serif", fontSize: 'clamp(24px, 5vw, 40px)',
-            fontWeight: 800, color: '#fff', letterSpacing: 1, textAlign: 'center',
-            textShadow: '0 0 40px rgba(139,92,246,0.4)',
+            fontFamily:"'Plus Jakarta Sans',sans-serif",
+            fontSize:'clamp(36px,6vw,64px)', fontWeight:800,
+            color:'white', lineHeight:1.1, letterSpacing:'-1px',
+            textShadow:'0 4px 30px rgba(0,0,0,0.4)',
+            marginBottom:16,
           }}>
-            Welcome back, {user?.username?.toUpperCase() || 'ADMIN'}
+            Welcome back,<br/>
+            <span style={{ background:'linear-gradient(90deg,#a5b4fc,#c4b5fd)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
+              {user?.username?.toUpperCase() || 'ADMIN'}
+            </span>
           </h1>
-          <div style={{ color: 'var(--cyan)', fontSize: 13, opacity: 0.8 }}>
-            {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-          </div>
-          <div style={{ marginTop: 12 }}>
-            <BackgroundUpload currentUrl={bgUrl} onUpdate={setBgUrl} />
-          </div>
+          <p style={{ color:'rgba(255,255,255,0.65)', fontSize:16, marginBottom:32 }}>
+            {new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
+          </p>
+          <BackgroundUpload currentUrl={bgUrl} onUpdate={setBgUrl} />
+        </div>
+
+        {/* Scroll indicator */}
+        <div style={{ position:'absolute', bottom:28, left:'50%', transform:'translateX(-50%)', display:'flex', flexDirection:'column', alignItems:'center', gap:6, opacity:0.5 }}>
+          <span style={{ fontSize:11, color:'white', letterSpacing:2, textTransform:'uppercase' }}>Scroll</span>
+          <div style={{ width:1, height:40, background:'linear-gradient(180deg,white,transparent)' }}/>
         </div>
       </div>
 
-      {/* Content */}
-      <div style={{ padding: '28px 20px', maxWidth: 1100, margin: '0 auto' }}>
+      {/* ── Dashboard Content ──────────────────────────── */}
+      <div style={{ padding:'40px 24px 60px', maxWidth:1200, margin:'0 auto' }}>
 
-        {/* Stat cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 12, marginBottom: 28 }}>
-          {statCards.map(s => <StatCard key={s.label} {...s} />)}
+        {/* Stat Cards */}
+        <div style={{ marginBottom:10 }}>
+          <h2 style={{ fontFamily:"'Plus Jakarta Sans',sans-serif", fontSize:20, fontWeight:700, color:'var(--text)', marginBottom:4 }}>Overview</h2>
+          <p style={{ color:'var(--text3)', fontSize:13, marginBottom:20 }}>Account inventory at a glance</p>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(148px,1fr))', gap:14 }}>
+            {statCards.map(s => <StatCard key={s.label} {...s} />)}
+          </div>
         </div>
 
-        {/* Charts row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
+        {/* Charts */}
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:18, marginTop:32 }}>
 
-          {/* Account Status Bar */}
-          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: '18px 20px' }}>
-            <div style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 18 }}>Account Status</div>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', height: 100 }}>
-              {[
-                { label: 'Unbanned', value: stats.unbanned || 0, color: 'var(--green)' },
-                { label: 'Banned',   value: stats.banned   || 0, color: 'var(--red)' },
-                { label: 'New',      value: stats.new      || 0, color: 'var(--blue)' },
-              ].map(d => {
-                const max = Math.max(stats.unbanned || 0, stats.banned || 0, stats.new || 0, 1);
-                const h = Math.max(8, (d.value / max) * 72);
-                return (
-                  <div key={d.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: d.color }}>{d.value}</span>
-                    <div style={{
-                      width: '100%', height: h,
-                      background: 'linear-gradient(180deg, ' + d.color + ' 0%, ' + d.color + '44 100%)',
-                      borderRadius: '4px 4px 0 0', transition: 'height 0.5s',
-                    }} />
-                    <span style={{ fontSize: 10, color: 'var(--text3)' }}>{d.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Sales Donut */}
-          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: '18px 20px' }}>
-            <div style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 18 }}>Sales Status</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-              <div style={{ position: 'relative', width: 80, height: 80, flexShrink: 0 }}>
-                {(() => {
-                  const total = (stats.sold || 0) + (stats.unsold || 0);
-                  const pct = total > 0 ? ((stats.sold || 0) / total) * 100 : 0;
-                  const r = 30; const circ = 2 * Math.PI * r;
-                  const dash = (pct / 100) * circ;
-                  return (
-                    <svg viewBox="0 0 80 80" style={{ transform: 'rotate(-90deg)' }}>
-                      <circle cx="40" cy="40" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
-                      <circle cx="40" cy="40" r={r} fill="none" stroke="#fbbf24" strokeWidth="10"
-                        strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
-                        style={{ transition: 'stroke-dasharray 0.5s' }} />
-                    </svg>
-                  );
-                })()}
-                <div style={{
-                  position: 'absolute', inset: 0, display: 'flex',
-                  flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--yellow)', fontFamily: "'Syne', sans-serif" }}>{stats.sold || 0}</span>
-                  <span style={{ fontSize: 9, color: 'var(--text3)' }}>SOLD</span>
-                </div>
-              </div>
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {[{ label: 'Sold', v: stats.sold || 0, c: 'var(--yellow)' }, { label: 'Unsold', v: stats.unsold || 0, c: 'var(--text3)' }].map(d => (
-                  <div key={d.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: d.c }} />
-                    <span style={{ flex: 1, fontSize: 13, color: 'var(--text2)' }}>{d.label}</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: d.c }}>{d.v}</span>
+          {/* Account Status Pie */}
+          <div className="card fade-up d2" style={{ padding:'22px 24px' }}>
+            <div style={{ fontSize:12, fontWeight:600, color:'var(--text3)', letterSpacing:1, textTransform:'uppercase', marginBottom:20 }}>Account Status</div>
+            <div style={{ display:'flex', alignItems:'center', gap:24 }}>
+              <PieChart segments={pieSegments} size={140}/>
+              <div style={{ flex:1, display:'flex', flexDirection:'column', gap:10 }}>
+                {pieSegments.map(s => (
+                  <div key={s.label} style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <div style={{ width:10, height:10, borderRadius:'50%', background:s.color, flexShrink:0 }}/>
+                    <span style={{ flex:1, fontSize:13, color:'var(--text2)', fontWeight:500 }}>{s.label}</span>
+                    <span style={{ fontSize:14, fontWeight:700, color:s.color }}>{s.value}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Level Distribution */}
-          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: '18px 20px' }}>
-            <div style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 18 }}>Level Distribution</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-              {levelDist.map(r => {
-                const pct = (r.count / totalLevel) * 100;
-                return (
-                  <div key={r.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 10, color: 'var(--text3)', width: 36, textAlign: 'right', flexShrink: 0 }}>{r.label}</span>
-                    <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 99 }}>
-                      <div style={{
-                        width: pct + '%', height: '100%',
-                        background: 'linear-gradient(90deg, var(--primary), var(--cyan))',
-                        borderRadius: 99, transition: 'width 0.5s',
-                      }} />
+          {/* Sales Pie */}
+          <div className="card fade-up d3" style={{ padding:'22px 24px' }}>
+            <div style={{ fontSize:12, fontWeight:600, color:'var(--text3)', letterSpacing:1, textTransform:'uppercase', marginBottom:20 }}>Sales Status</div>
+            <div style={{ display:'flex', alignItems:'center', gap:24 }}>
+              <div style={{ position:'relative', flexShrink:0 }}>
+                <PieChart segments={salesSegments} size={140}/>
+                <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+                  <span style={{ fontSize:22, fontWeight:800, color:'var(--amber)', fontFamily:"'Plus Jakarta Sans',sans-serif" }}>{stats.sold || 0}</span>
+                  <span style={{ fontSize:10, color:'var(--text3)', fontWeight:600 }}>SOLD</span>
+                </div>
+              </div>
+              <div style={{ flex:1, display:'flex', flexDirection:'column', gap:12 }}>
+                {salesSegments.map(s => (
+                  <div key={s.label}>
+                    <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                        <div style={{ width:8, height:8, borderRadius:'50%', background:s.color }}/>
+                        <span style={{ fontSize:13, color:'var(--text2)', fontWeight:500 }}>{s.label}</span>
+                      </div>
+                      <span style={{ fontSize:14, fontWeight:700, color:s.color }}>{s.value}</span>
                     </div>
-                    <span style={{ fontSize: 11, color: 'var(--primary-light)', width: 22, flexShrink: 0 }}>{r.count}</span>
+                    <div style={{ height:6, background:'var(--bg3)', borderRadius:99, overflow:'hidden' }}>
+                      <div style={{ width: ((s.value/(stats.total||1))*100) + '%', height:'100%', background:s.color, borderRadius:99, transition:'width 0.8s cubic-bezier(.22,.68,0,1) 0.2s' }}/>
+                    </div>
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Recent Activity */}
-          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: '18px 20px' }}>
-            <div style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 18 }}>Last 7 Days</div>
-            <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end', height: 80 }}>
-              {recent.map(d => {
-                const h = Math.max(4, (d.count / maxRecent) * 60);
-                const day = new Date(d.date).toLocaleDateString('en', { weekday: 'short' });
+          {/* Account Status Bar Chart */}
+          <div className="card fade-up d4" style={{ padding:'22px 24px' }}>
+            <div style={{ fontSize:12, fontWeight:600, color:'var(--text3)', letterSpacing:1, textTransform:'uppercase', marginBottom:8 }}>Status Distribution</div>
+            <div style={{ borderTop:'1px solid var(--border)', marginBottom:16 }}/>
+            <div style={{ display:'flex', gap:8, alignItems:'flex-end' }}>
+              <Bar value={stats.unbanned||0} max={statusMax} color="#059669" label="Unbanned"/>
+              <Bar value={stats.banned||0}   max={statusMax} color="#dc2626" label="Banned"/>
+              <Bar value={stats.new||0}      max={statusMax} color="#2563eb" label="New"/>
+            </div>
+          </div>
+
+          {/* Level Distribution */}
+          <div className="card fade-up d5" style={{ padding:'22px 24px' }}>
+            <div style={{ fontSize:12, fontWeight:600, color:'var(--text3)', letterSpacing:1, textTransform:'uppercase', marginBottom:20 }}>Level Distribution</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+              {levelDist.map((r, i) => (
+                <HBar key={r.label} label={`Level ${r.label}`} value={r.count} total={totalLevels}
+                  color="var(--primary)" delay={i * 80}/>
+              ))}
+            </div>
+          </div>
+
+          {/* 7-Day Activity */}
+          <div className="card fade-up d6" style={{ padding:'22px 24px', gridColumn:'span 2' }} data-wide="true">
+            <div style={{ fontSize:12, fontWeight:600, color:'var(--text3)', letterSpacing:1, textTransform:'uppercase', marginBottom:8 }}>Activity — Last 7 Days</div>
+            <div style={{ borderTop:'1px solid var(--border)', marginBottom:20 }}/>
+            <div style={{ display:'flex', gap:10, alignItems:'flex-end', height:120 }}>
+              {recent.map((d, i) => {
+                const ratio = maxRecent > 0 ? d.count / maxRecent : 0;
+                const day = new Date(d.date).toLocaleDateString('en',{weekday:'short'});
+                const dateStr = new Date(d.date).toLocaleDateString('en',{month:'short',day:'numeric'});
                 return (
-                  <div key={d.date} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-                    {d.count > 0 && <span style={{ fontSize: 9, color: 'var(--cyan)' }}>{d.count}</span>}
-                    <div style={{
-                      width: '100%', height: h,
-                      background: d.count > 0 ? 'linear-gradient(180deg, var(--cyan), var(--primary))' : 'rgba(255,255,255,0.06)',
-                      borderRadius: '3px 3px 0 0',
-                    }} />
-                    <span style={{ fontSize: 9, color: 'var(--text3)' }}>{day}</span>
+                  <div key={d.date} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:5 }} title={dateStr + ': ' + d.count + ' accounts'}>
+                    {d.count > 0 && <span style={{ fontSize:11.5, fontWeight:700, color:'var(--primary)' }}>{d.count}</span>}
+                    {d.count === 0 && <span style={{ fontSize:11.5, color:'transparent' }}>0</span>}
+                    <div style={{ width:'100%', display:'flex', alignItems:'flex-end', justifyContent:'center', height:90 }}>
+                      <div style={{
+                        width:'70%', borderRadius:'6px 6px 0 0',
+                        height: Math.max(d.count > 0 ? 6 : 3, ratio * 90) + 'px',
+                        background: d.count > 0
+                          ? 'linear-gradient(180deg, var(--primary) 0%, #818cf8 100%)'
+                          : 'var(--bg3)',
+                        transition: `height 0.8s cubic-bezier(.22,.68,0,1) ${i * 0.05}s`,
+                        boxShadow: d.count > 0 ? '0 -3px 10px rgba(79,70,229,0.25)' : 'none',
+                      }}/>
+                    </div>
+                    <span style={{ fontSize:11, color:'var(--text3)', fontWeight:500 }}>{day}</span>
                   </div>
                 );
               })}
@@ -209,6 +306,12 @@ export default function HomePage() {
 
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          [data-wide="true"] { grid-column: span 1 !important; }
+        }
+      `}</style>
     </div>
   );
 }
