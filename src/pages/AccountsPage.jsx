@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getAccounts, deleteAccount, bulkDelete, bulkUpdate } from '../api';
+import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts, syncOneAccount as syncOne } from '../api';
 import AccountModal from '../components/AccountModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { BanStatusBadge, SalesBadge } from '../components/StatusBadge';
@@ -49,6 +49,8 @@ export default function AccountsPage() {
   const [editAccount, setEditAccount] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
   const [confirmDel, setConfirmDel] = useState(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -82,6 +84,22 @@ export default function AccountsPage() {
   const handleBulkStatus = async (s) => {
     if (!selected.length) return;
     try{await bulkUpdate(selected,{accountStatus:s});toast.success('Updated');setSelected([]);load();}catch{toast.error('Failed');}
+  };
+
+  const handleSync = async () => {
+    setSyncing(true); setSyncResult(null);
+    try {
+      const res = await syncAllAccounts();
+      const r = res.data;
+      setSyncResult(r);
+      toast.success(`Sync done: ${r.synced} updated, ${r.failed} failed`, { duration: 4000 });
+      load(); // refresh table
+    } catch (err) {
+      const msg = err?.response?.data?.message || err.message || 'Sync failed';
+      toast.error(msg);
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const SortIcon = ({field}) => (
@@ -127,7 +145,7 @@ export default function AccountsPage() {
       `}</style>
 
       {/* Header */}
-      <div style={{ marginBottom:24, display:'flex', alignItems:'flex-end', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
+      <div style={{ marginBottom:24, display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:16 }}>
         <div>
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
             <div style={{ width:3, height:18, background:'linear-gradient(180deg, var(--neon), var(--violet))', borderRadius:2, boxShadow:'0 0 8px var(--neon)' }} />
@@ -136,17 +154,74 @@ export default function AccountsPage() {
           <h1 style={{ fontFamily:'var(--font-display)', fontSize:24, fontWeight:700, color:'var(--text)', letterSpacing:1 }}>Account Manager</h1>
           <div style={{ color:'var(--text3)', fontSize:12, marginTop:3, fontFamily:'var(--font-mono)' }}>{accounts.length} records loaded</div>
         </div>
-        <div style={{ display:'flex', gap:12, flexWrap:'wrap', alignItems:'center', fontSize:11, color:'var(--text3)', fontFamily:'var(--font-display)' }}>
-          <span style={{ display:'flex', alignItems:'center', gap:5 }}>
-            <span style={{ width:16, height:16, borderRadius:'50%', background:'rgba(0,255,136,0.1)', border:'1.5px solid rgba(0,255,136,0.3)', display:'inline-flex', alignItems:'center', justifyContent:'center' }}>
-              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="var(--safe)" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
-            </span>UNBANNED
-          </span>
-          <span style={{ display:'flex', alignItems:'center', gap:5 }}>
-            <span style={{ width:16, height:16, borderRadius:'50%', background:'var(--danger-dim)', border:'1.5px solid rgba(255,51,85,0.3)', display:'inline-flex', alignItems:'center', justifyContent:'center' }}>
-              <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </span>BANNED
-          </span>
+
+        {/* Right side controls */}
+        <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:10 }}>
+
+          {/* Sync button */}
+          <button
+            type="button"
+            onClick={handleSync}
+            disabled={syncing}
+            style={{
+              display:'flex', alignItems:'center', gap:8,
+              padding:'10px 22px', borderRadius:9,
+              fontSize:12, fontWeight:700,
+              fontFamily:'var(--font-display)', letterSpacing:1.5, textTransform:'uppercase',
+              background: syncing ? 'rgba(0,217,255,0.06)' : 'transparent',
+              border:`1.5px solid ${syncing ? 'rgba(0,217,255,0.2)' : 'var(--neon)'}`,
+              color: syncing ? 'rgba(0,217,255,0.4)' : 'var(--neon)',
+              cursor: syncing ? 'not-allowed' : 'pointer',
+              boxShadow: syncing ? 'none' : '0 0 18px rgba(0,217,255,0.18)',
+              transition:'all 0.2s',
+            }}
+            onMouseEnter={e=>{ if(!syncing){e.currentTarget.style.background='var(--neon-dim)';e.currentTarget.style.boxShadow='0 0 32px rgba(0,217,255,0.35)';} }}
+            onMouseLeave={e=>{ if(!syncing){e.currentTarget.style.background='transparent';e.currentTarget.style.boxShadow='0 0 18px rgba(0,217,255,0.18)';} }}
+          >
+            <svg
+              width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+              style={{ animation: syncing ? 'spin 0.8s linear infinite' : 'none' }}
+            >
+              <polyline points="23 4 23 10 17 10"/>
+              <polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            {syncing ? 'Syncing…' : 'Sync Accounts'}
+          </button>
+
+          {/* Sync result pill */}
+          {syncResult && !syncing && (
+            <div style={{
+              display:'flex', alignItems:'center', gap:8,
+              padding:'6px 14px', borderRadius:8,
+              fontSize:11, fontFamily:'var(--font-display)', letterSpacing:0.5,
+              background: syncResult.failed > 0 ? 'rgba(255,184,0,0.08)' : 'rgba(0,255,136,0.07)',
+              border:`1px solid ${syncResult.failed > 0 ? 'rgba(255,184,0,0.25)' : 'rgba(0,255,136,0.2)'}`,
+              color: syncResult.failed > 0 ? 'var(--gold)' : 'var(--safe)',
+            }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>{syncResult.synced} updated</span>
+              {syncResult.failed > 0 && <span style={{ color:'var(--danger)' }}>· {syncResult.failed} failed</span>}
+              <span style={{ color:'var(--text3)' }}>· {syncResult.total} checked</span>
+              <button type="button" onClick={()=>setSyncResult(null)} style={{ background:'none', border:'none', color:'inherit', cursor:'pointer', padding:0, opacity:0.5, fontSize:13, lineHeight:1, marginLeft:2 }}>✕</button>
+            </div>
+          )}
+
+          {/* Legend */}
+          <div style={{ display:'flex', gap:12, flexWrap:'wrap', alignItems:'center', fontSize:11, color:'var(--text3)', fontFamily:'var(--font-display)' }}>
+            <span style={{ display:'flex', alignItems:'center', gap:5 }}>
+              <span style={{ width:16, height:16, borderRadius:'50%', background:'rgba(0,255,136,0.1)', border:'1.5px solid rgba(0,255,136,0.3)', display:'inline-flex', alignItems:'center', justifyContent:'center' }}>
+                <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="var(--safe)" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>UNBANNED
+            </span>
+            <span style={{ display:'flex', alignItems:'center', gap:5 }}>
+              <span style={{ width:16, height:16, borderRadius:'50%', background:'var(--danger-dim)', border:'1.5px solid rgba(255,51,85,0.3)', display:'inline-flex', alignItems:'center', justifyContent:'center' }}>
+                <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </span>BANNED
+            </span>
+          </div>
+
         </div>
       </div>
 
@@ -286,8 +361,9 @@ export default function AccountsPage() {
                         <tr>
                           {(tab==='edit'||tab==='remove')&&<th style={{ width:42, cursor:'default' }}><input type="checkbox" checked={selected.length===accounts.length&&accounts.length>0} onChange={toggleAll} style={{ cursor:'pointer', accentColor:'var(--neon)', width:14, height:14 }} /></th>}
                           {[
-                            {f:'accountStatus',l:'Ban'},
+                            {f:'accountStatus', l:'Ban'},
                             {f:'accountEmail',  l:'Email'},
+                            {f:'apexUsername',  l:'Apex ID'},
                             {f:'accountPassword',l:'Password'},
                             {f:'accountRecovery',l:'Recovery'},
                             {f:'accountLevel',  l:'Level'},
@@ -295,6 +371,7 @@ export default function AccountsPage() {
                             {f:'rank',          l:'Rank'},
                             {f:'salesStatus',   l:'Sales'},
                             {f:'price',         l:'Price'},
+                            {f:'lastSynced',    l:'Synced'},
                           ].map(c=>(
                             <th key={c.f} onClick={()=>handleSort(c.f)}>{c.l}<SortIcon field={c.f}/></th>
                           ))}
@@ -312,6 +389,16 @@ export default function AccountsPage() {
                                 <CopyBtn text={acc.accountEmail} id={'em'+acc._id} />
                               </div>
                             </td>
+                            {/* Apex Username */}
+                            <td>
+                              {acc.apexUsername
+                                ? <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                                    <span style={{ fontFamily:'var(--font-mono)', color:'var(--neon)', fontSize:12, maxWidth:110, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{acc.apexUsername}</span>
+                                    <span style={{ fontSize:9, color:'var(--text4)', fontFamily:'var(--font-display)', letterSpacing:0.5 }}>{acc.apexPlatform}</span>
+                                  </div>
+                                : <span style={{ color:'var(--text4)', fontSize:12 }}>—</span>
+                              }
+                            </td>
                             <td>
                               <div style={{ display:'flex', alignItems:'center', gap:5 }}>
                                 <span style={{ fontFamily:'var(--font-mono)', color:'var(--text2)', fontSize:12, letterSpacing:showPws[acc._id]?0.3:1.5 }}>{showPws[acc._id]?acc.accountPassword:'••••••••'}</span>
@@ -325,6 +412,21 @@ export default function AccountsPage() {
                             <td><RankBadge rank={acc.rank} /></td>
                             <td><SalesBadge status={acc.salesStatus} /></td>
                             <td><span style={{ fontFamily:'var(--font-mono)', fontWeight:600, color:'var(--gold)', fontSize:12.5 }}>{acc.price>0?'Rs '+Number(acc.price).toLocaleString('en-PK'):'—'}</span></td>
+                            {/* Last synced */}
+                            <td>
+                              {acc.lastSynced
+                                ? <div>
+                                    <div style={{ fontSize:11, color: acc.syncError ? 'var(--danger)' : 'var(--safe)', fontFamily:'var(--font-mono)', whiteSpace:'nowrap' }}>
+                                      {acc.syncError
+                                        ? <span title={acc.syncError}>⚠ Error</span>
+                                        : new Date(acc.lastSynced).toLocaleDateString('en-PK',{month:'short',day:'numeric'})
+                                      }
+                                    </div>
+                                    {!acc.syncError && <div style={{ fontSize:10, color:'var(--text4)', fontFamily:'var(--font-mono)' }}>{new Date(acc.lastSynced).toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit'})}</div>}
+                                  </div>
+                                : <span style={{ color:'var(--text4)', fontSize:11, fontFamily:'var(--font-mono)' }}>Never</span>
+                              }
+                            </td>
                             <td>
                               <div style={{ display:'flex', gap:5 }}>
                                 {tab==='view'&&<button className="action-btn" type="button" onClick={()=>setViewAccount(acc)} style={{ padding:'5px 13px', borderRadius:6, fontSize:11, fontWeight:700, border:'1px solid rgba(0,217,255,0.25)', background:'var(--neon-dim)', color:'var(--neon)', cursor:'pointer', fontFamily:'var(--font-display)', letterSpacing:1 }}>VIEW</button>}

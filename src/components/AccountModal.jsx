@@ -4,7 +4,7 @@ import { createAccount, updateAccount } from '../api';
 import RankBadge, { RANKS } from './RankBadge';
 import toast from 'react-hot-toast';
 
-const EMPTY = { accountStatus:'Unbanned', accountEmail:'', accountPassword:'', additionalAccountPassword:'', accountRecovery:'', accountLevel:1, salesStatus:'Unsold', notes:'', price:0, rfrBought:false, rank:'Unranked' };
+const EMPTY = { accountStatus:'Unbanned', accountEmail:'', accountPassword:'', additionalAccountPassword:'', accountRecovery:'', accountLevel:1, salesStatus:'Unsold', notes:'', price:0, rfrBought:false, rank:'Unranked', apexUsername:'', apexPlatform:'PC' };
 
 export default function AccountModal({ account, mode, onClose, onSaved }) {
   const isView=mode==='view', isAdd=mode==='add', isEdit=mode==='edit';
@@ -17,7 +17,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
   useEffect(() => {
     if (isAdd) { setForm(EMPTY); setShowPw(false); }
     else if (account&&(isView||isEdit)) {
-      setForm({ accountStatus:account.accountStatus||'Unbanned', accountEmail:account.accountEmail||'', accountPassword:account.accountPassword||'', additionalAccountPassword:account.additionalAccountPassword||'', accountRecovery:account.accountRecovery||'', accountLevel:account.accountLevel||1, salesStatus:account.salesStatus||'Unsold', notes:account.notes||'', price:account.price||0, rfrBought:account.rfrBought||false, rank:account.rank||'Unranked' });
+      setForm({ accountStatus:account.accountStatus||'Unbanned', accountEmail:account.accountEmail||'', accountPassword:account.accountPassword||'', additionalAccountPassword:account.additionalAccountPassword||'', accountRecovery:account.accountRecovery||'', accountLevel:account.accountLevel||1, salesStatus:account.salesStatus||'Unsold', notes:account.notes||'', price:account.price||0, rfrBought:account.rfrBought||false, rank:account.rank||'Unranked', apexUsername:account.apexUsername||'', apexPlatform:account.apexPlatform||'PC' });
       setShowPw(isView); setShowAddPw(false);
     }
     setSaving(false);
@@ -279,6 +279,49 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               <label style={lbl}>Notes</label>
               {isView?<div style={inpRO}>{form.notes||'—'}</div>
                 :<input value={form.notes} onChange={set('notes')} placeholder="Optional notes…" style={inp} onFocus={fi} onBlur={fo} />}
+            </div>
+          </div>
+
+          {/* APEX USERNAME + PLATFORM — for auto-sync */}
+          <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)', paddingTop:16 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
+              <div style={{ width:3, height:14, background:'linear-gradient(180deg,var(--neon),var(--violet))', borderRadius:2, boxShadow:'0 0 6px var(--neon)' }} />
+              <span style={{ ...lbl, marginBottom:0 }}>Apex Sync</span>
+              <span style={{ fontSize:9.5, color:'var(--text3)', fontFamily:'var(--font-body)', textTransform:'none', letterSpacing:0, fontWeight:400 }}>
+                Used for auto level & rank updates
+              </span>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 90px', gap:12 }}>
+              <div>
+                <label style={lbl}>Apex Username</label>
+                {isView
+                  ? <div style={{...inpRO, fontFamily:'var(--font-mono)', fontSize:13, display:'flex', alignItems:'center', gap:8}}>
+                      {form.apexUsername
+                        ? <><span style={{ color:'var(--neon)' }}>{form.apexUsername}</span>
+                            {account?.lastSynced && <span style={{ fontSize:10, color:'var(--text3)', marginLeft:'auto' }}>Synced {new Date(account.lastSynced).toLocaleString('en-PK',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>}
+                          </>
+                        : <span style={{ color:'var(--text3)' }}>Not set</span>
+                      }
+                    </div>
+                  : <input value={form.apexUsername} onChange={set('apexUsername')} placeholder="e.g. tashbottle7001" style={inp} onFocus={fi} onBlur={fo} />
+                }
+                {isView && account?.syncError && (
+                  <div style={{ marginTop:6, fontSize:11, color:'var(--danger)', fontFamily:'var(--font-mono)', background:'var(--danger-dim)', padding:'5px 10px', borderRadius:6, border:'1px solid rgba(255,51,85,0.2)' }}>
+                    ⚠ Last sync error: {account.syncError}
+                  </div>
+                )}
+              </div>
+              <div>
+                <label style={lbl}>Platform</label>
+                {isView
+                  ? <div style={{...inpRO, fontFamily:'var(--font-display)', textAlign:'center', fontWeight:700, color:'var(--neon)', letterSpacing:1}}>{form.apexPlatform||'PC'}</div>
+                  : <select value={form.apexPlatform} onChange={set('apexPlatform')} style={{...inp, cursor:'pointer'}} onFocus={fi} onBlur={fo}>
+                      <option value="PC">PC</option>
+                      <option value="PS4">PS4</option>
+                      <option value="X1">Xbox</option>
+                    </select>
+                }
+              </div>
             </div>
           </div>
 

@@ -58,3 +58,8 @@ export const getUsers = () => api.get('/api/users');
 export const deleteUser = (id) => api.delete('/api/users/' + id);
 
 export default api;
+
+// Sync
+export const syncAllAccounts = () => api.post('/api/sync');
+export const syncOneAccount  = (id) => api.post('/api/sync/' + id);
+export const getSyncStatus   = () => api.get('/api/sync/status');
