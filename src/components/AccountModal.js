@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { createAccount, updateAccount } from '../api';
-import RankBadge from './RankBadge';
+import RankBadge, { RANKS } from './RankBadge';
 import toast from 'react-hot-toast';
 
 const EMPTY = {
@@ -15,6 +15,7 @@ const EMPTY = {
   notes: '',
   price: 0,
   rfrBought: false,
+  rank: 'Unranked',
 };
 
 export default function AccountModal({ account, mode, onClose, onSaved }) {
@@ -45,6 +46,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
         notes:                     account.notes                     || '',
         price:                     account.price                     || 0,
         rfrBought:                 account.rfrBought                 || false,
+        rank:                      account.rank                      || 'Unranked',
       });
       setShowPw(isView);
       setShowAddPw(false);
@@ -260,7 +262,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               </span>
 
               {/* Rank pill */}
-              <RankBadge level={form.accountLevel} />
+              <RankBadge rank={form.rank} />
             </div>
           )}
         </div>
@@ -375,13 +377,45 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             </div>
           </div>
 
-          {/* ── RANK (display only, auto-computed) ── */}
-          {(isView || isEdit || isAdd) && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: '#f8fafc', borderRadius: 9, border: '1px solid #e2e8f0' }}>
-              <span style={{ fontSize: 11.5, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>Rank (auto)</span>
-              <RankBadge level={form.accountLevel} />
-            </div>
-          )}
+          {/* ── RANK PICKER ── */}
+          <div>
+            <label style={lbl}>Rank</label>
+            {isView
+              ? (
+                <div style={{ padding: '10px 14px', background: '#f8fafc', borderRadius: 9, border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <RankBadge rank={form.rank} />
+                </div>
+              )
+              : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 7 }}>
+                  {RANKS.map(r => {
+                    const tier = r === 'Unranked' ? 'Unranked' : r.split(' ')[0];
+                    const colors = {
+                      Diamond:  { sel: '#4338ca', selBg: '#eef2ff', selBorder: '#c7d2fe' },
+                      Platinum: { sel: '#0e7490', selBg: '#ecfeff', selBorder: '#a5f3fc' },
+                      Gold:     { sel: '#b45309', selBg: '#fffbeb', selBorder: '#fcd34d' },
+                      Silver:   { sel: '#475569', selBg: '#f8fafc', selBorder: '#cbd5e1' },
+                      Unranked: { sel: '#64748b', selBg: '#f1f5f9', selBorder: '#e2e8f0' },
+                    }[tier] || { sel: '#64748b', selBg: '#f1f5f9', selBorder: '#e2e8f0' };
+                    const isSelected = form.rank === r;
+                    return (
+                      <button key={r} type="button"
+                        onClick={() => setForm(f => ({ ...f, rank: r }))}
+                        style={{
+                          padding: '7px 4px', borderRadius: 8, fontSize: 11, fontWeight: isSelected ? 700 : 500,
+                          border: `1.5px solid ${isSelected ? colors.selBorder : '#e2e8f0'}`,
+                          background: isSelected ? colors.selBg : '#f8fafc',
+                          color: isSelected ? colors.sel : '#94a3b8',
+                          cursor: 'pointer', transition: 'all 0.15s',
+                          textAlign: 'center', lineHeight: 1.3,
+                        }}
+                      >{r}</button>
+                    );
+                  })}
+                </div>
+              )
+            }
+          </div>
 
           {/* ── RFR BOUGHT TOGGLE ── */}
           <div>

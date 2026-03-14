@@ -467,9 +467,9 @@ export default function AccountsPage() {
                               <Lv20Badge level={acc.accountLevel} rfrBought={acc.rfrBought} />
                             </td>
 
-                            {/* Rank — auto from level */}
+                            {/* Rank — stored value */}
                             <td style={tdStyle}>
-                              <RankBadge level={acc.accountLevel} />
+                              <RankBadge rank={acc.rank} />
                             </td>
 
                             {/* Sales */}
@@ -532,7 +532,7 @@ export default function AccountsPage() {
                       <div style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 8, wordBreak: 'break-all', fontSize: 13.5 }}>{acc.accountEmail}</div>
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
                         <Lv20Badge level={acc.accountLevel} rfrBought={acc.rfrBought} />
-                        <RankBadge level={acc.accountLevel} />
+                        <RankBadge rank={acc.rank} />
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
                         <div style={{ background: 'var(--bg3)', borderRadius: 8, padding: '8px 10px' }}>
