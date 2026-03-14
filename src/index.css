@@ -149,3 +149,87 @@ button { font-family: inherit; cursor: pointer; }
   background: white; border: 1px solid var(--border);
   border-radius: var(--radius); box-shadow: var(--sh-sm);
 }
+
+/* ── PROFESSIONAL UI ENHANCEMENTS ──────────────────── */
+
+/* Glassmorphism card variant */
+.glass-card {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(79,70,229,0.08), 0 1px 0 rgba(255,255,255,0.8) inset;
+}
+
+/* Levitation animation */
+@keyframes levitate {
+  0%, 100% { transform: translateY(0px) rotate(0deg); box-shadow: 0 8px 24px rgba(79,70,229,0.15); }
+  50%       { transform: translateY(-8px) rotate(0.3deg); box-shadow: 0 16px 40px rgba(79,70,229,0.25); }
+}
+@keyframes leviteSm {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}
+
+/* Glow pulse */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(79,70,229,0); }
+  50%       { box-shadow: 0 0 0 8px rgba(79,70,229,0.08); }
+}
+
+/* Stat card hover levitate */
+.stat-card-hover {
+  transition: transform 0.3s cubic-bezier(.22,.68,0,1), box-shadow 0.3s ease;
+}
+.stat-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(79,70,229,0.18) !important;
+}
+
+/* Table row hover effect */
+tbody tr { transition: background 0.15s, transform 0.1s; }
+
+/* Pill filter */
+.filter-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: white; border: 1.5px solid var(--border-md);
+  border-radius: 99px; padding: 7px 16px;
+  font-size: 13px; font-weight: 500; color: var(--text3);
+  cursor: pointer; transition: all 0.18s;
+}
+.filter-pill:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-pale); }
+.filter-pill.active { border-color: var(--primary); color: var(--primary); background: var(--primary-pale); font-weight: 600; }
+
+/* Navbar blur enhancement */
+nav { backdrop-filter: saturate(180%) blur(20px) !important; }
+
+/* Card subtle hover */
+.card {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.card:hover {
+  box-shadow: var(--sh-md) !important;
+  transform: translateY(-1px);
+}
+
+/* Section divider */
+.section-divider {
+  display: flex; align-items: center; gap: 12px; margin: 32px 0 24px;
+}
+.section-divider::before, .section-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* Input focus ring */
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-glow) !important;
+}
+
+/* Better scrollbar for table overflow */
+.accounts-table ::-webkit-scrollbar { height: 4px; }
+.accounts-table ::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 99px; }
+
+/* Rank badge in table — subtle hover */
+span[title] { cursor: default; }

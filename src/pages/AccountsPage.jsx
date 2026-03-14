@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { getAccounts, deleteAccount, bulkDelete, bulkUpdate } from '../api';
 import AccountModal from '../components/AccountModal';
 import ConfirmDialog from '../components/ConfirmDialog';
-import StatusBadge from '../components/StatusBadge';
+import { BanStatusBadge, SalesBadge } from '../components/StatusBadge';
+import RankBadge from '../components/RankBadge';
 import LoadingScreen from '../components/LoadingScreen';
 import EmptyState from '../components/EmptyState';
 import toast from 'react-hot-toast';
@@ -13,6 +14,48 @@ const TABS = [
   { id: 'edit',   label: 'Edit',     icon: '✎' },
   { id: 'remove', label: 'Remove',   icon: '⊗' },
 ];
+
+function Lv20Badge({ level, rfrBought }) {
+  if (rfrBought) {
+    return (
+      <span title="Level 20 purchased (RFR Bought)" style={{
+        display: 'inline-flex', alignItems: 'center', gap: 4,
+        padding: '3px 8px', borderRadius: 7,
+        background: '#fffbeb', border: '1.5px solid #fcd34d',
+        color: '#b45309', fontSize: 11, fontWeight: 700,
+      }}>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="#f59e0b" stroke="none">
+          <circle cx="12" cy="12" r="10"/>
+        </svg>
+        Bought
+      </span>
+    );
+  }
+  if (level >= 20) {
+    return (
+      <span title="Reached level 20 naturally" style={{
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        width: 28, height: 28, borderRadius: '50%',
+        background: '#ecfdf5', border: '2px solid #6ee7b7',
+      }}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </span>
+    );
+  }
+  return (
+    <span title="Below level 20" style={{
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      width: 28, height: 28, borderRadius: '50%',
+      background: '#fef2f2', border: '2px solid #fca5a5',
+    }}>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="3" strokeLinecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </span>
+  );
+}
 
 export default function AccountsPage() {
   const [tab, setTab]               = useState('view');
@@ -27,7 +70,6 @@ export default function AccountsPage() {
   const [showPws, setShowPws]       = useState({});
   const [copied, setCopied]         = useState('');
 
-  // Modal states — these trigger AccountModal / ConfirmDialog overlays
   const [viewAccount, setViewAccount] = useState(null);
   const [editAccount, setEditAccount] = useState(null);
   const [addOpen, setAddOpen]         = useState(false);
@@ -87,25 +129,19 @@ export default function AccountsPage() {
     catch { toast.error('Update failed'); }
   };
 
-  // ── Styles ──────────────────────────────────────────────────
   const thStyle = {
-    padding: '11px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700,
-    letterSpacing: 1.2, textTransform: 'uppercase', color: 'var(--text3)',
-    background: 'var(--bg)', whiteSpace: 'nowrap', userSelect: 'none',
-    borderBottom: '2px solid var(--border)', cursor: 'pointer',
+    padding: '11px 12px', textAlign: 'left', fontSize: 10.5, fontWeight: 700,
+    letterSpacing: 1.1, textTransform: 'uppercase', color: 'var(--text3)',
+    background: 'linear-gradient(180deg,#f8faff,#f1f4fd)', whiteSpace: 'nowrap',
+    userSelect: 'none', borderBottom: '2px solid var(--border)', cursor: 'pointer',
   };
   const tdStyle = {
-    padding: '11px 14px', borderBottom: '1px solid var(--border)', verticalAlign: 'middle',
+    padding: '10px 12px', borderBottom: '1px solid var(--border)', verticalAlign: 'middle',
   };
 
-  const tabColors = {
-    view: 'var(--primary)', add: 'var(--green)', edit: 'var(--blue)', remove: 'var(--red)',
-  };
-  const tabBgColors = {
-    view: 'var(--primary-pale)', add: 'var(--green-bg)', edit: 'var(--blue-bg)', remove: 'var(--red-bg)',
-  };
+  const tabColors   = { view: 'var(--primary)', add: 'var(--green)', edit: 'var(--blue)', remove: 'var(--red)' };
+  const tabBgColors = { view: 'var(--primary-pale)', add: 'var(--green-bg)', edit: 'var(--blue-bg)', remove: 'var(--red-bg)' };
 
-  // ── Sub-components ──────────────────────────────────────────
   const CopyBtn = ({ text, id }) => (
     <button type="button" onClick={() => copyText(text, id)} style={{
       background: copied === id ? 'var(--green-bg)' : 'var(--bg3)',
@@ -132,28 +168,46 @@ export default function AccountsPage() {
     </button>
   );
 
-  // ── Render ──────────────────────────────────────────────────
   return (
-    <div className="fade-in" style={{ minHeight: '100vh', padding: '28px 24px', maxWidth: 1300, margin: '0 auto' }}>
+    <div className="fade-in" style={{ minHeight: '100vh', padding: '28px 24px', maxWidth: 1400, margin: '0 auto' }}>
 
       {/* Page header */}
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 22, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.3px' }}>
-          Account Manager
-        </h1>
-        <div style={{ color: 'var(--text3)', fontSize: 13, marginTop: 3 }}>
-          {accounts.length} account{accounts.length !== 1 ? 's' : ''} loaded
+      <div style={{ marginBottom: 24, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <h1 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 22, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.3px' }}>
+            Account Manager
+          </h1>
+          <div style={{ color: 'var(--text3)', fontSize: 13, marginTop: 3 }}>
+            {accounts.length} account{accounts.length !== 1 ? 's' : ''} loaded
+          </div>
+        </div>
+        {/* Legend */}
+        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center', fontSize: 11.5, color: 'var(--text3)', fontWeight: 500 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ width: 16, height: 16, borderRadius: '50%', background: '#ecfdf5', border: '2px solid #6ee7b7', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </span> Unbanned
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ width: 16, height: 16, borderRadius: '50%', background: '#eff6ff', border: '2px solid #93c5fd', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, color: '#2563eb', fontWeight: 900 }}>?</span>
+            New
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ width: 16, height: 16, borderRadius: '50%', background: '#fef2f2', border: '2px solid #fca5a5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </span> Banned
+          </span>
         </div>
       </div>
 
       {/* Main card */}
-      <div style={{ background: 'white', borderRadius: 16, border: '1px solid var(--border)', boxShadow: 'var(--sh-sm)', overflow: 'hidden' }}>
+      <div style={{ background: 'white', borderRadius: 16, border: '1px solid var(--border)', boxShadow: 'var(--sh-md)', overflow: 'hidden' }}>
 
-        {/* ── Tab bar ── */}
+        {/* Tab bar */}
         <div style={{
           borderBottom: '1px solid var(--border)', padding: '0 20px',
-          background: 'var(--bg)', display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', flexWrap: 'wrap', gap: 8,
+          background: 'linear-gradient(180deg,#fafbff,#f4f6fd)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8,
         }}>
           <div style={{ display: 'flex', gap: 0 }}>
             {TABS.map(t => {
@@ -185,7 +239,6 @@ export default function AccountsPage() {
             })}
           </div>
 
-          {/* Bulk actions */}
           {selected.length > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 0' }}>
               <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--primary)', background: 'var(--primary-pale)', padding: '4px 10px', borderRadius: 99 }}>
@@ -208,9 +261,7 @@ export default function AccountsPage() {
           )}
         </div>
 
-        {/* ══════════════════════════════════════════════════════
-            ADD TAB — big centred hero with button that opens modal
-        ══════════════════════════════════════════════════════ */}
+        {/* ADD TAB */}
         {tab === 'add' && (
           <div style={{
             padding: '70px 24px',
@@ -218,7 +269,6 @@ export default function AccountsPage() {
             minHeight: 440,
             background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfeff 50%, #f0f9ff 100%)',
           }}>
-            {/* Circle icon */}
             <div style={{
               width: 84, height: 84, borderRadius: '50%',
               background: 'linear-gradient(135deg, #059669, #10b981)',
@@ -226,15 +276,12 @@ export default function AccountsPage() {
               boxShadow: '0 8px 32px rgba(5,150,105,0.35)',
               marginBottom: 22, fontSize: 38, color: 'white', fontWeight: 300,
             }}>+</div>
-
             <h2 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 26, fontWeight: 800, color: 'var(--text)', marginBottom: 10, letterSpacing: '-0.3px' }}>
               Add New Account
             </h2>
             <p style={{ color: 'var(--text3)', fontSize: 14, marginBottom: 34, textAlign: 'center', maxWidth: 380, lineHeight: 1.65 }}>
-              Add a new Apex Legends account to your inventory. Fill in credentials, level, and sales status.
+              Add a new Apex Legends account to your inventory. Fill in credentials, level, rank and sales status.
             </p>
-
-            {/* THE BUTTON THAT OPENS THE MODAL */}
             <button
               type="button"
               onClick={() => setAddOpen(true)}
@@ -244,8 +291,7 @@ export default function AccountsPage() {
                 border: 'none', color: 'white', cursor: 'pointer',
                 boxShadow: '0 4px 20px rgba(5,150,105,0.42)',
                 transition: 'all 0.18s', letterSpacing: 0.2,
-                display: 'flex', alignItems: 'center', gap: 10,
-                fontFamily: 'inherit',
+                display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'inherit',
               }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(5,150,105,0.48)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 20px rgba(5,150,105,0.42)'; }}
@@ -253,13 +299,11 @@ export default function AccountsPage() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
               Add New Account
             </button>
-
-            {/* Quick stats strip */}
             <div style={{ display: 'flex', gap: 40, marginTop: 52 }}>
               {[
-                { label: 'Total Accounts', value: accounts.length,                                              color: 'var(--primary)' },
-                { label: 'Unbanned',       value: accounts.filter(a => a.accountStatus === 'Unbanned').length,  color: 'var(--green)'   },
-                { label: 'Unsold',         value: accounts.filter(a => a.salesStatus   === 'Unsold').length,    color: 'var(--blue)'    },
+                { label: 'Total Accounts', value: accounts.length,                                             color: 'var(--primary)' },
+                { label: 'Unbanned',       value: accounts.filter(a => a.accountStatus === 'Unbanned').length, color: 'var(--green)'   },
+                { label: 'Unsold',         value: accounts.filter(a => a.salesStatus   === 'Unsold').length,   color: 'var(--blue)'    },
               ].map(s => (
                 <div key={s.label} style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: 30, fontWeight: 800, color: s.color, fontFamily: "'Plus Jakarta Sans',sans-serif", lineHeight: 1 }}>{s.value}</div>
@@ -270,9 +314,7 @@ export default function AccountsPage() {
           </div>
         )}
 
-        {/* ══════════════════════════════════════════════════════
-            VIEW / EDIT / REMOVE — filters + table
-        ══════════════════════════════════════════════════════ */}
+        {/* VIEW / EDIT / REMOVE */}
         {tab !== 'add' && (
           <div style={{ padding: '18px 20px 20px' }}>
 
@@ -296,13 +338,13 @@ export default function AccountsPage() {
                 />
               </div>
               {[
-                { val: filterStatus, set: setFilterStatus, placeholder: 'All Status', opts: ['Unbanned', 'Banned', 'New'] },
-                { val: filterSales,  set: setFilterSales,  placeholder: 'All Sales',  opts: ['Sold', 'Unsold'] },
+                { val: filterStatus, set: setFilterStatus, placeholder: 'All Ban Status', opts: ['Unbanned', 'Banned', 'New'] },
+                { val: filterSales,  set: setFilterSales,  placeholder: 'All Sales',      opts: ['Sold', 'Unsold'] },
               ].map((f, i) => (
                 <select key={i} value={f.val} onChange={e => f.set(e.target.value)} style={{
                   background: 'white', border: '1.5px solid var(--border-md)', borderRadius: 10,
                   padding: '9px 14px', fontSize: 13.5, color: f.val ? 'var(--text)' : 'var(--text3)',
-                  cursor: 'pointer', minWidth: 130, outline: 'none',
+                  cursor: 'pointer', minWidth: 140, outline: 'none',
                 }}>
                   <option value="">{f.placeholder}</option>
                   {f.opts.map(o => <option key={o}>{o}</option>)}
@@ -316,7 +358,6 @@ export default function AccountsPage() {
               )}
             </div>
 
-            {/* Content */}
             {loading ? (
               <LoadingScreen message="Fetching accounts…" />
             ) : accounts.length === 0 ? (
@@ -334,7 +375,7 @@ export default function AccountsPage() {
                 {/* Desktop table */}
                 <div className="accounts-table" style={{ borderRadius: 10, border: '1px solid var(--border)', overflow: 'hidden' }}>
                   <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                       <thead>
                         <tr>
                           {(tab === 'edit' || tab === 'remove') && (
@@ -347,13 +388,15 @@ export default function AccountsPage() {
                             </th>
                           )}
                           {[
-                            { field: 'accountStatus',   label: 'Status'   },
-                            { field: 'accountEmail',    label: 'Email'    },
-                            { field: 'accountPassword', label: 'Password' },
-                            { field: 'accountRecovery', label: 'Recovery' },
-                            { field: 'accountLevel',    label: 'Level'    },
-                            { field: 'salesStatus',     label: 'Sales'    },
-                            { field: 'price',           label: 'Price'    },
+                            { field: 'accountStatus', label: 'Ban Status' },
+                            { field: 'accountEmail',  label: 'Email'      },
+                            { field: 'accountPassword',label: 'Password'  },
+                            { field: 'accountRecovery',label: 'Recovery'  },
+                            { field: 'accountLevel',  label: 'Level'      },
+                            { field: 'lv20',          label: 'Lv 20'      },
+                            { field: 'rank',          label: 'Rank'       },
+                            { field: 'salesStatus',   label: 'Sales'      },
+                            { field: 'price',         label: 'Price'      },
                           ].map(col => (
                             <th key={col.field} onClick={() => handleSort(col.field)} style={thStyle}>
                               {col.label}<SortIcon field={col.field} />
@@ -378,43 +421,71 @@ export default function AccountsPage() {
                                   style={{ cursor: 'pointer', accentColor: 'var(--primary)', width: 16, height: 16 }} />
                               </td>
                             )}
-                            <td style={tdStyle}><StatusBadge status={acc.accountStatus} /></td>
+
+                            {/* BanStatus — tick/cross */}
+                            <td style={{ ...tdStyle, textAlign: 'center' }}>
+                              <BanStatusBadge status={acc.accountStatus} />
+                            </td>
+
+                            {/* Email */}
                             <td style={tdStyle}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                <span style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text)', fontWeight: 500 }}>
+                                <span style={{ maxWidth: 170, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text)', fontWeight: 500 }}>
                                   {acc.accountEmail}
                                 </span>
                                 <CopyBtn text={acc.accountEmail} id={'em' + acc._id} />
                               </div>
                             </td>
+
+                            {/* Password */}
                             <td style={tdStyle}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                                <span style={{ fontFamily: "'JetBrains Mono',monospace", color: 'var(--text3)', fontSize: 12.5, letterSpacing: showPws[acc._id] ? 0.3 : 1.5 }}>
+                                <span style={{ fontFamily: "'JetBrains Mono',monospace", color: 'var(--text3)', fontSize: 12, letterSpacing: showPws[acc._id] ? 0.3 : 1.5 }}>
                                   {showPws[acc._id] ? acc.accountPassword : '••••••••'}
                                 </span>
                                 <EyeBtn id={acc._id} />
                                 {showPws[acc._id] && <CopyBtn text={acc.accountPassword} id={'pw' + acc._id} />}
                               </div>
                             </td>
+
+                            {/* Recovery */}
                             <td style={tdStyle}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                                <span style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text3)', fontSize: 12.5 }}>
+                                <span style={{ maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text3)', fontSize: 12 }}>
                                   {acc.accountRecovery || '—'}
                                 </span>
                                 {acc.accountRecovery && <CopyBtn text={acc.accountRecovery} id={'rc' + acc._id} />}
                               </div>
                             </td>
+
+                            {/* Level */}
                             <td style={tdStyle}>
-                              <span style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 700, color: 'var(--primary)', fontSize: 14 }}>
+                              <span style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 700, color: 'var(--primary)', fontSize: 13.5 }}>
                                 Lv.{acc.accountLevel}
                               </span>
                             </td>
-                            <td style={tdStyle}><StatusBadge status={acc.salesStatus} /></td>
+
+                            {/* Lv 20 column */}
+                            <td style={{ ...tdStyle, textAlign: 'center' }}>
+                              <Lv20Badge level={acc.accountLevel} rfrBought={acc.rfrBought} />
+                            </td>
+
+                            {/* Rank column */}
+                            <td style={tdStyle}>
+                              <RankBadge level={acc.accountLevel} />
+                            </td>
+
+                            {/* Sales */}
+                            <td style={tdStyle}><SalesBadge status={acc.salesStatus} /></td>
+
+                            {/* Price — PKR */}
                             <td style={tdStyle}>
                               <span style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: 'var(--amber)', fontSize: 12.5 }}>
-                                {acc.price > 0 ? '$' + Number(acc.price).toFixed(2) : '—'}
+                                {acc.price > 0 ? 'Rs ' + Number(acc.price).toLocaleString('en-PK') : '—'}
                               </span>
                             </td>
+
+                            {/* Actions */}
                             <td style={tdStyle}>
                               <div style={{ display: 'flex', gap: 5 }}>
                                 {tab === 'view' && (
@@ -450,9 +521,10 @@ export default function AccountsPage() {
                       borderRadius: 14, padding: '16px 18px', boxShadow: 'var(--sh-sm)',
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                          <StatusBadge status={acc.accountStatus} />
-                          <StatusBadge status={acc.salesStatus} />
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                          <BanStatusBadge status={acc.accountStatus} />
+                          <SalesBadge status={acc.salesStatus} />
+                          <Lv20Badge level={acc.accountLevel} rfrBought={acc.rfrBought} />
                         </div>
                         {(tab === 'edit' || tab === 'remove') && (
                           <input type="checkbox" checked={selected.includes(acc._id)} onChange={() => toggleSel(acc._id)}
@@ -460,7 +532,7 @@ export default function AccountsPage() {
                         )}
                       </div>
                       <div style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 8, wordBreak: 'break-all', fontSize: 13.5 }}>{acc.accountEmail}</div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
                         <div style={{ background: 'var(--bg3)', borderRadius: 8, padding: '8px 10px' }}>
                           <div style={{ fontSize: 10, color: 'var(--text4)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 2 }}>Level</div>
                           <div style={{ fontWeight: 700, color: 'var(--primary)', fontSize: 16, fontFamily: "'Plus Jakarta Sans',sans-serif" }}>Lv.{acc.accountLevel}</div>
@@ -468,10 +540,11 @@ export default function AccountsPage() {
                         {acc.price > 0 && (
                           <div style={{ background: 'var(--amber-bg)', borderRadius: 8, padding: '8px 10px' }}>
                             <div style={{ fontSize: 10, color: 'var(--text4)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 2 }}>Price</div>
-                            <div style={{ fontWeight: 700, color: 'var(--amber)', fontSize: 16 }}>${Number(acc.price).toFixed(2)}</div>
+                            <div style={{ fontWeight: 700, color: 'var(--amber)', fontSize: 14 }}>Rs {Number(acc.price).toLocaleString('en-PK')}</div>
                           </div>
                         )}
                       </div>
+                      <div style={{ marginBottom: 10 }}><RankBadge level={acc.accountLevel} /></div>
                       <div style={{ display: 'flex', gap: 8 }}>
                         {tab === 'view'   && <button type="button" onClick={() => setViewAccount(acc)}    style={{ flex: 1, padding: '9px', borderRadius: 8, background: 'var(--primary-pale)', border: 'none', color: 'var(--primary)', fontSize: 13.5, fontWeight: 600, cursor: 'pointer' }}>View Details</button>}
                         {tab === 'edit'   && <button type="button" onClick={() => setEditAccount(acc)}    style={{ flex: 1, padding: '9px', borderRadius: 8, background: 'var(--blue-bg)',     border: 'none', color: 'var(--blue)',    fontSize: 13.5, fontWeight: 600, cursor: 'pointer' }}>Edit</button>}
@@ -486,7 +559,6 @@ export default function AccountsPage() {
         )}
       </div>
 
-      {/* ══ MODALS — all rendered via ReactDOM.createPortal inside AccountModal/ConfirmDialog ══ */}
       {addOpen     && <AccountModal mode="add"  onClose={() => setAddOpen(false)}    onSaved={() => { setAddOpen(false);    load(); }} />}
       {viewAccount && <AccountModal mode="view" account={viewAccount} onClose={() => setViewAccount(null)} onSaved={() => setViewAccount(null)} />}
       {editAccount && <AccountModal mode="edit" account={editAccount} onClose={() => setEditAccount(null)} onSaved={() => { setEditAccount(null); load(); }} />}

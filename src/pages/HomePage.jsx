@@ -1,56 +1,42 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getOverviewStats, getLevelDist, getRecentStats, getBackground } from '../api';
 import StatCard from '../components/StatCard';
 import LoadingScreen from '../components/LoadingScreen';
 
-/* ── Reliable Static Donut Chart ─────────────── */
+/* ── Donut Chart ─────────────────────────── */
 function PieChart({ segments, size = 160 }) {
-  const cx = size / 2, cy = size / 2, r = size * 0.38;
-  const sw = size * 0.14;
+  const cx = size / 2, cy = size / 2, r = size * 0.38, sw = size * 0.14;
   const total = segments.reduce((s, d) => s + d.value, 0);
   const circ = 2 * Math.PI * r;
-
-  if (total === 0) {
-    return (
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={sw} />
-        <circle cx={cx} cy={cy} r={r * 0.55} fill="white" />
-      </svg>
-    );
-  }
-
-  // Filter out zero-value segments
+  if (total === 0) return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={sw} />
+      <circle cx={cx} cy={cy} r={r * 0.55} fill="white" />
+    </svg>
+  );
   const active = segments.filter(s => s.value > 0);
   let cumPct = 0;
-
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
       {active.map((seg, i) => {
         const pct = seg.value / total;
-        const dash = circ * pct;
-        const gap = circ - dash;
-        // dashoffset positions the start of this segment
+        const dash = circ * pct, gap = circ - dash;
         const offset = circ * (1 - cumPct);
         cumPct += pct;
         return (
-          <circle
-            key={i} cx={cx} cy={cy} r={r}
-            fill="none" stroke={seg.color} strokeWidth={sw}
-            strokeDasharray={`${dash} ${gap}`}
-            strokeDashoffset={offset}
+          <circle key={i} cx={cx} cy={cy} r={r} fill="none" stroke={seg.color} strokeWidth={sw}
+            strokeDasharray={`${dash} ${gap}`} strokeDashoffset={offset}
             transform={`rotate(-90 ${cx} ${cy})`}
             style={{ transition: `stroke-dasharray 0.6s ease ${i * 0.12}s` }}
           />
         );
       })}
-      {/* Hole */}
       <circle cx={cx} cy={cy} r={r * 0.55} fill="white" />
     </svg>
   );
 }
 
-/* ── Animated Bar ──────────────────────────── */
 function Bar({ value, max, color, label }) {
   const [animated, setAnimated] = useState(false);
   useEffect(() => { const t = setTimeout(() => setAnimated(true), 200); return () => clearTimeout(t); }, []);
@@ -73,7 +59,6 @@ function Bar({ value, max, color, label }) {
   );
 }
 
-/* ── Animated Horizontal Bar ─────────────────── */
 function HBar({ label, value, total, color, delay = 0 }) {
   const [pct, setPct] = useState(0);
   useEffect(() => {
@@ -91,6 +76,44 @@ function HBar({ label, value, total, color, delay = 0 }) {
       </div>
       <div style={{ height: 8, background: 'var(--bg3)', borderRadius: 99, overflow: 'hidden' }}>
         <div style={{ width: pct + '%', height: '100%', background: color, borderRadius: 99, transition: 'width 0.9s cubic-bezier(.22,.68,0,1)' }} />
+      </div>
+    </div>
+  );
+}
+
+/* ── Floating Orb ─────────────────────────── */
+function FloatOrb({ size, top, left, color, delay = 0, blur = 60 }) {
+  return (
+    <div style={{
+      position: 'absolute', top, left,
+      width: size, height: size, borderRadius: '50%',
+      background: color, filter: `blur(${blur}px)`,
+      opacity: 0.45, pointerEvents: 'none',
+      animation: `orbFloat 8s ease-in-out ${delay}s infinite`,
+    }} />
+  );
+}
+
+/* ── Floating Stat Card ──────────────────── */
+function FloatCard({ value, label, icon, color, bg, delay = 0 }) {
+  return (
+    <div style={{
+      background: 'rgba(255,255,255,0.12)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      border: '1px solid rgba(255,255,255,0.25)',
+      borderRadius: 16, padding: '16px 20px',
+      display: 'flex', alignItems: 'center', gap: 14,
+      animation: `heroFloat 6s ease-in-out ${delay}s infinite`,
+      boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+      minWidth: 160,
+    }}>
+      <div style={{ width: 40, height: 40, borderRadius: 10, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+        {icon}
+      </div>
+      <div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: 'white', lineHeight: 1, fontFamily: "'Plus Jakarta Sans',sans-serif" }}>{value}</div>
+        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', fontWeight: 500, marginTop: 2 }}>{label}</div>
       </div>
     </div>
   );
@@ -142,53 +165,132 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* ── Full-height Hero (NO background upload button here) ── */}
+      <style>{`
+        @keyframes heroFloat {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          33%       { transform: translateY(-10px) rotate(0.5deg); }
+          66%       { transform: translateY(-5px) rotate(-0.3deg); }
+        }
+        @keyframes orbFloat {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50%       { transform: translateY(-30px) scale(1.05); }
+        }
+        @keyframes heroTitle {
+          from { opacity: 0; transform: translateY(30px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes heroBadge {
+          from { opacity: 0; transform: scale(0.8) translateY(10px); }
+          to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes glowPulse {
+          0%, 100% { opacity: 0.6; }
+          50%       { opacity: 1; }
+        }
+        @keyframes scrollBounce {
+          0%, 100% { transform: translateX(-50%) translateY(0); }
+          50%       { transform: translateX(-50%) translateY(6px); }
+        }
+        .hero-card-1 { animation: heroFloat 7s ease-in-out 0s infinite; }
+        .hero-card-2 { animation: heroFloat 7s ease-in-out 0.8s infinite; }
+        .hero-card-3 { animation: heroFloat 7s ease-in-out 1.6s infinite; }
+        @media (max-width: 768px) { [data-wide="true"] { grid-column: span 1 !important; } }
+        @media (max-width: 900px) { .hero-cards { display: none !important; } }
+      `}</style>
+
+      {/* ── HERO ── */}
       <div style={{
         position: 'relative',
         height: 'calc(100vh - var(--nav-h))',
-        minHeight: 500,
+        minHeight: 560,
+        overflow: 'hidden',
         background: bgUrl
           ? `url(${bgUrl}) center/cover no-repeat`
-          : 'linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #4c1d95 60%, #1e1b4b 100%)',
+          : 'linear-gradient(145deg, #0f0c29 0%, #1a1050 25%, #302b63 55%, #1c1260 80%, #0f0c29 100%)',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
       }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(15,23,42,0.25) 0%, rgba(15,23,42,0.6) 100%)' }} />
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.06, backgroundImage: 'linear-gradient(white 1px,transparent 1px),linear-gradient(90deg,white 1px,transparent 1px)', backgroundSize: '48px 48px' }} />
+        {/* Dark overlay */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,8,40,0.3) 0%, rgba(10,8,40,0.65) 100%)' }} />
 
-        <div className="fade-up" style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '0 20px', maxWidth: 700 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginBottom: 16 }}>
-            Apex Legends Inventory
+        {/* Animated orbs */}
+        <FloatOrb size={380} top="-80px" left="-80px" color="#7c3aed" delay={0} blur={90} />
+        <FloatOrb size={300} top="20%" left="70%" color="#4f46e5" delay={2} blur={80} />
+        <FloatOrb size={250} top="60%" left="10%" color="#06b6d4" delay={4} blur={70} />
+        <FloatOrb size={200} top="70%" left="80%" color="#8b5cf6" delay={1} blur={60} />
+
+        {/* Subtle grid */}
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'linear-gradient(rgba(255,255,255,0.8) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.8) 1px,transparent 1px)', backgroundSize: '52px 52px' }} />
+
+        {/* Center content */}
+        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: '0 24px', maxWidth: 760 }}>
+          {/* Eyebrow badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            background: 'rgba(79,70,229,0.25)', border: '1px solid rgba(129,140,248,0.4)',
+            borderRadius: 99, padding: '6px 16px', marginBottom: 24,
+            animation: 'heroBadge 0.7s cubic-bezier(.22,.68,0,1.2) 0.1s both',
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#a5b4fc', display: 'inline-block', animation: 'glowPulse 2s ease-in-out infinite' }} />
+            <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)' }}>Apex Legends Inventory</span>
           </div>
+
+          {/* Main heading */}
           <h1 style={{
             fontFamily: "'Plus Jakarta Sans',sans-serif",
-            fontSize: 'clamp(36px,6vw,64px)', fontWeight: 800,
-            color: 'white', lineHeight: 1.1, letterSpacing: '-1px',
-            textShadow: '0 4px 30px rgba(0,0,0,0.4)', marginBottom: 16,
+            fontSize: 'clamp(38px,6.5vw,72px)', fontWeight: 800,
+            color: 'white', lineHeight: 1.05, letterSpacing: '-1.5px',
+            textShadow: '0 4px 40px rgba(0,0,0,0.5)',
+            marginBottom: 18,
+            animation: 'heroTitle 0.8s cubic-bezier(.22,.68,0,1.1) 0.2s both',
           }}>
             Welcome back,<br />
-            <span style={{ background: 'linear-gradient(90deg,#a5b4fc,#c4b5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <span style={{ background: 'linear-gradient(90deg,#a5b4fc 0%,#c4b5fd 40%,#67e8f9 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               {user?.username?.toUpperCase() || 'ADMIN'}
             </span>
           </h1>
-          <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 16, marginBottom: 0 }}>
-            {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+
+          <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 15.5, marginBottom: 0, animation: 'heroTitle 0.8s cubic-bezier(.22,.68,0,1.1) 0.35s both' }}>
+            {new Date().toLocaleDateString('en-PK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
 
+        {/* Floating stat cards */}
+        <div className="hero-cards" style={{
+          position: 'absolute', bottom: 48, left: '50%', transform: 'translateX(-50%)',
+          display: 'flex', gap: 16, zIndex: 3, flexWrap: 'nowrap',
+        }}>
+          <div className="hero-card-1">
+            <FloatCard value={stats.total || 0} label="Total Accounts" icon="🎮" color="#a5b4fc" bg="rgba(79,70,229,0.3)" />
+          </div>
+          <div className="hero-card-2">
+            <FloatCard value={stats.unbanned || 0} label="Unbanned" icon="✅" color="#6ee7b7" bg="rgba(5,150,105,0.3)" delay={0.8} />
+          </div>
+          <div className="hero-card-3">
+            <FloatCard value={stats.unsold || 0} label="Available" icon="🏪" color="#fcd34d" bg="rgba(217,119,6,0.3)" delay={1.6} />
+          </div>
+        </div>
+
         {/* Scroll indicator */}
-        <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, opacity: 0.5 }}>
-          <span style={{ fontSize: 11, color: 'white', letterSpacing: 2, textTransform: 'uppercase' }}>Scroll</span>
-          <div style={{ width: 1, height: 40, background: 'linear-gradient(180deg,white,transparent)' }} />
+        <div style={{ position: 'absolute', bottom: 20, left: '50%', animation: 'scrollBounce 2s ease-in-out infinite', zIndex: 2 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, opacity: 0.4 }}>
+            <span style={{ fontSize: 10, color: 'white', letterSpacing: 2, textTransform: 'uppercase' }}>Scroll</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
         </div>
       </div>
 
-      {/* ── Dashboard Content ─────────────────── */}
-      <div style={{ padding: '40px 24px 60px', maxWidth: 1200, margin: '0 auto' }}>
+      {/* ── Dashboard Content ── */}
+      <div style={{ padding: '48px 24px 60px', maxWidth: 1200, margin: '0 auto' }}>
 
         {/* Stat Cards */}
         <div style={{ marginBottom: 10 }}>
-          <h2 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 20, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Overview</h2>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 6 }}>
+            <h2 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 20, fontWeight: 800, color: 'var(--text)' }}>Overview</h2>
+            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          </div>
           <p style={{ color: 'var(--text3)', fontSize: 13, marginBottom: 20 }}>Account inventory at a glance</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(148px,1fr))', gap: 14 }}>
             {statCards.map(s => <StatCard key={s.label} {...s} />)}
@@ -196,11 +298,11 @@ export default function HomePage() {
         </div>
 
         {/* Charts */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 18, marginTop: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 18, marginTop: 36 }}>
 
-          {/* Account Status Pie — now always renders */}
+          {/* Ban Status Pie */}
           <div className="card fade-up d2" style={{ padding: '22px 24px' }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text3)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 20 }}>Account Status</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 20 }}>Ban Status</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
               <PieChart segments={pieSegments} size={140} />
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -217,7 +319,7 @@ export default function HomePage() {
 
           {/* Sales Pie */}
           <div className="card fade-up d3" style={{ padding: '22px 24px' }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text3)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 20 }}>Sales Status</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 20 }}>Sales Status</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
               <div style={{ position: 'relative', flexShrink: 0 }}>
                 <PieChart segments={salesSegments} size={140} />
@@ -247,7 +349,7 @@ export default function HomePage() {
 
           {/* Bar Chart */}
           <div className="card fade-up d4" style={{ padding: '22px 24px' }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text3)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Status Distribution</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 8 }}>Status Distribution</div>
             <div style={{ borderTop: '1px solid var(--border)', marginBottom: 16 }} />
             <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
               <Bar value={stats.unbanned || 0} max={statusMax} color="#059669" label="Unbanned" />
@@ -258,7 +360,7 @@ export default function HomePage() {
 
           {/* Level Distribution */}
           <div className="card fade-up d5" style={{ padding: '22px 24px' }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text3)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 20 }}>Level Distribution</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 20 }}>Level Distribution</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {levelDist.map((r, i) => (
                 <HBar key={r.label} label={`Level ${r.label}`} value={r.count} total={totalLevels} color="var(--primary)" delay={i * 80} />
@@ -268,7 +370,7 @@ export default function HomePage() {
 
           {/* 7-Day Activity */}
           <div className="card fade-up d6" style={{ padding: '22px 24px', gridColumn: 'span 2' }} data-wide="true">
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text3)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Activity — Last 7 Days</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 8 }}>Activity — Last 7 Days</div>
             <div style={{ borderTop: '1px solid var(--border)', marginBottom: 20 }} />
             <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end', height: 120 }}>
               {recent.map((d, i) => {
@@ -296,10 +398,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 768px) { [data-wide="true"] { grid-column: span 1 !important; } }
-      `}</style>
     </div>
   );
 }
