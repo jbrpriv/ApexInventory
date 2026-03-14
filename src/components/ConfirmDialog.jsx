@@ -7,84 +7,66 @@ export default function ConfirmDialog({ title, message, onConfirm, onCancel, con
     return () => { document.body.style.overflow = ''; };
   }, []);
 
+  const accentColor = danger ? 'var(--danger)' : 'var(--neon)';
+  const accentDim   = danger ? 'var(--danger-dim)' : 'var(--neon-dim)';
+
   const modal = (
-    <div
-      onClick={onCancel}
-      style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        background: 'rgba(10,14,30,0.6)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: 20, boxSizing: 'border-box',
-      }}
-    >
-      <div
-        onClick={e => e.stopPropagation()}
-        style={{
-          background: '#ffffff', borderRadius: 20,
-          width: '100%', maxWidth: 400,
-          boxShadow: '0 24px 80px rgba(0,0,0,0.35)',
-          overflow: 'hidden',
-          animation: 'modalIn 0.25s cubic-bezier(0.22,0.68,0,1.2) both',
-        }}
-      >
-        {/* Icon + text */}
+    <div onClick={onCancel} style={{
+      position: 'fixed', inset: 0, zIndex: 9999,
+      background: 'rgba(4,6,12,0.85)',
+      backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 20,
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        background: 'var(--card)',
+        border: `1px solid ${accentColor}44`,
+        borderRadius: 16, width: '100%', maxWidth: 380,
+        overflow: 'hidden',
+        boxShadow: `var(--sh-card), 0 0 60px ${accentDim}`,
+        animation: 'scaleIn 0.25s cubic-bezier(0.22,0.68,0,1.2) both',
+      }}>
+        {/* Top accent line */}
+        <div style={{ height: 2, background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)` }} />
         <div style={{ padding: '32px 28px 22px', textAlign: 'center' }}>
           <div style={{
-            width: 60, height: 60, borderRadius: '50%',
-            background: danger ? '#fef2f2' : '#eef2ff',
-            border: '2px solid ' + (danger ? '#fca5a5' : '#a5b4fc'),
+            width: 56, height: 56, borderRadius: '50%',
+            background: accentDim, border: `1.5px solid ${accentColor}55`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 18px', fontSize: 24,
+            margin: '0 auto 18px', fontSize: 22,
+            boxShadow: `0 0 20px ${accentDim}`,
           }}>
             {danger ? '🗑' : '?'}
           </div>
           <div style={{
-            fontFamily: "'Plus Jakarta Sans',sans-serif",
-            fontWeight: 800, fontSize: 18, color: '#0f172a', marginBottom: 10,
+            fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18,
+            color: 'var(--text)', marginBottom: 10, letterSpacing: 0.5,
           }}>{title}</div>
-          <div style={{ fontSize: 14, color: '#64748b', lineHeight: 1.65 }}>{message}</div>
+          <div style={{ fontSize: 13.5, color: 'var(--text2)', lineHeight: 1.65 }}>{message}</div>
         </div>
-
-        {/* Buttons */}
         <div style={{ padding: '0 28px 28px', display: 'flex', gap: 10 }}>
-          <button
-            onClick={onCancel}
-            style={{
-              flex: 1, padding: '12px', borderRadius: 9, fontSize: 14, fontWeight: 600,
-              background: '#f8fafc', border: '1.5px solid #e2e8f0', color: '#64748b',
-              cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = '#94a3b8'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = '#e2e8f0'; }}
+          <button onClick={onCancel} style={{
+            flex: 1, padding: '11px', borderRadius: 8, fontSize: 13, fontWeight: 600,
+            fontFamily: 'var(--font-display)', letterSpacing: 0.8, textTransform: 'uppercase',
+            background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-md)', color: 'var(--text2)',
+            cursor: 'pointer', transition: 'all 0.15s',
+          }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--silver)'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-md)'}
           >Cancel</button>
-
-          <button
-            onClick={onConfirm}
-            style={{
-              flex: 1, padding: '12px', borderRadius: 9, fontSize: 14, fontWeight: 700,
-              background: danger
-                ? 'linear-gradient(135deg, #dc2626, #ef4444)'
-                : 'linear-gradient(135deg, #4f46e5, #6366f1)',
-              color: 'white', border: 'none', cursor: 'pointer',
-              boxShadow: danger
-                ? '0 4px 14px rgba(220,38,38,0.35)'
-                : '0 4px 14px rgba(79,70,229,0.35)',
-              transition: 'all 0.18s', fontFamily: 'inherit',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; }}
+          <button onClick={onConfirm} style={{
+            flex: 1, padding: '11px', borderRadius: 8, fontSize: 13, fontWeight: 700,
+            fontFamily: 'var(--font-display)', letterSpacing: 0.8, textTransform: 'uppercase',
+            background: accentDim, border: `1px solid ${accentColor}55`, color: accentColor,
+            cursor: 'pointer', transition: 'all 0.2s',
+            boxShadow: `0 0 16px ${accentDim}`,
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background = `${accentColor}22`; e.currentTarget.style.boxShadow = `0 0 30px ${accentDim}`; }}
+            onMouseLeave={e => { e.currentTarget.style.background = accentDim; e.currentTarget.style.boxShadow = `0 0 16px ${accentDim}`; }}
           >{confirmLabel}</button>
         </div>
       </div>
-
-      <style>{`
-        @keyframes modalIn {
-          from { opacity: 0; transform: scale(0.93) translateY(10px); }
-          to   { opacity: 1; transform: scale(1)    translateY(0); }
-        }
-      `}</style>
+      <style>{`@keyframes scaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}`}</style>
     </div>
   );
 
