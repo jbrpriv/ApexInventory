@@ -167,7 +167,7 @@ export default function AccountsPage() {
   const tabAccent = { view: '#4F46E5', add: '#059669', edit: '#0284C7', remove: '#E11D48' };
 
   return (
-    <div className="fade-in" style={{ minHeight: '100vh', padding: '28px 20px', maxWidth: 1440, margin: '0 auto' }}>
+    <div className="fade-in" style={{ minHeight: '100vh', padding: '28px 20px', maxWidth: 1800, margin: '0 auto' }}>
 
       {/* Header */}
       <div style={{ marginBottom: 24, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
