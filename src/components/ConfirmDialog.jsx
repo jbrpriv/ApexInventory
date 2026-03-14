@@ -2,73 +2,31 @@ import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 export default function ConfirmDialog({ title, message, onConfirm, onCancel, confirmLabel = 'Delete', danger = true }) {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
-  }, []);
+  useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ''; }; }, []);
 
-  const accentColor = danger ? 'var(--danger)' : 'var(--neon)';
-  const accentDim   = danger ? 'var(--danger-dim)' : 'var(--neon-dim)';
-
-  const modal = (
-    <div onClick={onCancel} style={{
-      position: 'fixed', inset: 0, zIndex: 9999,
-      background: 'rgba(4,6,12,0.85)',
-      backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: 20,
-    }}>
-      <div onClick={e => e.stopPropagation()} style={{
-        background: 'var(--card)',
-        border: `1px solid ${accentColor}44`,
-        borderRadius: 16, width: '100%', maxWidth: 380,
-        overflow: 'hidden',
-        boxShadow: `var(--sh-card), 0 0 60px ${accentDim}`,
-        animation: 'scaleIn 0.25s cubic-bezier(0.22,0.68,0,1.2) both',
-      }}>
-        {/* Top accent line */}
-        <div style={{ height: 2, background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)` }} />
-        <div style={{ padding: '32px 28px 22px', textAlign: 'center' }}>
-          <div style={{
-            width: 56, height: 56, borderRadius: '50%',
-            background: accentDim, border: `1.5px solid ${accentColor}55`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 18px', fontSize: 22,
-            boxShadow: `0 0 20px ${accentDim}`,
-          }}>
+  return ReactDOM.createPortal(
+    <div onClick={onCancel} style={{ position:'fixed', inset:0, zIndex:9999, background:'rgba(0,0,0,0.3)', backdropFilter:'blur(6px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
+      <div onClick={e=>e.stopPropagation()} style={{ background:'white', borderRadius:18, width:'100%', maxWidth:380, overflow:'hidden', boxShadow:'var(--sh-xl)', animation:'scaleIn 0.22s cubic-bezier(.22,.68,0,1.2) both' }}>
+        <div style={{ height:3, background: danger ? 'linear-gradient(90deg,#E11D48,#F43F5E)' : 'linear-gradient(90deg,#4F46E5,#818CF8)' }} />
+        <div style={{ padding:'28px 26px 20px', textAlign:'center' }}>
+          <div style={{ width:52, height:52, borderRadius:'50%', background: danger?'#FFF1F2':'var(--primary-pale)', border:`1.5px solid ${danger?'#FECACA':'var(--primary-light)'}`, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px', fontSize:20 }}>
             {danger ? '🗑' : '?'}
           </div>
-          <div style={{
-            fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18,
-            color: 'var(--text)', marginBottom: 10, letterSpacing: 0.5,
-          }}>{title}</div>
-          <div style={{ fontSize: 13.5, color: 'var(--text2)', lineHeight: 1.65 }}>{message}</div>
+          <div style={{ fontFamily:'var(--font-display)', fontWeight:700, fontSize:17, color:'var(--text)', marginBottom:8 }}>{title}</div>
+          <div style={{ fontSize:14, color:'var(--text3)', lineHeight:1.65 }}>{message}</div>
         </div>
-        <div style={{ padding: '0 28px 28px', display: 'flex', gap: 10 }}>
-          <button onClick={onCancel} style={{
-            flex: 1, padding: '11px', borderRadius: 8, fontSize: 13, fontWeight: 600,
-            fontFamily: 'var(--font-display)', letterSpacing: 0.8, textTransform: 'uppercase',
-            background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-md)', color: 'var(--text2)',
-            cursor: 'pointer', transition: 'all 0.15s',
-          }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--silver)'}
-            onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-md)'}
+        <div style={{ padding:'0 26px 26px', display:'flex', gap:10 }}>
+          <button onClick={onCancel} style={{ flex:1, padding:'11px', borderRadius:9, fontSize:14, fontWeight:600, background:'var(--surface2)', border:'1px solid var(--border)', color:'var(--text2)', cursor:'pointer', transition:'all 0.15s' }}
+            onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-md)'}
+            onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}
           >Cancel</button>
-          <button onClick={onConfirm} style={{
-            flex: 1, padding: '11px', borderRadius: 8, fontSize: 13, fontWeight: 700,
-            fontFamily: 'var(--font-display)', letterSpacing: 0.8, textTransform: 'uppercase',
-            background: accentDim, border: `1px solid ${accentColor}55`, color: accentColor,
-            cursor: 'pointer', transition: 'all 0.2s',
-            boxShadow: `0 0 16px ${accentDim}`,
-          }}
-            onMouseEnter={e => { e.currentTarget.style.background = `${accentColor}22`; e.currentTarget.style.boxShadow = `0 0 30px ${accentDim}`; }}
-            onMouseLeave={e => { e.currentTarget.style.background = accentDim; e.currentTarget.style.boxShadow = `0 0 16px ${accentDim}`; }}
+          <button onClick={onConfirm} style={{ flex:1, padding:'11px', borderRadius:9, fontSize:14, fontWeight:700, background: danger?'#E11D48':'var(--primary)', border:'none', color:'white', cursor:'pointer', transition:'all 0.2s', boxShadow: danger?'0 2px 8px rgba(225,29,72,0.3)':'0 2px 8px rgba(79,70,229,0.3)' }}
+            onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-1px)';e.currentTarget.style.filter='brightness(1.05)';}}
+            onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.filter='';}}
           >{confirmLabel}</button>
         </div>
       </div>
-      <style>{`@keyframes scaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}`}</style>
-    </div>
+    </div>,
+    document.body
   );
-
-  return ReactDOM.createPortal(modal, document.body);
 }
