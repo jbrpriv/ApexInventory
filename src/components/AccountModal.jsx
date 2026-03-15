@@ -59,7 +59,6 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
     </button>
   );
 
-  // Rank tier colors for the picker buttons
   const TIER_BTN = {
     Unranked: { sel:'#6B7280', selBg:'#F3F4F6',  selBorder:'#D1D5DB' },
     Bronze:   { sel:'#92400E', selBg:'#FEF3C7',  selBorder:'#FCD34D' },
@@ -72,9 +71,35 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
   };
 
   const modal = (
-    <div style={{ position:'fixed', inset:0, zIndex:9999, background:'rgba(0,0,0,0.35)', backdropFilter:'blur(8px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
-      <div onClick={e=>e.stopPropagation()} style={{ background:'white', borderRadius:20, width:'100%', maxWidth:580, maxHeight:'92vh', overflowY:'auto', boxShadow:'var(--sh-xl)', animation:'modalIn 0.25s cubic-bezier(.22,.68,0,1.2) both' }}>
-
+    /*
+      KEY CHANGE from original:
+      - Outer div uses className="modal-overlay" — this lets mobile.css change
+        align-items to flex-end (bottom sheet) on small screens.
+        We removed alignItems from the inline style so the CSS class can control it.
+      - Inner div uses className="modal-box" — mobile.css gives it
+        border-radius: 24px 24px 0 0 and full width on mobile.
+    */
+    <div
+      className="modal-overlay"
+      style={{
+        position:'fixed', inset:0, zIndex:9999,
+        background:'rgba(0,0,0,0.35)', backdropFilter:'blur(8px)',
+        display:'flex',
+        /* alignItems intentionally removed from inline style — mobile.css sets it */
+        justifyContent:'center', padding:20,
+      }}
+    >
+      <div
+        className="modal-box"
+        onClick={e=>e.stopPropagation()}
+        style={{
+          background:'white', borderRadius:20,
+          width:'100%', maxWidth:580, maxHeight:'92vh',
+          overflowY:'auto',
+          boxShadow:'var(--sh-xl)',
+          animation:'modalIn 0.25s cubic-bezier(.22,.68,0,1.2) both',
+        }}
+      >
         {/* Header */}
         <div style={{ padding:'22px 24px 18px', borderBottom:'1px solid #F3F4F6', position:'sticky', top:0, background:'white', zIndex:1, borderRadius:'20px 20px 0 0' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
@@ -86,7 +111,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
                 {isView?'View credentials & info':isAdd?'Fill in account information':'Update account information'}
               </div>
             </div>
-            <button type="button" onClick={onClose} style={{ width:32, height:32, borderRadius:7, background:'#F3F4F6', border:'1px solid #E5E7EB', color:'#9CA3AF', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s' }}
+            <button type="button" onClick={onClose} style={{ width:32, height:32, borderRadius:7, background:'#F3F4F6', border:'1px solid #E5E7EB', color:'#9CA3AF', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s', minHeight:'auto', minWidth:'auto' }}
               onMouseEnter={e=>{e.currentTarget.style.background='#FFF1F2';e.currentTarget.style.color='#E11D48';e.currentTarget.style.borderColor='#FECACA';}}
               onMouseLeave={e=>{e.currentTarget.style.background='#F3F4F6';e.currentTarget.style.color='#9CA3AF';e.currentTarget.style.borderColor='#E5E7EB';}}
             >✕</button>
@@ -98,15 +123,9 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
                 {isBanned?<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>:<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
                 {isBanned?'Banned':'Unbanned'}
               </span>
-              <span style={{ padding:'3px 11px', borderRadius:99, fontSize:12, fontWeight:600, background:form.salesStatus==='Sold'?'#FFFBEB':'#F8FAFC', color:form.salesStatus==='Sold'?'#D97706':'#475569', border:`1px solid ${form.salesStatus==='Sold'?'#FCD34D':'#E2E8F0'}` }}>
-                {form.salesStatus}
-              </span>
-              <span style={{ padding:'3px 11px', borderRadius:99, fontSize:12, fontWeight:600, background:'var(--primary-pale)', color:'var(--primary)', border:'1px solid #C7D2FE' }}>
-                Level {form.accountLevel}
-              </span>
-              <span style={{ padding:'3px 11px', borderRadius:99, fontSize:12, fontWeight:600, background:form.rfrBought?'#FFFBEB':'#ECFDF5', color:form.rfrBought?'#92400E':'#065F46', border:`1px solid ${form.rfrBought?'#FCD34D':'#6EE7B7'}` }}>
-                {form.rfrBought?'💰 RFR Bought':'🎮 Made It'}
-              </span>
+              <span style={{ padding:'3px 11px', borderRadius:99, fontSize:12, fontWeight:600, background:form.salesStatus==='Sold'?'#FFFBEB':'#F8FAFC', color:form.salesStatus==='Sold'?'#D97706':'#475569', border:`1px solid ${form.salesStatus==='Sold'?'#FCD34D':'#E2E8F0'}` }}>{form.salesStatus}</span>
+              <span style={{ padding:'3px 11px', borderRadius:99, fontSize:12, fontWeight:600, background:'var(--primary-pale)', color:'var(--primary)', border:'1px solid #C7D2FE' }}>Level {form.accountLevel}</span>
+              <span style={{ padding:'3px 11px', borderRadius:99, fontSize:12, fontWeight:600, background:form.rfrBought?'#FFFBEB':'#ECFDF5', color:form.rfrBought?'#92400E':'#065F46', border:`1px solid ${form.rfrBought?'#FCD34D':'#6EE7B7'}` }}>{form.rfrBought?'💰 RFR Bought':'🎮 Made It'}</span>
               <RankBadge rank={form.rank} />
             </div>
           )}
@@ -115,15 +134,11 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
         {/* Body */}
         <div style={{ padding:'20px 24px', display:'flex', flexDirection:'column', gap:16 }}>
 
-          {/* BAN STATUS */}
           {!isView && (
             <div>
               <label style={lbl}>Ban Status</label>
               <div style={{ display:'flex', gap:10 }}>
-                {[
-                  {val:'Unbanned',icon:'✅',label:'Unbanned',col:'#059669',bg:'#ECFDF5',border:'#6EE7B7'},
-                  {val:'Banned',  icon:'🚫',label:'Banned',  col:'#E11D48',bg:'#FFF1F2',border:'#FECACA'},
-                ].map(opt=>{
+                {[{val:'Unbanned',icon:'✅',label:'Unbanned',col:'#059669',bg:'#ECFDF5',border:'#6EE7B7'},{val:'Banned',icon:'🚫',label:'Banned',col:'#E11D48',bg:'#FFF1F2',border:'#FECACA'}].map(opt=>{
                   const active=form.accountStatus===opt.val;
                   return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,accountStatus:opt.val}))} style={{ flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'#E5E7EB'}`,background:active?opt.bg:'#FAFAFA',cursor:'pointer',transition:'all 0.18s',boxShadow:active?'var(--sh-sm)':'none' }}>
                     <div style={{fontSize:18,marginBottom:4}}>{opt.icon}</div>
@@ -134,15 +149,11 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             </div>
           )}
 
-          {/* SALES */}
           {!isView && (
             <div>
               <label style={lbl}>Sales Status</label>
               <div style={{display:'flex',gap:10}}>
-                {[
-                  {val:'Unsold',icon:'🏪',label:'Unsold',col:'#475569',bg:'#F8FAFC',border:'#CBD5E1'},
-                  {val:'Sold',  icon:'💰',label:'Sold',  col:'#D97706',bg:'#FFFBEB',border:'#FCD34D'},
-                ].map(opt=>{
+                {[{val:'Unsold',icon:'🏪',label:'Unsold',col:'#475569',bg:'#F8FAFC',border:'#CBD5E1'},{val:'Sold',icon:'💰',label:'Sold',col:'#D97706',bg:'#FFFBEB',border:'#FCD34D'}].map(opt=>{
                   const active=form.salesStatus===opt.val;
                   return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,salesStatus:opt.val}))} style={{flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'#E5E7EB'}`,background:active?opt.bg:'#FAFAFA',cursor:'pointer',transition:'all 0.18s',boxShadow:active?'var(--sh-sm)':'none'}}>
                     <div style={{fontSize:18,marginBottom:4}}>{opt.icon}</div>
@@ -153,7 +164,6 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             </div>
           )}
 
-          {/* EMAIL */}
           <div>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
               <label style={{...lbl,marginBottom:0}}>Email {!isView&&<span style={{color:'#E11D48'}}>*</span>}</label>
@@ -163,7 +173,6 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               :<input type="email" value={form.accountEmail} onChange={set('accountEmail')} placeholder="email@example.com" style={inp} onFocus={fi} onBlur={fo}/>}
           </div>
 
-          {/* PASSWORD */}
           <div>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
               <label style={{...lbl,marginBottom:0}}>Password {!isView&&<span style={{color:'#E11D48'}}>*</span>}</label>
@@ -173,7 +182,6 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               :<input type={showPw?'text':'password'} value={form.accountPassword} onChange={set('accountPassword')} placeholder="Account password" style={inp} onFocus={fi} onBlur={fo}/>}
           </div>
 
-          {/* ADDITIONAL PASSWORD */}
           <div>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
               <label style={{...lbl,marginBottom:0}}>Additional Password <span style={{fontSize:10,color:'#9CA3AF',fontWeight:400,textTransform:'none',letterSpacing:0}}>(optional)</span></label>
@@ -186,7 +194,6 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               :<input type={showAddPw?'text':'password'} value={form.additionalAccountPassword} onChange={set('additionalAccountPassword')} placeholder="Optional" style={inp} onFocus={fi} onBlur={fo}/>}
           </div>
 
-          {/* RECOVERY + LEVEL */}
           <div style={{display:'grid',gridTemplateColumns:'1fr 100px',gap:12}}>
             <div>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
@@ -203,7 +210,6 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             </div>
           </div>
 
-          {/* RANK PICKER */}
           <div>
             <label style={lbl}>Rank</label>
             {isView
@@ -219,7 +225,6 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             }
           </div>
 
-          {/* LV20 ORIGIN */}
           <div>
             <label style={lbl}>Level 20 Origin</label>
             {isView
@@ -231,10 +236,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
                   </div>
                 </div>
               : <div style={{display:'flex',gap:10}}>
-                  {[
-                    {val:false,icon:'🎮',label:'Made It Myself',sub:'Natural gameplay',col:'#065F46',bg:'#F0FDF4',border:'#86EFAC'},
-                    {val:true, icon:'💰',label:'RFR Bought',    sub:'Purchased/boosted',col:'#92400E',bg:'#FFFBEB',border:'#FCD34D'},
-                  ].map(opt=>{
+                  {[{val:false,icon:'🎮',label:'Made It Myself',sub:'Natural gameplay',col:'#065F46',bg:'#F0FDF4',border:'#86EFAC'},{val:true,icon:'💰',label:'RFR Bought',sub:'Purchased/boosted',col:'#92400E',bg:'#FFFBEB',border:'#FCD34D'}].map(opt=>{
                     const sel=form.rfrBought===opt.val;
                     return <button key={String(opt.val)} type="button" onClick={()=>setForm(f=>({...f,rfrBought:opt.val}))} style={{flex:1,padding:'12px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${sel?opt.border:'#E5E7EB'}`,background:sel?opt.bg:'#FAFAFA',cursor:'pointer',transition:'all 0.18s',boxShadow:sel?'var(--sh-sm)':'none'}}>
                       <div style={{fontSize:18,marginBottom:4}}>{opt.icon}</div>
@@ -246,7 +248,6 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             }
           </div>
 
-          {/* PRICE + NOTES */}
           <div style={{display:'grid',gridTemplateColumns:'140px 1fr',gap:12}}>
             <div>
               <label style={lbl}>Price (Rs)</label>
@@ -260,10 +261,9 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             </div>
           </div>
 
-          {/* APEX SYNC */}
           <div style={{borderTop:'1px solid #F3F4F6',paddingTop:16}}>
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
-              <div style={{width:3,height:14,background:'var(--primary)',borderRadius:2}} />
+              <div style={{width:3,height:14,background:'var(--primary)',borderRadius:2}}/>
               <span style={lbl}>Apex Sync</span>
               <span style={{fontSize:11.5,color:'var(--text3)',fontWeight:400,textTransform:'none',letterSpacing:0}}>Used for auto level & rank updates</span>
             </div>
@@ -288,7 +288,6 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
 
           {isView&&account?.createdAt&&<div style={{padding:'8px 12px',background:'#F9FAFB',borderRadius:7,fontSize:12,color:'var(--text3)',border:'1px solid #F3F4F6'}}>Added {new Date(account.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>}
 
-          {/* FOOTER */}
           {isView&&<button type="button" onClick={onClose} style={{width:'100%',padding:'12px',borderRadius:9,fontSize:14,fontWeight:600,background:'var(--primary)',border:'none',color:'white',cursor:'pointer',boxShadow:'0 2px 8px rgba(79,70,229,0.3)',transition:'all 0.18s'}} onMouseEnter={e=>{e.currentTarget.style.background='var(--primary-h)';e.currentTarget.style.transform='translateY(-1px)';}} onMouseLeave={e=>{e.currentTarget.style.background='var(--primary)';e.currentTarget.style.transform='';}}>Close</button>}
 
           {!isView&&<div style={{display:'flex',gap:10,paddingTop:4}}>
@@ -301,7 +300,20 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
           </div>}
         </div>
       </div>
-      <style>{`@keyframes modalIn{from{opacity:0;transform:scale(0.94) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}} @keyframes spin{to{transform:rotate(360deg)}}`}</style>
+      <style>{`
+        @keyframes modalIn{from{opacity:0;transform:scale(0.94) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        /* Mobile: overlay becomes a bottom-sheet container */
+        @media (max-width: 767px) {
+          .modal-overlay { align-items: flex-end !important; padding: 0 !important; }
+          .modal-box {
+            border-radius: 24px 24px 0 0 !important;
+            max-height: 92vh !important;
+            max-width: 100% !important;
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px) !important;
+          }
+        }
+      `}</style>
     </div>
   );
 

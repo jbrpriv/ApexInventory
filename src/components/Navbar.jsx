@@ -1,8 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
 
-const LINKS = [
+/* ── Inline SVG icons ─────────────────────────────────────────────────────── */
+const NavIcon = ({ name, size = 22 }) => {
+  const paths = {
+    home: (
+      <>
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </>
+    ),
+    accounts: (
+      <>
+        <rect x="2" y="5" width="20" height="14" rx="2" />
+        <line x1="2" y1="10" x2="22" y2="10" />
+      </>
+    ),
+    stats: (
+      <>
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
+      </>
+    ),
+    export: (
+      <>
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" y1="15" x2="12" y2="3" />
+      </>
+    ),
+    profile: (
+      <>
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </>
+    ),
+    about: (
+      <>
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </>
+    ),
+  };
+
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor"
+      strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"
+    >
+      {paths[name]}
+    </svg>
+  );
+};
+
+/* ── Tab config ───────────────────────────────────────────────────────────── */
+const BOTTOM_TABS = [
+  { to: '/',         label: 'Home',     icon: 'home',     end: true  },
+  { to: '/accounts', label: 'Accounts', icon: 'accounts', end: false },
+  { to: '/stats',    label: 'Stats',    icon: 'stats',    end: false },
+  { to: '/export',   label: 'Export',   icon: 'export',   end: false },
+  { to: '/profile',  label: 'Profile',  icon: 'profile',  end: false },
+];
+
+const ALL_LINKS = [
   { to: '/',         label: 'Home',    end: true  },
   { to: '/accounts', label: 'Accounts',end: false },
   { to: '/stats',    label: 'Stats',   end: false },
@@ -11,25 +76,30 @@ const LINKS = [
   { to: '/profile',  label: 'Profile', end: false },
 ];
 
+/* ── Component ────────────────────────────────────────────────────────────── */
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [open, setOpen] = useState(false);
+  const navigate  = useNavigate();
+  const location  = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen]         = useState(false);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
+
   useEffect(() => setOpen(false), [location]);
 
   const initial = (user?.username?.[0] || 'A').toUpperCase();
 
   return (
     <>
-      <nav style={{
+      {/* ══════════════════════════════════════════════════════════════════════
+          DESKTOP — top nav (hidden on mobile via .top-nav CSS class)
+      ══════════════════════════════════════════════════════════════════════ */}
+      <nav className="top-nav" style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 500,
         height: 'var(--nav-h)',
         background: scrolled ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.88)',
@@ -41,55 +111,125 @@ export default function Navbar() {
         transition: 'all 0.25s',
       }}>
         {/* Logo */}
-        <NavLink to="/" style={{ textDecoration:'none', display:'flex', alignItems:'center', gap:10, flexShrink:0, marginRight:8 }}>
-          <div style={{ width:32, height:32, borderRadius:8, background:'linear-gradient(135deg,#4F46E5,#818CF8)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-display)', fontSize:15, fontWeight:700, color:'white', boxShadow:'0 2px 8px rgba(79,70,229,0.3)' }}>A</div>
+        <NavLink to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0, marginRight: 8 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg,#4F46E5,#818CF8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'white', boxShadow: '0 2px 8px rgba(79,70,229,0.3)' }}>A</div>
           <div>
-            <div style={{ fontFamily:'var(--font-display)', fontSize:15, fontWeight:700, color:'var(--text)', letterSpacing:'-0.3px', lineHeight:1 }}>Apex</div>
-            <div style={{ fontSize:8.5, color:'var(--primary-light)', letterSpacing:2, fontWeight:600 }}>MANAGER</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1 }}>Apex</div>
+            <div style={{ fontSize: 8.5, color: 'var(--primary-light)', letterSpacing: 2, fontWeight: 600 }}>MANAGER</div>
           </div>
         </NavLink>
 
-        <div style={{ width:1, height:18, background:'var(--border)', marginRight:4 }} />
+        <div style={{ width: 1, height: 18, background: 'var(--border)', marginRight: 4 }} />
 
-        {/* Desktop links */}
-        <div className="nav-desktop" style={{ display:'flex', gap:2, flex:1 }}>
-          {LINKS.map(l => (
+        {/* Links */}
+        <div style={{ display: 'flex', gap: 2, flex: 1 }}>
+          {ALL_LINKS.map(l => (
             <NavLink key={l.to} to={l.to} end={l.end}
-              className={({isActive}) => `nav-link${isActive?' nav-link-active':''}`}
+              className={({ isActive }) => `nav-link${isActive ? ' nav-link-active' : ''}`}
             >{l.label}</NavLink>
           ))}
         </div>
 
-        {/* User */}
-        <div className="nav-desktop" style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <div style={{ display:'flex', alignItems:'center', gap:8, padding:'5px 12px 5px 5px', background:'var(--surface2)', borderRadius:99, border:'1px solid var(--border)' }}>
-            <div style={{ width:26, height:26, borderRadius:'50%', background:'linear-gradient(135deg,#4F46E5,#818CF8)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'white' }}>{initial}</div>
-            <span style={{ fontSize:13, fontWeight:500, color:'var(--text2)' }}>{user?.username}</span>
+        {/* User + logout */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 12px 5px 5px', background: 'var(--surface2)', borderRadius: 99, border: '1px solid var(--border)' }}>
+            <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg,#4F46E5,#818CF8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: 'white' }}>{initial}</div>
+            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text2)' }}>{user?.username}</span>
           </div>
-          <button onClick={() => { logout(); navigate('/login'); }} style={{ padding:'6px 14px', borderRadius:7, fontSize:12.5, fontWeight:600, background:'#FFF1F2', border:'1px solid #FECACA', color:'#E11D48', cursor:'pointer', transition:'all 0.18s' }}
-            onMouseEnter={e=>{e.currentTarget.style.background='#FFE4E6';}}
-            onMouseLeave={e=>{e.currentTarget.style.background='#FFF1F2';}}
+          <button onClick={() => { logout(); navigate('/login'); }} style={{ padding: '6px 14px', borderRadius: 7, fontSize: 12.5, fontWeight: 600, background: '#FFF1F2', border: '1px solid #FECACA', color: '#E11D48', cursor: 'pointer', transition: 'all 0.18s' }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#FFE4E6'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#FFF1F2'; }}
           >Sign Out</button>
         </div>
 
-        {/* Mobile burger */}
-        <button onClick={()=>setOpen(o=>!o)} className="nav-mobile-btn" style={{ marginLeft:'auto', background:open?'var(--primary-pale)':'var(--surface2)', border:`1px solid ${open?'var(--primary-light)':'var(--border)'}`, color:open?'var(--primary)':'var(--text2)', width:36, height:36, borderRadius:8, display:'none', alignItems:'center', justifyContent:'center', cursor:'pointer', transition:'all 0.18s', fontSize:16 }}>{open?'✕':'☰'}</button>
+        {/* Mobile burger — still in top nav for edge cases, but hidden by CSS */}
+        <button onClick={() => setOpen(o => !o)} className="nav-mobile-btn"
+          style={{ marginLeft: 'auto', background: open ? 'var(--primary-pale)' : 'var(--surface2)', border: `1px solid ${open ? 'var(--primary-light)' : 'var(--border)'}`, color: open ? 'var(--primary)' : 'var(--text2)', width: 36, height: 36, borderRadius: 8, display: 'none', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.18s', fontSize: 16 }}>
+          {open ? '✕' : '☰'}
+        </button>
       </nav>
 
-      {/* Mobile drawer */}
-      {open && (
-        <div className="slide-down" style={{ position:'fixed', top:'var(--nav-h)', left:0, right:0, zIndex:499, background:'rgba(255,255,255,0.97)', borderBottom:'1px solid var(--border)', backdropFilter:'blur(20px)', paddingBottom:8, boxShadow:'var(--sh-md)' }}>
-          {LINKS.map(l=>(
-            <NavLink key={l.to} to={l.to} end={l.end} onClick={()=>setOpen(false)}
-              className={({isActive})=>`nav-mobile-link${isActive?' nav-mobile-link-active':''}`}
-            >{l.label}</NavLink>
+      {/* ══════════════════════════════════════════════════════════════════════
+          MOBILE — bottom tab bar (hidden on desktop via .bottom-nav CSS class)
+          framer-motion layoutId="tab-pill" creates the spring-sliding highlight
+      ══════════════════════════════════════════════════════════════════════ */}
+      <nav className="bottom-nav" style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 500,
+        background: 'rgba(255,255,255,0.94)',
+        backdropFilter: 'blur(24px) saturate(200%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(200%)',
+        borderTop: '0.5px solid rgba(0,0,0,0.1)',
+        boxShadow: '0 -1px 0 rgba(0,0,0,0.04), 0 -6px 30px rgba(0,0,0,0.07)',
+      }}>
+        <style>{`
+          @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .bottom-nav-inner {
+              padding-bottom: calc(env(safe-area-inset-bottom) + 0px);
+            }
+          }
+        `}</style>
+
+        <div className="bottom-nav-inner" style={{ display: 'flex', width: '100%', alignItems: 'stretch' }}>
+          {BOTTOM_TABS.map(tab => (
+            <NavLink
+              key={tab.to}
+              to={tab.to}
+              end={tab.end}
+              className="bottom-tab"
+              style={{ textDecoration: 'none' }}
+            >
+              {({ isActive }) => (
+                <>
+                  {/* Spring-animated pill behind the icon */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="tab-pill"
+                      style={{
+                        position: 'absolute',
+                        top: 7,
+                        left: '50%',
+                        x: '-50%',
+                        width: 40,
+                        height: 34,
+                        borderRadius: 10,
+                        background: 'rgba(79,70,229,0.1)',
+                        zIndex: 0,
+                      }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 380,
+                        damping: 32,
+                      }}
+                    />
+                  )}
+
+                  {/* Icon — bounces up slightly when active */}
+                  <motion.div
+                    className="bottom-tab-icon"
+                    animate={{
+                      scale:  isActive ? 1.08 : 1,
+                      y:      isActive ? -1   : 0,
+                      color:  isActive ? '#4F46E5' : '#9CA3AF',
+                    }}
+                    transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+                    style={{ color: isActive ? '#4F46E5' : '#9CA3AF', position: 'relative', zIndex: 1 }}
+                  >
+                    <NavIcon name={tab.icon} size={21} />
+                  </motion.div>
+
+                  {/* Label */}
+                  <span
+                    className="bottom-tab-label"
+                    style={{ color: isActive ? '#4F46E5' : '#9CA3AF', fontWeight: isActive ? 600 : 500 }}
+                  >
+                    {tab.label}
+                  </span>
+                </>
+              )}
+            </NavLink>
           ))}
-          <div style={{ margin:'10px 24px 0', paddingTop:12, borderTop:'1px solid var(--border)', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-            <span style={{ fontSize:13, color:'var(--text3)' }}>@{user?.username}</span>
-            <button onClick={()=>{logout();navigate('/login');}} style={{ padding:'7px 16px', borderRadius:7, fontSize:13, fontWeight:600, background:'#FFF1F2', border:'1px solid #FECACA', color:'#E11D48', cursor:'pointer' }}>Sign Out</button>
-          </div>
         </div>
-      )}
+      </nav>
     </>
   );
 }

@@ -1,0 +1,355 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   APEX MANAGER — MOBILE CSS
+   Drop-in companion to index.css. Import in index.js after index.css.
+   Strategy: top nav on ≥768px, bottom tab bar on <768px.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Safe-area + bottom-nav height variable ───────────────────────────────── */
+:root {
+  --bottom-nav-h: 56px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --mobile-content-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px);
+}
+
+/* ── Show / hide by breakpoint ──────────────────────────────────────────────
+   .top-nav  → visible on desktop, hidden on mobile
+   .bottom-nav → hidden on desktop, visible on mobile
+──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .top-nav  { display: none !important; }
+  .bottom-nav { display: flex !important; }
+
+  /* Main content: no top padding (no top nav), add bottom padding for tab bar */
+  main {
+    padding-top: 0 !important;
+    padding-bottom: var(--mobile-content-bottom) !important;
+  }
+
+  /* Pages with their own top padding */
+  .page-pad {
+    padding-top: 20px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .bottom-nav { display: none !important; }
+  .top-nav    { display: flex !important; }
+}
+
+/* ── Bottom tab bar ─────────────────────────────────────────────────────────
+   This is just the static structure. Framer-motion handles the active pill.
+──────────────────────────────────────────────────────────────────────────── */
+.bottom-nav {
+  height: calc(var(--bottom-nav-h) + var(--safe-bottom));
+  align-items: stretch;
+}
+
+.bottom-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px calc(var(--safe-bottom) + 8px);
+  text-decoration: none;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  min-height: 56px;
+}
+
+.bottom-tab-label {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.15px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.bottom-tab-icon {
+  transition: color 0.15s, transform 0.15s;
+  position: relative;
+  z-index: 1;
+}
+
+.bottom-tab:active .bottom-tab-icon {
+  transform: scale(0.88);
+}
+
+/* ── Touch targets ──────────────────────────────────────────────────────────
+   All interactive elements min 44×44 on mobile.
+──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  button, [role="button"], a, select, input[type="checkbox"], input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Buttons inside tables/badges can be smaller */
+  .compact-btn {
+    min-height: 32px !important;
+    min-width: 32px !important;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important; /* prevents iOS auto-zoom */
+    min-height: 48px;
+  }
+}
+
+/* ── Mobile hero ────────────────────────────────────────────────────────────
+   Compact hero on mobile — no full viewport height
+──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .hero-section {
+    height: auto !important;
+    min-height: 280px !important;
+    padding: 36px 20px 40px !important;
+  }
+
+  .hero-title {
+    font-size: clamp(28px, 9vw, 42px) !important;
+  }
+
+  .hero-float-cards {
+    gap: 10px !important;
+  }
+
+  .hero-float-card {
+    min-width: 120px !important;
+    padding: 10px 14px !important;
+  }
+}
+
+/* ── Mobile stat grid ───────────────────────────────────────────────────────
+   2 columns on mobile instead of auto-fill
+──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .chart-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Full width span-2 cards become full width naturally */
+  [data-span2] {
+    grid-column: span 1 !important;
+  }
+
+  /* Dashboard cards */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* ── Accounts page ──────────────────────────────────────────────────────────
+   Show cards on mobile, hide table; show table on desktop, hide cards
+──────────────────────────────────────────────────────────────────────────── */
+.accounts-table  { display: block; }
+.accounts-mobile { display: none;  }
+
+@media (max-width: 767px) {
+  .accounts-table  { display: none !important;        }
+  .accounts-mobile { display: flex !important;         }
+
+  /* Tab bar scrolls horizontally */
+  .tab-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tab-scroll::-webkit-scrollbar { display: none; }
+
+  /* Filters stack vertically */
+  .filters-row {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .filters-row > * {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  /* Bulk action bar */
+  .bulk-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+/* ── Page-level padding ─────────────────────────────────────────────────────
+   Consistent mobile page gutters
+──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .page-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 20px !important;
+  }
+
+  .page-header h1 {
+    font-size: 22px !important;
+  }
+
+  /* Login: single column on mobile */
+  .login-brand { display: none !important; }
+
+  .login-form-wrap {
+    max-width: 100% !important;
+    padding: 24px 20px !important;
+    width: 100% !important;
+  }
+
+  .login-root {
+    align-items: flex-end !important;
+    padding-bottom: 0 !important;
+  }
+
+  .login-card {
+    border-radius: 24px 24px 0 0 !important;
+    padding: 32px 24px calc(var(--safe-bottom) + 32px) !important;
+    box-shadow: 0 -8px 48px rgba(0,0,0,0.12) !important;
+  }
+}
+
+/* ── Mobile-specific utility classes ───────────────────────────────────────── */
+@media (max-width: 767px) {
+  .hide-mobile   { display: none !important; }
+  .show-mobile   { display: block !important; }
+}
+
+@media (min-width: 768px) {
+  .hide-desktop  { display: none !important; }
+  .show-desktop  { display: block !important; }
+}
+
+/* ── Account cards (mobile) ─────────────────────────────────────────────────
+   Richer card design for mobile account list
+──────────────────────────────────────────────────────────────────────────── */
+.account-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: var(--sh-sm);
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow 0.18s, transform 0.15s;
+  will-change: transform;
+}
+
+.account-card:active {
+  transform: scale(0.985);
+  box-shadow: var(--sh-xs);
+}
+
+/* ── Recharts mobile styles ─────────────────────────────────────────────────
+   Ensure charts don't overflow on narrow screens
+──────────────────────────────────────────────────────────────────────────── */
+.recharts-wrapper,
+.recharts-surface {
+  overflow: visible !important;
+}
+
+@media (max-width: 767px) {
+  .recharts-cartesian-axis-tick-value {
+    font-size: 10px !important;
+  }
+
+  .recharts-tooltip-wrapper {
+    font-size: 12px !important;
+  }
+}
+
+/* ── Framer motion page wrapper ─────────────────────────────────────────────
+   Used in App.js for route transitions
+──────────────────────────────────────────────────────────────────────────── */
+.page-motion-wrap {
+  width: 100%;
+  min-height: 100%;
+}
+
+/* ── Confetti overlay ───────────────────────────────────────────────────────
+   react-confetti renders on top of everything
+──────────────────────────────────────────────────────────────────────────── */
+.confetti-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Pull-to-refresh hint ───────────────────────────────────────────────────
+   Subtle iOS-style bounce physics hint at top of scrollable pages
+──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .scroll-root {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* ── Mobile profile / narrow pages ─────────────────────────────────────────
+──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .narrow-page {
+    max-width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* ── Sync result banner ─────────────────────────────────────────────────────
+   Full-width on mobile
+──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .sync-result-banner {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .header-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+
+  .header-actions button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* ── Modal adjustments on mobile ────────────────────────────────────────────
+   Slide up from bottom instead of centering
+──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .modal-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
+  .modal-box {
+    border-radius: 24px 24px 0 0 !important;
+    max-height: 92vh !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-bottom: calc(var(--safe-bottom) + 24px) !important;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

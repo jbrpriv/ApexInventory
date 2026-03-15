@@ -22,7 +22,20 @@ function ProtectedLayout() {
     <div style={{ minHeight: '100vh', background: 'var(--bg)', position: 'relative' }}>
       <ParticleBackground />
       <Navbar />
-      <main style={{ paddingTop: 'var(--nav-h)', position: 'relative', zIndex: 1 }}>
+      {/*
+        No inline paddingTop here — mobile.css controls it via the `main` selector:
+          ≥768px (desktop): padding-top is set by the .top-nav being fixed at var(--nav-h)
+                            We add it back via the style tag below only on desktop.
+          <768px (mobile):  mobile.css sets padding-top: 0 and padding-bottom for bottom tab bar.
+        We use a <style> tag to set desktop padding without an inline style that would
+        override the mobile.css media query rule.
+      */}
+      <style>{`
+        @media (min-width: 768px) {
+          #main-content { padding-top: var(--nav-h); }
+        }
+      `}</style>
+      <main id="main-content" style={{ position: 'relative', zIndex: 1 }}>
         <Outlet />
       </main>
     </div>
@@ -36,7 +49,7 @@ function PublicRoute({ children }) {
 
 function AppRoutes() {
   return (
-    <Suspense fallback={<div style={{ paddingTop: 'var(--nav-h)' }}><LoadingScreen /></div>}>
+    <Suspense fallback={<LoadingScreen />}>
       <Routes>
         <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
         <Route element={<ProtectedLayout />}>
