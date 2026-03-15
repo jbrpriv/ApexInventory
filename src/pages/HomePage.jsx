@@ -22,18 +22,6 @@ const CustomTooltip = ({ active, payload, label, color = '#4F46E5' }) => {
   );
 };
 
-const RADIAN = Math.PI / 180;
-const renderCustomLabel = ({ cx, cy, midAngle, outerRadius, percent }) => {
-  if (percent < 0.05) return null;
-  const radius = outerRadius * 0.7;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  return (
-    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: 11, fontWeight: 700 }}>
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
-};
 
 function AnimatedNumber({ value, color }) {
   const ref = useRef(null);
@@ -168,7 +156,7 @@ export default function HomePage() {
               <PieChart>
                 <Pie data={banData} cx="50%" cy="50%" innerRadius={44} outerRadius={68} dataKey="value"
                   paddingAngle={banData[0].value > 0 && banData[1].value > 0 ? 3 : 0}
-                  labelLine={false} label={renderCustomLabel} animationBegin={200} animationDuration={900}>
+                  animationBegin={200} animationDuration={900}>
                   {banData.map(e => <Cell key={e.name} fill={e.color} />)}
                 </Pie>
                 <Tooltip formatter={(v, n) => [v, n]} contentStyle={{ borderRadius: 8, fontSize: 12 }} />
@@ -192,7 +180,7 @@ export default function HomePage() {
               <PieChart>
                 <Pie data={saleData} cx="50%" cy="50%" innerRadius={44} outerRadius={68} dataKey="value"
                   paddingAngle={saleData[0].value > 0 && saleData[1].value > 0 ? 3 : 0}
-                  labelLine={false} label={renderCustomLabel} animationBegin={300} animationDuration={900}>
+                  animationBegin={300} animationDuration={900}>
                   {saleData.map(e => <Cell key={e.name} fill={e.color} />)}
                 </Pie>
                 <Tooltip formatter={(v, n) => [v, n]} contentStyle={{ borderRadius: 8, fontSize: 12 }} />
