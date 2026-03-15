@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getOverviewStats, getLevelDist, getRecentStats, getBackground } from '../api';
 import StatCard from '../components/StatCard';
 import LoadingScreen from '../components/LoadingScreen';
-import { motion, useInView, useAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import {
   ResponsiveContainer, AreaChart, Area,
@@ -85,8 +85,8 @@ export default function HomePage() {
   const [recent,    setRecent]    = useState([]);
   const [bgUrl,     setBgUrl]     = useState('');
   const [loading,   setLoading]   = useState(true);
-  const dashRef = useRef(null);
-  const inView  = useInView(dashRef, { once: true, amount: 0.01 });
+  
+  
 
   const loadAll = useCallback(async () => {
     try {
@@ -255,7 +255,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           DASHBOARD
       ══════════════════════════════════════════════════════════════════ */}
-      <div ref={dashRef} style={{ padding: '48px 24px 60px', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ padding: '48px 24px 60px', maxWidth: 1200, margin: '0 auto' }}>
 
         {/* Section header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
@@ -271,7 +271,7 @@ export default function HomePage() {
               custom={i}
               variants={cardVariants}
               initial="hidden"
-              animate={inView ? 'visible' : 'hidden'}
+              animate="visible"
             >
               <StatCard {...s} />
             </motion.div>
@@ -284,7 +284,7 @@ export default function HomePage() {
           {/* ── Ban Status Donut (Recharts PieChart) ────────────────────── */}
           <motion.div
             custom={0} variants={cardVariants}
-            initial="hidden" animate={inView ? 'visible' : 'hidden'}
+            initial="hidden" animate="visible"
             whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
             style={cardStyle}
           >
@@ -320,7 +320,7 @@ export default function HomePage() {
           {/* ── Sales Status Donut ───────────────────────────────────────── */}
           <motion.div
             custom={1} variants={cardVariants}
-            initial="hidden" animate={inView ? 'visible' : 'hidden'}
+            initial="hidden" animate="visible"
             whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
             style={cardStyle}
           >
@@ -356,7 +356,7 @@ export default function HomePage() {
           {/* ── Level Distribution (Recharts BarChart) ──────────────────── */}
           <motion.div
             custom={2} variants={cardVariants}
-            initial="hidden" animate={inView ? 'visible' : 'hidden'}
+            initial="hidden" animate="visible"
             whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
             style={cardStyle}
           >
@@ -377,7 +377,7 @@ export default function HomePage() {
           {/* ── 7-Day Activity (Recharts AreaChart) — full width ─────────── */}
           <motion.div
             custom={3} variants={cardVariants}
-            initial="hidden" animate={inView ? 'visible' : 'hidden'}
+            initial="hidden" animate="visible"
             whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
             style={{ ...cardStyle, gridColumn: 'span 2' }}
             data-span2

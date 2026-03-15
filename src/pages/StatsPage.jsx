@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getOverviewStats, getLevelDist, getRecentStats } from '../api';
 import StatCard from '../components/StatCard';
 import LoadingScreen from '../components/LoadingScreen';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ResponsiveContainer, AreaChart, Area,
   BarChart, Bar, RadialBarChart, RadialBar,
@@ -38,8 +38,8 @@ export default function StatsPage() {
   const [levelDist, setLevelDist] = useState([]);
   const [recent,    setRecent]    = useState([]);
   const [loading,   setLoading]   = useState(true);
-  const ref    = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.01 });
+  
+  
 
   useEffect(() => {
     Promise.all([getOverviewStats(), getLevelDist(), getRecentStats()])
@@ -97,7 +97,7 @@ export default function StatsPage() {
   const dot = c => <span style={{ width: 7, height: 7, borderRadius: '50%', background: c, display: 'inline-block' }} />;
 
   return (
-    <div ref={ref} className="fade-in page-container" style={{ padding: '28px 20px', maxWidth: 1100, margin: '0 auto' }}>
+    <div className="fade-in page-container" style={{ padding: '28px 20px', maxWidth: 1100, margin: '0 auto' }}>
 
       {/* Header */}
       <motion.div
@@ -112,7 +112,7 @@ export default function StatsPage() {
       {/* Stat cards */}
       <div className="stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: 12, marginBottom: 32 }}>
         {statCards.map((s, i) => (
-          <motion.div key={s.label} custom={i} variants={cardV} initial="hidden" animate={inView ? 'visible' : 'hidden'}>
+          <motion.div key={s.label} custom={i} variants={cardV} initial="hidden" animate="visible">
             <StatCard {...s} />
           </motion.div>
         ))}
@@ -123,7 +123,7 @@ export default function StatsPage() {
 
         {/* ── Level Distribution — BarChart ─────────────────────────────── */}
         <motion.div
-          custom={0} variants={cardV} initial="hidden" animate={inView ? 'visible' : 'hidden'}
+          custom={0} variants={cardV} initial="hidden" animate="visible"
           whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
           style={card}
         >
@@ -145,7 +145,7 @@ export default function StatsPage() {
 
         {/* ── 7-Day Activity — AreaChart ────────────────────────────────── */}
         <motion.div
-          custom={1} variants={cardV} initial="hidden" animate={inView ? 'visible' : 'hidden'}
+          custom={1} variants={cardV} initial="hidden" animate="visible"
           whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
           style={card}
         >
@@ -176,7 +176,7 @@ export default function StatsPage() {
 
         {/* ── Status Breakdown — RadialBarChart ────────────────────────── */}
         <motion.div
-          custom={2} variants={cardV} initial="hidden" animate={inView ? 'visible' : 'hidden'}
+          custom={2} variants={cardV} initial="hidden" animate="visible"
           whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
           style={card}
         >
