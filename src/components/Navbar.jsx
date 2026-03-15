@@ -162,14 +162,14 @@ export default function Navbar() {
         boxShadow: '0 -1px 0 rgba(0,0,0,0.04), 0 -6px 30px rgba(0,0,0,0.07)',
       }}>
         <style>{`
-          @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            .bottom-nav-inner {
-              padding-bottom: calc(env(safe-area-inset-bottom) + 0px);
-            }
+          .bottom-nav-inner {
+            display: flex;
+            width: 100%;
+            align-items: stretch;
           }
         `}</style>
 
-        <div className="bottom-nav-inner" style={{ display: 'flex', width: '100%', alignItems: 'stretch' }}>
+        <div className="bottom-nav-inner">
           {BOTTOM_TABS.map(tab => (
             <NavLink
               key={tab.to}

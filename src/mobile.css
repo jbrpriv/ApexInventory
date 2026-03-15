@@ -40,7 +40,8 @@
    This is just the static structure. Framer-motion handles the active pill.
 ──────────────────────────────────────────────────────────────────────────── */
 .bottom-nav {
-  height: calc(var(--bottom-nav-h) + var(--safe-bottom));
+  /* Fixed height — safe area handled only inside the inner div */
+  height: var(--bottom-nav-h);
   align-items: stretch;
 }
 
@@ -51,7 +52,7 @@
   align-items: center;
   justify-content: center;
   gap: 3px;
-  padding: 8px 4px calc(var(--safe-bottom) + 8px);
+  padding: 8px 4px;
   text-decoration: none;
   position: relative;
   -webkit-tap-highlight-color: transparent;

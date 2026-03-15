@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getOverviewStats, getLevelDist, getRecentStats, getBackground } from '../api';
 import StatCard from '../components/StatCard';
 import LoadingScreen from '../components/LoadingScreen';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useAnimation } from 'framer-motion';
 import { gsap } from 'gsap';
 import {
   ResponsiveContainer, AreaChart, Area,
@@ -86,7 +86,7 @@ export default function HomePage() {
   const [bgUrl,     setBgUrl]     = useState('');
   const [loading,   setLoading]   = useState(true);
   const dashRef = useRef(null);
-  const inView  = useInView(dashRef, { once: true, margin: '-60px' });
+  const inView  = useInView(dashRef, { once: true, amount: 0.01 });
 
   const loadAll = useCallback(async () => {
     try {

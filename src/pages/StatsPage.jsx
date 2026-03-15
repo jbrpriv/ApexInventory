@@ -39,7 +39,7 @@ export default function StatsPage() {
   const [recent,    setRecent]    = useState([]);
   const [loading,   setLoading]   = useState(true);
   const ref    = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
+  const inView = useInView(ref, { once: true, amount: 0.01 });
 
   useEffect(() => {
     Promise.all([getOverviewStats(), getLevelDist(), getRecentStats()])
