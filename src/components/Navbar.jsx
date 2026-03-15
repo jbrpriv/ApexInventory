@@ -160,6 +160,8 @@ export default function Navbar() {
         WebkitBackdropFilter: 'blur(24px) saturate(200%)',
         borderTop: '0.5px solid rgba(0,0,0,0.1)',
         boxShadow: '0 -1px 0 rgba(0,0,0,0.04), 0 -6px 30px rgba(0,0,0,0.07)',
+        /* Guaranteed height: 56px nav + safe area inset (min 8px for non-notch phones) */
+        paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)',
       }}>
         <style>{`
           .bottom-nav-inner {

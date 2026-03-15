@@ -10,15 +10,6 @@ import {
   Cell, Legend,
 } from 'recharts';
 
-/* ── Variants ────────────────────────────────────────────────────────────── */
-const cardV = {
-  hidden:  { opacity: 0, y: 28, scale: 0.97 },
-  visible: i => ({
-    opacity: 1, y: 0, scale: 1,
-    transition: { type: 'spring', stiffness: 260, damping: 24, delay: i * 0.08 },
-  }),
-};
-
 /* ── Custom tooltip ──────────────────────────────────────────────────────── */
 const Tip = ({ active, payload, label, color = '#4F46E5' }) => {
   if (!active || !payload?.length) return null;
@@ -112,9 +103,9 @@ export default function StatsPage() {
       {/* Stat cards */}
       <div className="stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: 12, marginBottom: 32 }}>
         {statCards.map((s, i) => (
-          <motion.div key={s.label} custom={i} variants={cardV} initial="hidden" animate="visible">
+          <div key={s.label}>
             <StatCard {...s} />
-          </motion.div>
+          </div>
         ))}
       </div>
 
@@ -123,7 +114,6 @@ export default function StatsPage() {
 
         {/* ── Level Distribution — BarChart ─────────────────────────────── */}
         <motion.div
-          custom={0} variants={cardV} initial="hidden" animate="visible"
           whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
           style={card}
         >
@@ -145,7 +135,6 @@ export default function StatsPage() {
 
         {/* ── 7-Day Activity — AreaChart ────────────────────────────────── */}
         <motion.div
-          custom={1} variants={cardV} initial="hidden" animate="visible"
           whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
           style={card}
         >
@@ -176,7 +165,6 @@ export default function StatsPage() {
 
         {/* ── Status Breakdown — RadialBarChart ────────────────────────── */}
         <motion.div
-          custom={2} variants={cardV} initial="hidden" animate="visible"
           whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
           style={card}
         >

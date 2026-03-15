@@ -75,12 +75,14 @@ export default function LoginPage() {
     <div
       className="login-root"
       style={{
-        minHeight: '100vh',
+        minHeight: '100dvh',
         display: 'flex',
         position: 'relative',
         background: '#0F0E1A',
         fontFamily: "'Inter', sans-serif",
         overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <style>{`
@@ -165,7 +167,8 @@ export default function LoginPage() {
         style={{
           position: 'relative', zIndex: 2,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: '40px', width: '100%', maxWidth: 460, flexShrink: 0,
+          padding: '24px 20px',
+          width: '100%', maxWidth: 460, flexShrink: 0,
         }}
       >
         <motion.div

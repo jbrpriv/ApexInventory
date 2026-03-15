@@ -43,38 +43,6 @@ function AnimatedNumber({ value, color }) {
   return <span ref={ref} style={{ color }}>0</span>;
 }
 
-/* ── Framer motion variants ─────────────────────────────────────────────── */
-const cardVariants = {
-  hidden: { opacity: 0, y: 24, scale: 0.97 },
-  visible: i => ({
-    opacity: 1, y: 0, scale: 1,
-    transition: { type: 'spring', stiffness: 280, damping: 26, delay: i * 0.07 },
-  }),
-};
-
-const floatCard = {
-  hidden: { opacity: 0, y: 20 },
-  visible: i => ({
-    opacity: 1, y: 0,
-    transition: { type: 'spring', stiffness: 240, damping: 22, delay: 0.4 + i * 0.12 },
-  }),
-};
-
-/* ── Pie/donut custom label ─────────────────────────────────────────────── */
-const RADIAN = Math.PI / 180;
-const renderCustomLabel = ({ cx, cy, midAngle, outerRadius, percent, name }) => {
-  if (percent < 0.05) return null;
-  const radius = outerRadius * 0.7;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  return (
-    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central"
-      style={{ fontSize: 11, fontWeight: 700 }}>
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
-};
-
 /* ════════════════════════════════════════════════════════════════════════════
    HOMEPAGE
 ════════════════════════════════════════════════════════════════════════════ */
@@ -210,10 +178,6 @@ export default function HomePage() {
               <motion.div
                 key={s.label}
                 className="hero-float-card"
-                custom={i}
-                variants={floatCard}
-                initial="hidden"
-                animate="visible"
                 whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(0,0,0,0.15)' }}
                 style={{
                   background: 'rgba(255,255,255,0.9)',
@@ -266,15 +230,9 @@ export default function HomePage() {
         {/* Stat cards — staggered spring entrance */}
         <div className="stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(140px,1fr))', gap: 12, marginBottom: 40 }}>
           {statCards.map((s, i) => (
-            <motion.div
-              key={s.label}
-              custom={i}
-              variants={cardVariants}
-              initial="hidden"
-              animate="visible"
-            >
+            <div key={s.label}>
               <StatCard {...s} />
-            </motion.div>
+            </div>
           ))}
         </div>
 
@@ -283,8 +241,6 @@ export default function HomePage() {
 
           {/* ── Ban Status Donut (Recharts PieChart) ────────────────────── */}
           <motion.div
-            custom={0} variants={cardVariants}
-            initial="hidden" animate="visible"
             whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
             style={cardStyle}
           >
@@ -319,8 +275,6 @@ export default function HomePage() {
 
           {/* ── Sales Status Donut ───────────────────────────────────────── */}
           <motion.div
-            custom={1} variants={cardVariants}
-            initial="hidden" animate="visible"
             whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
             style={cardStyle}
           >
@@ -355,8 +309,6 @@ export default function HomePage() {
 
           {/* ── Level Distribution (Recharts BarChart) ──────────────────── */}
           <motion.div
-            custom={2} variants={cardVariants}
-            initial="hidden" animate="visible"
             whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
             style={cardStyle}
           >
@@ -376,8 +328,6 @@ export default function HomePage() {
 
           {/* ── 7-Day Activity (Recharts AreaChart) — full width ─────────── */}
           <motion.div
-            custom={3} variants={cardVariants}
-            initial="hidden" animate="visible"
             whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }}
             style={{ ...cardStyle, gridColumn: 'span 2' }}
             data-span2
