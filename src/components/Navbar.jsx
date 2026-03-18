@@ -3,62 +3,22 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 
-/* ── Inline SVG icons ─────────────────────────────────────────────────────── */
 const NavIcon = ({ name, size = 22 }) => {
   const paths = {
-    home: (
-      <>
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </>
-    ),
-    accounts: (
-      <>
-        <rect x="2" y="5" width="20" height="14" rx="2" />
-        <line x1="2" y1="10" x2="22" y2="10" />
-      </>
-    ),
-    stats: (
-      <>
-        <line x1="18" y1="20" x2="18" y2="10" />
-        <line x1="12" y1="20" x2="12" y2="4" />
-        <line x1="6" y1="20" x2="6" y2="14" />
-      </>
-    ),
-    export: (
-      <>
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-        <polyline points="7 10 12 15 17 10" />
-        <line x1="12" y1="15" x2="12" y2="3" />
-      </>
-    ),
-    profile: (
-      <>
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </>
-    ),
-    about: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="12" />
-        <line x1="12" y1="16" x2="12.01" y2="16" />
-      </>
-    ),
+    home: (<><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></>),
+    accounts: (<><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></>),
+    stats: (<><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></>),
+    export: (<><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></>),
+    profile: (<><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></>),
+    about: (<><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></>),
   };
-
   return (
-    <svg
-      width={size} height={size} viewBox="0 0 24 24"
-      fill="none" stroke="currentColor"
-      strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"
-    >
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round">
       {paths[name]}
     </svg>
   );
 };
 
-/* ── Tab config ───────────────────────────────────────────────────────────── */
 const BOTTOM_TABS = [
   { to: '/',         label: 'Home',     icon: 'home',     end: true  },
   { to: '/accounts', label: 'Accounts', icon: 'accounts', end: false },
@@ -68,21 +28,20 @@ const BOTTOM_TABS = [
 ];
 
 const ALL_LINKS = [
-  { to: '/',         label: 'Home',    end: true  },
-  { to: '/accounts', label: 'Accounts',end: false },
-  { to: '/stats',    label: 'Stats',   end: false },
-  { to: '/export',   label: 'Export',  end: false },
-  { to: '/about',    label: 'About',   end: false },
-  { to: '/profile',  label: 'Profile', end: false },
+  { to: '/',         label: 'Home',     end: true  },
+  { to: '/accounts', label: 'Accounts', end: false },
+  { to: '/stats',    label: 'Stats',    end: false },
+  { to: '/export',   label: 'Export',   end: false },
+  { to: '/about',    label: 'About',    end: false },
+  { to: '/profile',  label: 'Profile',  end: false },
 ];
 
-/* ── Component ────────────────────────────────────────────────────────────── */
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const navigate  = useNavigate();
-  const location  = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen]         = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 10);
@@ -96,30 +55,36 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ══════════════════════════════════════════════════════════════════════
-          DESKTOP — top nav (hidden on mobile via .top-nav CSS class)
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* ── DESKTOP top nav ─────────────────────────────────────── */}
       <nav className="top-nav" style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 500,
         height: 'var(--nav-h)',
-        background: scrolled ? 'rgba(255,255,255,0.96)' : 'rgba(255,255,255,0.88)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-        borderBottom: `1px solid ${scrolled ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.05)'}`,
+        background: scrolled
+          ? 'rgba(10,10,15,0.95)'
+          : 'rgba(10,10,15,0.80)',
+        backdropFilter: 'blur(24px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+        borderBottom: `1px solid ${scrolled ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)'}`,
         display: 'flex', alignItems: 'center', padding: '0 28px', gap: 8,
-        boxShadow: scrolled ? 'var(--sh-sm)' : 'none',
+        boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.5)' : 'none',
         transition: 'all 0.25s',
       }}>
         {/* Logo */}
         <NavLink to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0, marginRight: 8 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg,#4F46E5,#818CF8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'white', boxShadow: '0 2px 8px rgba(79,70,229,0.3)' }}>A</div>
+          <div style={{
+            width: 34, height: 34, borderRadius: 9,
+            background: 'linear-gradient(135deg, #ea580c, #f97316)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 800, color: 'white',
+            boxShadow: '0 2px 12px rgba(234,88,12,0.45)',
+          }}>A</div>
           <div>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1 }}>Apex</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'white', letterSpacing: '-0.3px', lineHeight: 1 }}>Apex</div>
             <div style={{ fontSize: 8.5, color: 'var(--primary-light)', letterSpacing: 2, fontWeight: 600 }}>MANAGER</div>
           </div>
         </NavLink>
 
-        <div style={{ width: 1, height: 18, background: 'var(--border)', marginRight: 4 }} />
+        <div style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.1)', marginRight: 4 }} />
 
         {/* Links */}
         <div style={{ display: 'flex', gap: 2, flex: 1 }}>
@@ -132,100 +97,82 @@ export default function Navbar() {
 
         {/* User + logout */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 12px 5px 5px', background: 'var(--surface2)', borderRadius: 99, border: '1px solid var(--border)' }}>
-            <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg,#4F46E5,#818CF8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: 'white' }}>{initial}</div>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '5px 14px 5px 6px',
+            background: 'rgba(255,255,255,0.05)',
+            borderRadius: 99, border: '1px solid rgba(255,255,255,0.1)',
+          }}>
+            <div style={{
+              width: 26, height: 26, borderRadius: '50%',
+              background: 'linear-gradient(135deg, #ea580c, #f97316)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 11, fontWeight: 700, color: 'white',
+            }}>{initial}</div>
             <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text2)' }}>{user?.username}</span>
           </div>
-          <button onClick={() => { logout(); navigate('/login'); }} style={{ padding: '6px 14px', borderRadius: 7, fontSize: 12.5, fontWeight: 600, background: '#FFF1F2', border: '1px solid #FECACA', color: '#E11D48', cursor: 'pointer', transition: 'all 0.18s' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#FFE4E6'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#FFF1F2'; }}
+          <button
+            onClick={() => { logout(); navigate('/login'); }}
+            style={{
+              padding: '6px 14px', borderRadius: 7, fontSize: 12.5, fontWeight: 600,
+              background: 'rgba(244,63,94,0.12)', border: '1px solid rgba(244,63,94,0.25)',
+              color: '#f43f5e', cursor: 'pointer', transition: 'all 0.18s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(244,63,94,0.2)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(244,63,94,0.12)'; }}
           >Sign Out</button>
         </div>
 
-        {/* Mobile burger — still in top nav for edge cases, but hidden by CSS */}
         <button onClick={() => setOpen(o => !o)} className="nav-mobile-btn"
-          style={{ marginLeft: 'auto', background: open ? 'var(--primary-pale)' : 'var(--surface2)', border: `1px solid ${open ? 'var(--primary-light)' : 'var(--border)'}`, color: open ? 'var(--primary)' : 'var(--text2)', width: 36, height: 36, borderRadius: 8, display: 'none', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.18s', fontSize: 16 }}>
+          style={{
+            marginLeft: 'auto',
+            background: open ? 'var(--primary-pale)' : 'rgba(255,255,255,0.06)',
+            border: `1px solid ${open ? 'var(--primary)' : 'rgba(255,255,255,0.1)'}`,
+            color: open ? 'var(--primary)' : 'var(--text2)',
+            width: 36, height: 36, borderRadius: 8,
+            display: 'none', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', transition: 'all 0.18s', fontSize: 16,
+          }}>
           {open ? '✕' : '☰'}
         </button>
       </nav>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          MOBILE — bottom tab bar (hidden on desktop via .bottom-nav CSS class)
-          framer-motion layoutId="tab-pill" creates the spring-sliding highlight
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* ── MOBILE bottom tab bar ────────────────────────────────── */}
       <nav className="bottom-nav" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 500,
-        background: 'rgba(255,255,255,0.94)',
+        background: 'rgba(10,10,15,0.96)',
         backdropFilter: 'blur(24px) saturate(200%)',
         WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-        borderTop: '0.5px solid rgba(0,0,0,0.1)',
-        boxShadow: '0 -1px 0 rgba(0,0,0,0.04), 0 -6px 30px rgba(0,0,0,0.07)',
-        /* Guaranteed height: 56px nav + safe area inset (min 8px for non-notch phones) */
+        borderTop: '0.5px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 -1px 0 rgba(255,255,255,0.04), 0 -8px 30px rgba(0,0,0,0.6)',
         paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)',
       }}>
-        <style>{`
-          .bottom-nav-inner {
-            display: flex;
-            width: 100%;
-            align-items: stretch;
-          }
-        `}</style>
-
+        <style>{`.bottom-nav-inner{display:flex;width:100%;align-items:stretch;}`}</style>
         <div className="bottom-nav-inner">
           {BOTTOM_TABS.map(tab => (
-            <NavLink
-              key={tab.to}
-              to={tab.to}
-              end={tab.end}
-              className="bottom-tab"
-              style={{ textDecoration: 'none' }}
-            >
+            <NavLink key={tab.to} to={tab.to} end={tab.end} className="bottom-tab" style={{ textDecoration: 'none' }}>
               {({ isActive }) => (
                 <>
-                  {/* Spring-animated pill behind the icon */}
                   {isActive && (
-                    <motion.div
-                      layoutId="tab-pill"
+                    <motion.div layoutId="tab-pill"
                       style={{
-                        position: 'absolute',
-                        top: 7,
-                        left: '50%',
-                        x: '-50%',
-                        width: 40,
-                        height: 34,
-                        borderRadius: 10,
-                        background: 'rgba(79,70,229,0.1)',
-                        zIndex: 0,
+                        position: 'absolute', top: 7, left: '50%', x: '-50%',
+                        width: 40, height: 34, borderRadius: 10,
+                        background: 'rgba(234,88,12,0.15)', zIndex: 0,
                       }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 380,
-                        damping: 32,
-                      }}
+                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                     />
                   )}
-
-                  {/* Icon — bounces up slightly when active */}
-                  <motion.div
-                    className="bottom-tab-icon"
-                    animate={{
-                      scale:  isActive ? 1.08 : 1,
-                      y:      isActive ? -1   : 0,
-                      color:  isActive ? '#4F46E5' : '#9CA3AF',
-                    }}
+                  <motion.div className="bottom-tab-icon"
+                    animate={{ scale: isActive ? 1.08 : 1, y: isActive ? -1 : 0, color: isActive ? '#ea580c' : 'rgba(255,255,255,0.35)' }}
                     transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-                    style={{ color: isActive ? '#4F46E5' : '#9CA3AF', position: 'relative', zIndex: 1 }}
+                    style={{ color: isActive ? '#ea580c' : 'rgba(255,255,255,0.35)', position: 'relative', zIndex: 1 }}
                   >
                     <NavIcon name={tab.icon} size={21} />
                   </motion.div>
-
-                  {/* Label */}
-                  <span
-                    className="bottom-tab-label"
-                    style={{ color: isActive ? '#4F46E5' : '#9CA3AF', fontWeight: isActive ? 600 : 500 }}
-                  >
-                    {tab.label}
-                  </span>
+                  <span className="bottom-tab-label"
+                    style={{ color: isActive ? '#ea580c' : 'rgba(255,255,255,0.35)', fontWeight: isActive ? 600 : 500 }}
+                  >{tab.label}</span>
                 </>
               )}
             </NavLink>

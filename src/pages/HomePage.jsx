@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getOverviewStats, getLevelDist, getRecentStats, getBackground } from '../api';
 import StatCard from '../components/StatCard';
 import LoadingScreen from '../components/LoadingScreen';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { gsap } from 'gsap';
 import {
   ResponsiveContainer, AreaChart, Area,
@@ -12,30 +12,55 @@ import {
   BarChart, Bar,
 } from 'recharts';
 
-const CustomTooltip = ({ active, payload, label, color = '#4F46E5' }) => {
+/* ── Dark tooltip ─────────────────────────────────────────────── */
+const DarkTooltip = ({ active, payload, label, color = '#ea580c' }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background: 'white', border: '1px solid #E5E7EB', borderRadius: 8, padding: '8px 12px', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', fontSize: 12 }}>
-      <p style={{ color: '#6B7280', marginBottom: 4 }}>{label}</p>
-      <p style={{ color, fontWeight: 700, fontSize: 16 }}>{payload[0]?.value}</p>
+    <div style={{ background:'#0c0c14', border:`1px solid ${color}40`, borderRadius:10, padding:'8px 14px', boxShadow:`0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px ${color}20`, fontSize:12 }}>
+      <p style={{ color:'rgba(255,255,255,0.4)', marginBottom:4, fontSize:11 }}>{label}</p>
+      <p style={{ color, fontWeight:700, fontSize:16 }}>{payload[0]?.value}</p>
     </div>
   );
 };
 
-
+/* ── Animated counter ─────────────────────────────────────────── */
 function AnimatedNumber({ value, color }) {
   const ref = useRef(null);
   const obj = useRef({ val: 0 });
   useEffect(() => {
     if (!value) return;
-    gsap.to(obj.current, {
-      val: value, duration: 1.4, ease: 'power3.out',
-      onUpdate: () => { if (ref.current) ref.current.textContent = Math.round(obj.current.val); },
-    });
+    gsap.to(obj.current, { val:value, duration:1.4, ease:'power3.out', onUpdate:()=>{ if(ref.current) ref.current.textContent=Math.round(obj.current.val); } });
   }, [value]);
   return <span ref={ref} style={{ color }}>0</span>;
 }
 
+/* ── PremiumButton ────────────────────────────────────────────── */
+function PremiumButton({ children, style = {} }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.button
+      onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)}
+      whileHover={{ y:-2, boxShadow:'0 8px 32px rgba(234,88,12,0.5)' }}
+      whileTap={{ scale:0.97 }}
+      style={{ position:'relative', overflow:'hidden', padding:'12px 28px', borderRadius:12, fontSize:14, fontWeight:700, background:'linear-gradient(135deg,#ea580c,#f97316)', border:'none', color:'white', cursor:'pointer', boxShadow:'0 4px 20px rgba(234,88,12,0.35)', fontFamily:'inherit', ...style }}
+    >
+      <motion.div initial={{x:'-100%'}} animate={{x:hovered?'200%':'-100%'}} transition={{duration:0.9}}
+        style={{ position:'absolute', top:0, left:0, width:'60%', height:'100%', background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent)', pointerEvents:'none' }}
+      />
+      <span style={{ position:'relative', zIndex:1 }}>{children}</span>
+    </motion.button>
+  );
+}
+
+const card = { background:'#0c0c14', border:'1px solid rgba(255,255,255,0.07)', borderRadius:16, padding:'22px 24px', boxShadow:'0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)' };
+const sl = { fontSize:11, fontWeight:600, color:'rgba(255,255,255,0.4)', letterSpacing:1, textTransform:'uppercase', marginBottom:18, display:'flex', alignItems:'center', gap:8 };
+const dot = c => <span style={{ width:6, height:6, borderRadius:'50%', background:c, display:'inline-block', flexShrink:0, boxShadow:`0 0 6px ${c}` }} />;
+
+/* ─── chart stagger ───────────────────────────────────────────── */
+const chartsV = { hidden:{}, visible:{ transition:{ staggerChildren:0.1 } } };
+const chartV  = { hidden:{ opacity:0, y:28 }, visible:{ opacity:1, y:0, transition:{ type:'spring', stiffness:240, damping:24 } } };
+
+/* ═══════════════════════════════════════════════════════════════ */
 export default function HomePage() {
   const { user } = useAuth();
   const [stats,     setStats]     = useState({});
@@ -44,196 +69,231 @@ export default function HomePage() {
   const [bgUrl,     setBgUrl]     = useState('');
   const [loading,   setLoading]   = useState(true);
 
+  /* Scroll-driven hero */
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const scrollSpring = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+
+  /* Hero element transforms */
+  const titleY      = useTransform(scrollSpring, [0,1], [0, -120]);
+  const titleOpacity= useTransform(scrollSpring, [0,0.5], [1, 0]);
+  const titleScale  = useTransform(scrollSpring, [0,0.5], [1, 0.88]);
+  const titleBlur   = useTransform(scrollSpring, [0,0.5], [0, 6]);
+  const bgOpacity   = useTransform(scrollSpring, [0,1], [0, 0.85]);
+  const cardsY      = useTransform(scrollSpring, [0,0.6], [0, 60]);
+  const cardsOpacity= useTransform(scrollSpring, [0,0.55], [1, 0]);
+
   const loadAll = useCallback(async () => {
     try {
-      const [s, l, r, bg] = await Promise.all([
-        getOverviewStats(), getLevelDist(), getRecentStats(), getBackground(),
-      ]);
-      setStats(s.data);
-      setLevelDist(l.data.map(d => ({ ...d, name: `Lv ${d.label}` })));
-      setRecent(r.data.map(d => ({ ...d, day: new Date(d.date).toLocaleDateString('en', { weekday: 'short' }) })));
-      setBgUrl(bg.data.url || '');
-    } catch (e) { console.error(e); }
+      const [s, l, r, bg] = await Promise.all([getOverviewStats(), getLevelDist(), getRecentStats(), getBackground()]);
+      setStats(s.data ?? {});
+      setLevelDist((l.data||[]).map(d=>({...d, name:`Lv ${d.label}`})));
+      setRecent((r.data||[]).map(d=>({...d, day:new Date(d.date).toLocaleDateString('en',{weekday:'short'})})));
+      setBgUrl(bg.data?.url||'');
+    } catch(e) { console.error(e); }
     finally { setLoading(false); }
   }, []);
 
-  useEffect(() => { loadAll(); }, [loadAll]);
+  useEffect(()=>{ loadAll(); }, [loadAll]);
 
   if (loading) return <LoadingScreen message="Loading dashboard…" />;
 
-  const banData  = [
-    { name: 'Unbanned', value: stats.unbanned || 0, color: '#059669' },
-    { name: 'Banned',   value: stats.banned   || 0, color: '#E11D48' },
+  const banData  = [{ name:'Unbanned', value:stats.unbanned||0, color:'#22c55e' }, { name:'Banned', value:stats.banned||0, color:'#f43f5e' }];
+  const saleData = [{ name:'Sold', value:stats.sold||0, color:'#f59e0b' }, { name:'Unsold', value:stats.unsold||0, color:'#94a3b8' }];
+  const statCards= [
+    { label:'Total',     value:stats.total    ||0, colorKey:'primary' },
+    { label:'Unbanned',  value:stats.unbanned ||0, colorKey:'green'   },
+    { label:'Banned',    value:stats.banned   ||0, colorKey:'red'     },
+    { label:'Sold',      value:stats.sold     ||0, colorKey:'amber'   },
+    { label:'Unsold',    value:stats.unsold   ||0, colorKey:'slate'   },
+    { label:'Avg Level', value:stats.avgLevel ||0, colorKey:'violet'  },
   ];
-  const saleData = [
-    { name: 'Sold',   value: stats.sold  || 0, color: '#D97706' },
-    { name: 'Unsold', value: stats.unsold || 0, color: '#CBD5E1' },
+  const heroCards= [
+    { icon:'🎮', value:stats.total   ||0, label:'Total',     col:'#ea580c' },
+    { icon:'✅', value:stats.unbanned||0, label:'Unbanned',  col:'#22c55e' },
+    { icon:'🏪', value:stats.unsold  ||0, label:'Available', col:'#38bdf8' },
   ];
-  const statCards = [
-    { label: 'Total',     value: stats.total    || 0, colorKey: 'primary' },
-    { label: 'Unbanned',  value: stats.unbanned || 0, colorKey: 'green'   },
-    { label: 'Banned',    value: stats.banned   || 0, colorKey: 'red'     },
-    { label: 'Sold',      value: stats.sold     || 0, colorKey: 'amber'   },
-    { label: 'Unsold',    value: stats.unsold   || 0, colorKey: 'slate'   },
-    { label: 'Avg Level', value: stats.avgLevel || 0, colorKey: 'violet'  },
-  ];
-  const heroCards = [
-    { icon: '🎮', value: stats.total    || 0, label: 'Total',     col: '#4F46E5' },
-    { icon: '✅', value: stats.unbanned || 0, label: 'Unbanned',  col: '#059669' },
-    { icon: '🏪', value: stats.unsold   || 0, label: 'Available', col: '#0284C7' },
-  ];
-
-  const card = { background: 'white', border: '1px solid var(--border)', borderRadius: 12, padding: '22px 24px', boxShadow: 'var(--sh-card)' };
-  const sl   = { fontSize: 11.5, fontWeight: 600, color: 'var(--text3)', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 };
-  const dot  = c => <span style={{ width: 7, height: 7, borderRadius: '50%', background: c, display: 'inline-block', flexShrink: 0 }} />;
 
   return (
-    <div>
-      {/* HERO */}
-      <div className="hero-section" style={{ position: 'relative', height: 'calc(100vh - var(--nav-h))', minHeight: 520, overflow: 'hidden', background: bgUrl ? `url(${bgUrl}) center/cover no-repeat` : 'linear-gradient(135deg,#EEF2FF 0%,#F0F9FF 50%,#F5F3FF 100%)' }}>
-        <div style={{ position: 'absolute', inset: 0, background: bgUrl ? 'rgba(0,0,0,0.35)' : 'transparent' }} />
-        {!bgUrl && (
-          <>
-            <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle,rgba(79,70,229,0.08),transparent 70%)', pointerEvents: 'none' }} />
-            <div style={{ position: 'absolute', bottom: '-5%', right: '-5%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle,rgba(124,58,237,0.07),transparent 70%)', pointerEvents: 'none' }} />
-          </>
-        )}
-        <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', textAlign: 'center' }}>
-          <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.5 }}
-            style={{ fontSize: 11.5, fontWeight: 600, color: bgUrl ? 'rgba(255,255,255,0.7)' : 'var(--primary)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 18 }}>
-            Apex Legends Inventory
-          </motion.p>
-          <motion.h1 className="hero-title" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 22 }}
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'clamp(36px,6vw,68px)', color: bgUrl ? 'white' : 'var(--text)', lineHeight: 1.0, letterSpacing: '-1px', marginBottom: 16, maxWidth: 700 }}>
-            Welcome back,{' '}<span style={{ color: 'var(--primary)' }}>{user?.username?.toUpperCase() || 'ADMIN'}</span>
+    <div style={{ background:'#0a0a0f', minHeight:'100vh' }}>
+
+      {/* ── HERO — scroll-driven sticky scene ────────────────────── */}
+      <div ref={heroRef} className="hero-section" style={{
+        position:'relative', height:'calc(100vh - var(--nav-h))', minHeight:520, overflow:'hidden',
+        background: bgUrl ? `url(${bgUrl}) center/cover no-repeat` : 'linear-gradient(160deg,#0a0a0f 0%,#0f0a08 50%,#0a0a0f 100%)',
+      }}>
+        {bgUrl && <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.55)' }} />}
+
+        {/* Dark overlay that comes in on scroll */}
+        <motion.div style={{ position:'absolute', inset:0, background:'#0c0a09', opacity:bgOpacity, pointerEvents:'none', zIndex:2 }} />
+
+        {/* Ambient glows */}
+        <div style={{ position:'absolute', top:'10%', left:'20%', width:700, height:700, borderRadius:'50%', background:'radial-gradient(circle,rgba(234,88,12,0.06),transparent 70%)', filter:'blur(60px)', pointerEvents:'none' }} />
+        <div style={{ position:'absolute', bottom:'5%', right:'8%', width:400, height:400, borderRadius:'50%', background:'radial-gradient(circle,rgba(234,88,12,0.04),transparent 70%)', filter:'blur(40px)', pointerEvents:'none' }} />
+
+        {/* Grid lines */}
+        <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px)', backgroundSize:'60px 60px', maskImage:'radial-gradient(ellipse at center, black 30%, transparent 80%)', pointerEvents:'none' }} />
+
+        {/* Hero content — scroll animated */}
+        <div style={{ position:'relative', zIndex:3, height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 24px', textAlign:'center' }}>
+
+          {/* Badge */}
+          <motion.div initial={{ opacity:0, y:-10 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.05, duration:0.5 }}
+            style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'5px 14px', borderRadius:99, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.25)', marginBottom:24 }}
+          >
+            <span style={{ width:6, height:6, borderRadius:'50%', background:'#ea580c', boxShadow:'0 0 6px #ea580c', display:'inline-block' }} />
+            <span style={{ fontSize:11, fontWeight:600, color:'#fb923c', letterSpacing:2, textTransform:'uppercase' }}>Apex Legends Inventory</span>
+          </motion.div>
+
+          {/* Title — scrolls up, fades, blurs */}
+          <motion.h1 className="hero-title"
+            style={{ y:titleY, opacity:titleOpacity, scale:titleScale, filter:useTransform(titleBlur,v=>`blur(${v}px)`) }}
+          >
+            <motion.span initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.15, type:'spring', stiffness:180, damping:22 }}
+              style={{ display:'block', fontFamily:'var(--font-display)', fontWeight:800, fontSize:'clamp(38px,6vw,72px)', color:'white', lineHeight:1.05, letterSpacing:'-1.5px', marginBottom:16, maxWidth:720 }}
+            >
+              Welcome back,{' '}
+              <span style={{ color:'transparent', backgroundClip:'text', WebkitBackgroundClip:'text', backgroundImage:'linear-gradient(135deg,#ea580c,#fb923c)' }}>
+                {user?.username?.toUpperCase()||'ADMIN'}
+              </span>
+            </motion.span>
           </motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35, duration: 0.5 }}
-            style={{ color: bgUrl ? 'rgba(255,255,255,0.65)' : 'var(--text3)', fontSize: 15.5 }}>
-            {new Date().toLocaleDateString('en-PK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+
+          <motion.p initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.3, duration:0.5 }}
+            style={{ color:'rgba(255,255,255,0.4)', fontSize:14.5, letterSpacing:0.2, marginBottom:40 }}
+          >
+            {new Date().toLocaleDateString('en-PK',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
           </motion.p>
-          <div className="hero-float-cards" style={{ display: 'flex', gap: 16, marginTop: 52, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {heroCards.map((s, i) => (
-              <motion.div key={s.label} className="hero-float-card"
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + i * 0.1, type: 'spring', stiffness: 240, damping: 22 }}
-                whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(0,0,0,0.15)' }}
-                style={{ background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.6)', borderRadius: 14, padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.1)', minWidth: 150, cursor: 'default' }}>
-                <div style={{ width: 38, height: 38, borderRadius: 8, background: `${s.col}12`, border: `1px solid ${s.col}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>{s.icon}</div>
-                <div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: s.col, lineHeight: 1, fontFamily: 'var(--font-display)' }}><AnimatedNumber value={s.value} color={s.col} /></div>
-                  <div style={{ fontSize: 11, color: '#6B7280', marginTop: 3, fontWeight: 500 }}>{s.label}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+
+          {/* CTA buttons — fade out on scroll */}
+          <motion.div style={{ y:cardsY, opacity:cardsOpacity }} className="hero-float-cards"
+            initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.35 }}
+          >
+            <div style={{ display:'flex', gap:14, marginBottom:44, justifyContent:'center', flexWrap:'wrap' }}>
+              <PremiumButton>View Accounts →</PremiumButton>
+              <motion.button whileHover={{ y:-2, borderColor:'rgba(255,255,255,0.3)' }} whileTap={{ scale:0.97 }}
+                style={{ padding:'12px 28px', borderRadius:12, fontSize:14, fontWeight:700, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.15)', color:'white', cursor:'pointer', fontFamily:'inherit', transition:'border-color 0.2s' }}>
+                View Stats
+              </motion.button>
+            </div>
+
+            {/* Hero stat cards */}
+            <div style={{ display:'flex', gap:14, flexWrap:'wrap', justifyContent:'center' }}>
+              {heroCards.map((s,i)=>(
+                <motion.div key={s.label} className="hero-float-card"
+                  initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }}
+                  transition={{ delay:0.5+i*0.1, type:'spring', stiffness:240, damping:22 }}
+                  whileHover={{ y:-5, boxShadow:`0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px ${s.col}30` }}
+                  style={{ background:'rgba(12,12,20,0.88)', backdropFilter:'blur(16px)', border:`1px solid ${s.col}20`, borderRadius:16, padding:'14px 20px', display:'flex', alignItems:'center', gap:12, boxShadow:'0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)', minWidth:150, cursor:'default', transition:'border-color 0.2s' }}
+                >
+                  <div style={{ width:38, height:38, borderRadius:10, background:`${s.col}18`, border:`1px solid ${s.col}30`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:18 }}>{s.icon}</div>
+                  <div>
+                    <div style={{ fontSize:22, fontWeight:700, color:s.col, lineHeight:1, fontFamily:'var(--font-display)' }}><AnimatedNumber value={s.value} color={s.col}/></div>
+                    <div style={{ fontSize:11, color:'rgba(255,255,255,0.35)', marginTop:3, fontWeight:500 }}>{s.label}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
-        <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-          style={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, opacity: 0.4 }}>
-            <span style={{ fontSize: 10, color: bgUrl ? 'white' : 'var(--text3)', letterSpacing: 2, textTransform: 'uppercase' }}>Scroll</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={bgUrl ? 'white' : 'var(--text3)'} strokeWidth="2" strokeLinecap="round"><polyline points="6 9 12 15 18 9" /></svg>
+
+        {/* Scroll hint */}
+        <motion.div animate={{ y:[0,6,0] }} transition={{ repeat:Infinity, duration:2, ease:'easeInOut' }}
+          style={{ position:'absolute', bottom:28, left:'50%', transform:'translateX(-50%)', zIndex:4 }}
+        >
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, opacity:0.3 }}>
+            <span style={{ fontSize:9, color:'white', letterSpacing:2.5, textTransform:'uppercase' }}>Scroll</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
         </motion.div>
       </div>
 
-      {/* DASHBOARD */}
-      <div style={{ padding: '48px 24px 60px', maxWidth: 1200, margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-          <span style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--primary)', letterSpacing: 1.5, textTransform: 'uppercase' }}>Overview</span>
-          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-        </div>
+      {/* ── DASHBOARD ──────────────────────────────────────────────── */}
+      <div style={{ padding:'56px 24px 80px', maxWidth:1200, margin:'0 auto' }}>
 
-        <div className="stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(140px,1fr))', gap: 12, marginBottom: 40 }}>
-          {statCards.map(s => <div key={s.label}><StatCard {...s} /></div>)}
-        </div>
+        {/* Section header */}
+        <motion.div initial={{ opacity:0, x:-20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.5 }}
+          style={{ display:'flex', alignItems:'center', gap:14, marginBottom:28 }}
+        >
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <span style={{ width:3, height:18, borderRadius:99, background:'#ea580c', display:'inline-block', boxShadow:'0 0 8px rgba(234,88,12,0.6)' }} />
+            <span style={{ fontSize:11, fontWeight:700, color:'#ea580c', letterSpacing:2, textTransform:'uppercase' }}>Overview</span>
+          </div>
+          <div style={{ flex:1, height:1, background:'linear-gradient(to right,rgba(234,88,12,0.4),transparent)' }} />
+        </motion.div>
 
-        <div className="dashboard-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(290px,1fr))', gap: 16 }}>
+        {/* Stat cards — stagger whileInView */}
+        <motion.div className="stat-grid"
+          variants={{ hidden:{}, visible:{ transition:{ staggerChildren:0.06 } } }}
+          initial="hidden" whileInView="visible" viewport={{ once:true, margin:'-40px' }}
+          style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:12, marginBottom:44 }}
+        >
+          {statCards.map(s=>(
+            <motion.div key={s.label} variants={{ hidden:{opacity:0,y:20,scale:0.96}, visible:{opacity:1,y:0,scale:1,transition:{type:'spring',stiffness:260,damping:22}} }}>
+              <StatCard {...s} />
+            </motion.div>
+          ))}
+        </motion.div>
 
+        {/* Charts — stagger whileInView */}
+        <motion.div className="dashboard-grid" variants={chartsV} initial="hidden" whileInView="visible" viewport={{ once:true, margin:'-60px' }}
+          style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(290px,1fr))', gap:16 }}
+        >
           {/* Ban Status */}
-          <motion.div whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }} style={card}>
-            <div style={sl}>{dot('#059669')} Ban Status</div>
+          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 40px rgba(0,0,0,0.6)' }} style={card}>
+            <div style={sl}>{dot('#22c55e')} Ban Status</div>
             <ResponsiveContainer width="100%" height={160}>
-              <PieChart>
-                <Pie data={banData} cx="50%" cy="50%" innerRadius={44} outerRadius={68} dataKey="value"
-                  paddingAngle={banData[0].value > 0 && banData[1].value > 0 ? 3 : 0}
-                  animationBegin={200} animationDuration={900}>
-                  {banData.map(e => <Cell key={e.name} fill={e.color} />)}
-                </Pie>
-                <Tooltip formatter={(v, n) => [v, n]} contentStyle={{ borderRadius: 8, fontSize: 12 }} />
-              </PieChart>
+              <PieChart><Pie data={banData} cx="50%" cy="50%" innerRadius={44} outerRadius={68} dataKey="value" paddingAngle={banData[0].value>0&&banData[1].value>0?3:0} animationBegin={200} animationDuration={900}>
+                {banData.map(e=><Cell key={e.name} fill={e.color}/>)}</Pie>
+                <Tooltip content={<DarkTooltip color="#22c55e"/>}/></PieChart>
             </ResponsiveContainer>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 4 }}>
-              {banData.map(d => (
-                <div key={d.name} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: d.color }} />
-                  <span style={{ fontSize: 12, color: 'var(--text2)', fontWeight: 500 }}>{d.name}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: d.color }}>{d.value}</span>
-                </div>
-              ))}
+            <div style={{ display:'flex', justifyContent:'center', gap:20, marginTop:4 }}>
+              {banData.map(d=><div key={d.name} style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:7, height:7, borderRadius:'50%', background:d.color, boxShadow:`0 0 6px ${d.color}` }}/><span style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:500 }}>{d.name}</span><span style={{ fontSize:13, fontWeight:700, color:d.color }}>{d.value}</span></div>)}
             </div>
           </motion.div>
 
           {/* Sales Status */}
-          <motion.div whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }} style={card}>
-            <div style={sl}>{dot('#D97706')} Sales Status</div>
+          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 40px rgba(0,0,0,0.6)' }} style={card}>
+            <div style={sl}>{dot('#f59e0b')} Sales Status</div>
             <ResponsiveContainer width="100%" height={160}>
-              <PieChart>
-                <Pie data={saleData} cx="50%" cy="50%" innerRadius={44} outerRadius={68} dataKey="value"
-                  paddingAngle={saleData[0].value > 0 && saleData[1].value > 0 ? 3 : 0}
-                  animationBegin={300} animationDuration={900}>
-                  {saleData.map(e => <Cell key={e.name} fill={e.color} />)}
-                </Pie>
-                <Tooltip formatter={(v, n) => [v, n]} contentStyle={{ borderRadius: 8, fontSize: 12 }} />
-              </PieChart>
+              <PieChart><Pie data={saleData} cx="50%" cy="50%" innerRadius={44} outerRadius={68} dataKey="value" paddingAngle={saleData[0].value>0&&saleData[1].value>0?3:0} animationBegin={300} animationDuration={900}>
+                {saleData.map(e=><Cell key={e.name} fill={e.color}/>)}</Pie>
+                <Tooltip content={<DarkTooltip color="#f59e0b"/>}/></PieChart>
             </ResponsiveContainer>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 4 }}>
-              {saleData.map(d => (
-                <div key={d.name} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: d.color }} />
-                  <span style={{ fontSize: 12, color: 'var(--text2)', fontWeight: 500 }}>{d.name}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: d.color }}>{d.value}</span>
-                </div>
-              ))}
+            <div style={{ display:'flex', justifyContent:'center', gap:20, marginTop:4 }}>
+              {saleData.map(d=><div key={d.name} style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:7, height:7, borderRadius:'50%', background:d.color, boxShadow:`0 0 6px ${d.color}` }}/><span style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:500 }}>{d.name}</span><span style={{ fontSize:13, fontWeight:700, color:d.color }}>{d.value}</span></div>)}
             </div>
           </motion.div>
 
           {/* Level Distribution */}
-          <motion.div whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }} style={card}>
-            <div style={sl}>{dot('#4F46E5')} Level Distribution</div>
+          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 40px rgba(0,0,0,0.6)' }} style={card}>
+            <div style={sl}>{dot('#a78bfa')} Level Distribution</div>
             <ResponsiveContainer width="100%" height={160}>
-              <BarChart data={levelDist} margin={{ top: 4, right: 4, left: -28, bottom: 0 }} barSize={18}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CustomTooltip color="#4F46E5" />} />
-                <Bar dataKey="count" fill="#4F46E5" radius={[4, 4, 0, 0]} animationBegin={400} animationDuration={1000} />
+              <BarChart data={levelDist} margin={{ top:4, right:4, left:-28, bottom:0 }} barSize={18}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false}/>
+                <XAxis dataKey="name" tick={{ fontSize:10, fill:'rgba(255,255,255,0.3)' }} axisLine={false} tickLine={false}/>
+                <YAxis tick={{ fontSize:10, fill:'rgba(255,255,255,0.3)' }} axisLine={false} tickLine={false}/>
+                <Tooltip content={<DarkTooltip color="#a78bfa"/>}/>
+                <Bar dataKey="count" fill="#a78bfa" radius={[5,5,0,0]} animationBegin={400} animationDuration={1000}/>
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
 
           {/* 7-Day Activity */}
-          <motion.div whileHover={{ y: -2, boxShadow: 'var(--sh-md)' }} style={{ ...card, gridColumn: 'span 2' }} data-span2>
-            <div style={sl}>{dot('#7C3AED')} Activity — Last 7 Days</div>
+          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 40px rgba(0,0,0,0.6)' }} style={{ ...card, gridColumn:'span 2' }} data-span2>
+            <div style={sl}>{dot('#ea580c')} Activity — Last 7 Days</div>
             <ResponsiveContainer width="100%" height={140}>
-              <AreaChart data={recent} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="actGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#4F46E5" stopOpacity={0.18} />
-                    <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.02} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
-                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} allowDecimals={false} />
-                <Tooltip content={<CustomTooltip color="#4F46E5" />} />
-                <Area type="monotone" dataKey="count" stroke="#4F46E5" strokeWidth={2} fill="url(#actGrad)"
-                  dot={{ r: 3, fill: '#4F46E5', strokeWidth: 0 }} activeDot={{ r: 5, fill: '#4F46E5' }}
-                  animationBegin={500} animationDuration={1200} />
+              <AreaChart data={recent} margin={{ top:4, right:4, left:-28, bottom:0 }}>
+                <defs><linearGradient id="actGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#ea580c" stopOpacity={0.25}/><stop offset="95%" stopColor="#ea580c" stopOpacity={0.02}/></linearGradient></defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false}/>
+                <XAxis dataKey="day" tick={{ fontSize:10, fill:'rgba(255,255,255,0.3)' }} axisLine={false} tickLine={false}/>
+                <YAxis tick={{ fontSize:10, fill:'rgba(255,255,255,0.3)' }} axisLine={false} tickLine={false} allowDecimals={false}/>
+                <Tooltip content={<DarkTooltip color="#ea580c"/>}/>
+                <Area type="monotone" dataKey="count" stroke="#ea580c" strokeWidth={2.5} fill="url(#actGrad)" dot={{ r:3, fill:'#ea580c', strokeWidth:0 }} activeDot={{ r:5, fill:'#ea580c' }} animationBegin={500} animationDuration={1200}/>
               </AreaChart>
             </ResponsiveContainer>
           </motion.div>
-
-        </div>
+        </motion.div>
       </div>
     </div>
   );

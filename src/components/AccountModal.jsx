@@ -40,7 +40,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
     finally { setSaving(false); }
   };
 
-  const inp = { display:'block', width:'100%', background:'#F9FAFB', border:'1.5px solid #E5E7EB', borderRadius:8, padding:'10px 13px', fontSize:14, color:'#111827', fontFamily:'var(--font-body)', outline:'none', transition:'all 0.18s', boxSizing:'border-box' };
+  const inp = { display:'block', width:'100%', background:'rgba(255,255,255,0.05)', border:'1.5px solid #E5E7EB', borderRadius:8, padding:'10px 13px', fontSize:14, color:'white', fontFamily:'var(--font-body)', outline:'none', transition:'all 0.18s', boxSizing:'border-box' };
   const inpRO = { ...inp, background:'#F3F4F6', color:'#6B7280', cursor:'default' };
   const lbl = { display:'block', fontSize:11, fontWeight:600, color:'#6B7280', letterSpacing:0.8, textTransform:'uppercase', marginBottom:6 };
   const fi = e => { e.target.style.borderColor='#4F46E5'; e.target.style.boxShadow='0 0 0 3px rgba(79,70,229,0.1)'; e.target.style.background='white'; };
@@ -83,7 +83,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
       className="modal-overlay"
       style={{
         position:'fixed', inset:0, zIndex:9999,
-        background:'rgba(0,0,0,0.35)', backdropFilter:'blur(8px)',
+        background:'rgba(0,0,0,0.75)', backdropFilter:'blur(8px)',
         display:'flex',
         /* alignItems intentionally removed from inline style — mobile.css sets it */
         justifyContent:'center', padding:20,
@@ -93,7 +93,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
         className="modal-box"
         onClick={e=>e.stopPropagation()}
         style={{
-          background:'white', borderRadius:20,
+          background:'#0c0c14', borderRadius:20,
           width:'100%', maxWidth:580, maxHeight:'92vh',
           overflowY:'auto',
           boxShadow:'var(--sh-xl)',
@@ -101,7 +101,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
         }}
       >
         {/* Header */}
-        <div style={{ padding:'22px 24px 18px', borderBottom:'1px solid #F3F4F6', position:'sticky', top:0, background:'white', zIndex:1, borderRadius:'20px 20px 0 0' }}>
+        <div style={{ padding:'22px 24px 18px', borderBottom:'1px solid #F3F4F6', position:'sticky', top:0, background:'#0c0c14', zIndex:1, borderRadius:'20px 20px 0 0' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
             <div>
               <div style={{ fontFamily:'var(--font-display)', fontWeight:700, fontSize:19, color:'var(--text)' }}>
@@ -213,7 +213,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
           <div>
             <label style={lbl}>Rank</label>
             {isView
-              ? <div style={{padding:'10px 14px',background:'#F9FAFB',borderRadius:8,border:'1px solid #E5E7EB',display:'flex',alignItems:'center',gap:10}}><RankBadge rank={form.rank}/></div>
+              ? <div style={{padding:'10px 14px',background:'rgba(255,255,255,0.05)',borderRadius:8,border:'1px solid #E5E7EB',display:'flex',alignItems:'center',gap:10}}><RankBadge rank={form.rank}/></div>
               : <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:6}}>
                   {RANKS.map(r=>{
                     const tier=(r==='Unranked'||r==='Master'||r==='Predator')?r:r.split(' ')[0];
@@ -286,12 +286,12 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             </div>
           </div>
 
-          {isView&&account?.createdAt&&<div style={{padding:'8px 12px',background:'#F9FAFB',borderRadius:7,fontSize:12,color:'var(--text3)',border:'1px solid #F3F4F6'}}>Added {new Date(account.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>}
+          {isView&&account?.createdAt&&<div style={{padding:'8px 12px',background:'rgba(255,255,255,0.05)',borderRadius:7,fontSize:12,color:'var(--text3)',border:'1px solid #F3F4F6'}}>Added {new Date(account.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>}
 
           {isView&&<button type="button" onClick={onClose} style={{width:'100%',padding:'12px',borderRadius:9,fontSize:14,fontWeight:600,background:'var(--primary)',border:'none',color:'white',cursor:'pointer',boxShadow:'0 2px 8px rgba(79,70,229,0.3)',transition:'all 0.18s'}} onMouseEnter={e=>{e.currentTarget.style.background='var(--primary-h)';e.currentTarget.style.transform='translateY(-1px)';}} onMouseLeave={e=>{e.currentTarget.style.background='var(--primary)';e.currentTarget.style.transform='';}}>Close</button>}
 
           {!isView&&<div style={{display:'flex',gap:10,paddingTop:4}}>
-            <button type="button" onClick={onClose} style={{flex:1,padding:'12px',borderRadius:9,fontSize:14,fontWeight:600,background:'#F9FAFB',border:'1px solid #E5E7EB',color:'var(--text3)',cursor:'pointer',transition:'all 0.15s'}}
+            <button type="button" onClick={onClose} style={{flex:1,padding:'12px',borderRadius:9,fontSize:14,fontWeight:600,background:'rgba(255,255,255,0.05)',border:'1px solid #E5E7EB',color:'var(--text3)',cursor:'pointer',transition:'all 0.15s'}}
               onMouseEnter={e=>{e.currentTarget.style.borderColor='#C7D2FE';e.currentTarget.style.color='var(--primary)';}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor='#E5E7EB';e.currentTarget.style.color='var(--text3)';}}>Cancel</button>
             <button type="button" onClick={handleSave} disabled={saving} style={{flex:2,padding:'12px',borderRadius:9,fontSize:14,fontWeight:600,background:saving?'#C7D2FE':isEdit?'#0284C7':'var(--primary)',border:'none',color:'white',cursor:saving?'not-allowed':'pointer',boxShadow:saving?'none':isEdit?'0 2px 8px rgba(2,132,199,0.3)':'0 2px 8px rgba(79,70,229,0.3)',transition:'all 0.18s',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>

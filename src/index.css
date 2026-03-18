@@ -1,43 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg:         #F7F8FC;
-  --surface:    #FFFFFF;
-  --surface2:   #F1F3F9;
-  --border:     rgba(0,0,0,0.07);
-  --border-md:  rgba(0,0,0,0.12);
-  --border-hi:  rgba(79,70,229,0.3);
+  --bg:         #0a0a0f;
+  --surface:    #0c0c14;
+  --surface2:   #050507;
+  --surface3:   #111120;
+  --border:     rgba(255,255,255,0.07);
+  --border-md:  rgba(255,255,255,0.13);
+  --border-hi:  rgba(234,88,12,0.4);
 
-  --primary:       #4F46E5;
-  --primary-h:     #4338CA;
-  --primary-light: #818CF8;
-  --primary-pale:  #EEF2FF;
-  --primary-glow:  rgba(79,70,229,0.12);
+  --primary:       #ea580c;
+  --primary-h:     #c2410c;
+  --primary-light: #fb923c;
+  --primary-pale:  rgba(234,88,12,0.12);
+  --primary-glow:  rgba(234,88,12,0.18);
 
-  --emerald:     #059669;   --emerald-bg: #ECFDF5;   --emerald-b: #6EE7B7;
-  --rose:        #E11D48;   --rose-bg:    #FFF1F2;   --rose-b:    #FDA4AF;
-  --amber:       #D97706;   --amber-bg:   #FFFBEB;   --amber-b:   #FCD34D;
-  --sky:         #0284C7;   --sky-bg:     #F0F9FF;   --sky-b:     #7DD3FC;
-  --violet:      #7C3AED;   --violet-bg:  #F5F3FF;   --violet-b:  #C4B5FD;
-  --slate:       #475569;   --slate-bg:   #F8FAFC;   --slate-b:   #CBD5E1;
+  --emerald:   #22c55e;  --emerald-bg: rgba(34,197,94,0.12);   --emerald-b: rgba(34,197,94,0.3);
+  --rose:      #f43f5e;  --rose-bg:    rgba(244,63,94,0.12);   --rose-b:    rgba(244,63,94,0.3);
+  --amber:     #f59e0b;  --amber-bg:   rgba(245,158,11,0.12);  --amber-b:   rgba(245,158,11,0.3);
+  --sky:       #38bdf8;  --sky-bg:     rgba(56,189,248,0.12);  --sky-b:     rgba(56,189,248,0.3);
+  --violet:    #a78bfa;  --violet-bg:  rgba(167,139,250,0.12); --violet-b:  rgba(167,139,250,0.3);
+  --slate:     #94a3b8;  --slate-bg:   rgba(148,163,184,0.10); --slate-b:   rgba(148,163,184,0.2);
 
-  --text:    #111827;
-  --text2:   #374151;
-  --text3:   #6B7280;
-  --text4:   #9CA3AF;
-  --text5:   #D1D5DB;
+  --text:    #ffffff;
+  --text2:   rgba(255,255,255,0.75);
+  --text3:   rgba(255,255,255,0.45);
+  --text4:   rgba(255,255,255,0.28);
+  --text5:   rgba(255,255,255,0.10);
 
-  --nav-h:       60px;
+  --nav-h:       62px;
   --radius-sm:   8px;
-  --radius:      12px;
-  --radius-lg:   18px;
+  --radius:      14px;
+  --radius-lg:   20px;
 
-  --sh-xs: 0 1px 2px rgba(0,0,0,0.04);
-  --sh-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --sh-md: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
-  --sh-lg: 0 10px 32px rgba(0,0,0,0.09), 0 4px 8px rgba(0,0,0,0.05);
-  --sh-xl: 0 24px 64px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.06);
-  --sh-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.04);
+  --sh-xs:   0 1px 2px rgba(0,0,0,0.4);
+  --sh-sm:   0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.35);
+  --sh-md:   0 4px 16px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
+  --sh-lg:   0 10px 40px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.4);
+  --sh-xl:   0 24px 64px rgba(0,0,0,0.7), 0 8px 16px rgba(0,0,0,0.4);
+  --sh-card: 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+  --sh-glow: 0 0 40px rgba(234,88,12,0.15);
 
   --font-display: 'Outfit', sans-serif;
   --font-body:    'Inter', system-ui, sans-serif;
@@ -58,25 +60,23 @@ body {
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--surface2); }
-::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
 
 *:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
-::selection { background: var(--primary-pale); color: var(--primary); }
+::selection { background: #ea580c; color: white; }
 
 input, select, textarea, button { font-family: var(--font-body); }
 
-/* ── KEYFRAMES ──────────────────────────── */
-@keyframes fadeUp    { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-@keyframes fadeIn    { from{opacity:0} to{opacity:1} }
-@keyframes scaleIn   { from{opacity:0;transform:scale(0.94)} to{opacity:1;transform:scale(1)} }
-@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-@keyframes spin      { to{transform:rotate(360deg)} }
-@keyframes pulse     { 0%,100%{opacity:1} 50%{opacity:.45} }
-@keyframes float     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-@keyframes shimmer   { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
-@keyframes countUp   { from{opacity:0;transform:translateY(8px) scale(0.88)} to{opacity:1;transform:translateY(0) scale(1)} }
-@keyframes borderPulse { 0%,100%{border-color:rgba(79,70,229,0.2)} 50%{border-color:rgba(79,70,229,0.5)} }
+@keyframes fadeUp     { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+@keyframes scaleIn    { from{opacity:0;transform:scale(0.94)} to{opacity:1;transform:scale(1)} }
+@keyframes slideDown  { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin       { to{transform:rotate(360deg)} }
+@keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:.4} }
+@keyframes float      { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+@keyframes shimmer    { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+@keyframes countUp    { from{opacity:0;transform:translateY(8px) scale(0.88)} to{opacity:1;transform:translateY(0) scale(1)} }
 
 .fade-up    { animation: fadeUp   0.5s cubic-bezier(.22,.68,0,1.1) both; }
 .fade-in    { animation: fadeIn   0.3s ease both; }
@@ -88,7 +88,6 @@ input, select, textarea, button { font-family: var(--font-body); }
 .d4{animation-delay:.20s} .d5{animation-delay:.25s} .d6{animation-delay:.30s}
 .d7{animation-delay:.35s} .d8{animation-delay:.40s}
 
-/* ── CARD ──────────────────────────────── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -98,11 +97,10 @@ input, select, textarea, button { font-family: var(--font-body); }
 }
 .card:hover {
   box-shadow: var(--sh-md);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   border-color: var(--border-md);
 }
 
-/* ── TABLE ─────────────────────────────── */
 table { width: 100%; border-collapse: collapse; }
 thead th {
   padding: 10px 13px;
@@ -116,43 +114,58 @@ thead th {
 }
 thead th:hover { color: var(--primary); }
 tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
-tbody tr:hover { background: #F9FAFB; }
-tbody td { padding: 11px 13px; vertical-align: middle; font-size: 13.5px; }
+tbody tr:hover { background: rgba(255,255,255,0.025); }
+tbody td { padding: 11px 13px; vertical-align: middle; font-size: 13.5px; color: var(--text2); }
 
-/* ── SKELETON ──────────────────────────── */
 .skeleton {
-  background: linear-gradient(90deg, var(--surface2) 25%, #fff 50%, var(--surface2) 75%);
+  background: linear-gradient(90deg, var(--surface2) 25%, rgba(255,255,255,0.04) 50%, var(--surface2) 75%);
   background-size: 800px 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 6px;
 }
 
-/* ── NAV ───────────────────────────────── */
 .nav-link {
   text-decoration: none; padding: 6px 14px; border-radius: 8px;
   font-size: 13.5px; font-weight: 500; color: var(--text3);
   background: transparent; transition: all 0.18s;
-  font-family: var(--font-body);
 }
-.nav-link:hover  { color: var(--text); background: var(--surface2); }
+.nav-link:hover  { color: var(--text); background: rgba(255,255,255,0.06); }
 .nav-link-active { color: var(--primary)!important; background: var(--primary-pale)!important; font-weight: 600!important; }
 .nav-mobile-link {
   display: block; text-decoration: none; padding: 13px 24px;
   font-size: 15px; font-weight: 500; color: var(--text2);
   background: transparent; border-left: 3px solid transparent; transition: all 0.15s;
 }
-.nav-mobile-link:hover { background: var(--surface2); color: var(--text); }
+.nav-mobile-link:hover { background: rgba(255,255,255,0.04); color: var(--text); }
 .nav-mobile-link-active { color: var(--primary)!important; background: var(--primary-pale)!important; border-left-color: var(--primary)!important; font-weight: 600!important; }
 
-/* ── BUTTONS ───────────────────────────── */
 .btn-primary {
   background: var(--primary); color: white; border: none;
   border-radius: var(--radius-sm); padding: 10px 22px;
   font-size: 14px; font-weight: 600; cursor: pointer;
   transition: background 0.18s, box-shadow 0.18s, transform 0.1s;
-  box-shadow: 0 1px 3px rgba(79,70,229,0.3);
+  box-shadow: 0 2px 8px rgba(234,88,12,0.35);
 }
-.btn-primary:hover { background: var(--primary-h); box-shadow: 0 4px 12px rgba(79,70,229,0.35); transform: translateY(-1px); }
+.btn-primary:hover {
+  background: var(--primary-h);
+  box-shadow: 0 4px 20px rgba(234,88,12,0.5);
+  transform: translateY(-1px);
+}
+
+.account-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: var(--sh-sm);
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow 0.18s, transform 0.15s;
+  will-change: transform;
+}
+.account-card:active {
+  transform: scale(0.985);
+  box-shadow: var(--sh-xs);
+}
 
 @media (max-width: 768px) {
   .accounts-table  { display: none!important; }

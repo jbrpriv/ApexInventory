@@ -36,8 +36,8 @@ export default function ParticleBackground() {
 
     const CONNECT_DIST = 130;
     const MOUSE_DIST   = 100;
-    const DOT_COLOR    = 'rgba(79,70,229,';
-    const LINE_COLOR   = 'rgba(79,70,229,';
+    const DOT_COLOR    = 'rgba(234,88,12,';
+    const LINE_COLOR   = 'rgba(234,88,12,';
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
