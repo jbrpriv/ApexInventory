@@ -19,7 +19,7 @@ function ProtectedLayout() {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0f', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', background: '#FAF7F4', position: 'relative' }}>
       <ParticleBackground />
       <Navbar />
       {/*
