@@ -84,7 +84,7 @@ export default function LoginPage() {
 
   const inpStyle = {
     width: '100%', padding: '13px 14px 13px 42px',
-    background: 'rgba(0,0,0,0.05)',
+    background: '#F5F0EB',
     border: '1.5px solid rgba(0,0,0,0.1)',
     color: '#1C1917', borderRadius: 11,
     fontFamily: 'inherit', fontSize: 15, outline: 'none',
@@ -100,8 +100,8 @@ export default function LoginPage() {
     }}>
       <style>{`
         @keyframes spin{to{transform:rotate(360deg)}}
-        input::placeholder{color:rgba(255,255,255,0.25)!important}
-        input:-webkit-autofill{-webkit-box-shadow:0 0 0 999px #111120 inset!important;-webkit-text-fill-color:white!important;}
+        input::placeholder{color:#A8A29E!important}
+        input:-webkit-autofill{-webkit-box-shadow:0 0 0 999px #F5F0EB inset!important;-webkit-text-fill-color:#1C1917!important;}
       `}</style>
 
       {ParticleBackground && <ParticleBackground />}
@@ -175,12 +175,12 @@ export default function LoginPage() {
             <motion.div custom={0} variants={fieldV} initial="hidden" animate="visible">
               <label style={{ display:'block', fontSize:11, fontWeight:700, color:'rgba(28,25,23,0.45)', letterSpacing:1, textTransform:'uppercase', marginBottom:7 }}>Username</label>
               <div style={{ position:'relative' }}>
-                <div style={{ position:'absolute', left:13, top:'50%', transform:'translateY(-50%)', color:'rgba(28,25,23,0.35)', pointerEvents:'none' }}>
+                <div style={{ position:'absolute', left:13, top:'50%', transform:'translateY(-50%)', color:'rgba(28,25,23,0.6)', pointerEvents:'none' }}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                 </div>
                 <input type="text" value={form.username} onChange={set('username')} placeholder="Your username" autoFocus autoComplete="username" style={inpStyle}
-                  onFocus={e=>{e.target.style.borderColor='rgba(234,88,12,0.6)';e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.12)';e.target.style.background='rgba(234,88,12,0.06)';}}
-                  onBlur={e=>{e.target.style.borderColor='rgba(0,0,0,0.1)';e.target.style.boxShadow='none';e.target.style.background='rgba(0,0,0,0.05)';}}
+                  onFocus={e=>{e.target.style.borderColor='rgba(234,88,12,0.6)';e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.12)';e.target.style.background='#fff';}}
+                  onBlur={e=>{e.target.style.borderColor='rgba(0,0,0,0.1)';e.target.style.boxShadow='none';e.target.style.background='#F5F0EB';}}
                 />
               </div>
             </motion.div>
@@ -189,14 +189,14 @@ export default function LoginPage() {
             <motion.div custom={1} variants={fieldV} initial="hidden" animate="visible">
               <label style={{ display:'block', fontSize:11, fontWeight:700, color:'rgba(28,25,23,0.45)', letterSpacing:1, textTransform:'uppercase', marginBottom:7 }}>Password</label>
               <div style={{ position:'relative' }}>
-                <div style={{ position:'absolute', left:13, top:'50%', transform:'translateY(-50%)', color:'rgba(28,25,23,0.35)', pointerEvents:'none' }}>
+                <div style={{ position:'absolute', left:13, top:'50%', transform:'translateY(-50%)', color:'rgba(28,25,23,0.6)', pointerEvents:'none' }}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 <input type={showPw?'text':'password'} value={form.password} onChange={set('password')} placeholder="Your password" autoComplete="current-password" style={{...inpStyle,paddingRight:44}}
-                  onFocus={e=>{e.target.style.borderColor='rgba(234,88,12,0.6)';e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.12)';e.target.style.background='rgba(234,88,12,0.06)';}}
-                  onBlur={e=>{e.target.style.borderColor='rgba(0,0,0,0.1)';e.target.style.boxShadow='none';e.target.style.background='rgba(0,0,0,0.05)';}}
+                  onFocus={e=>{e.target.style.borderColor='rgba(234,88,12,0.6)';e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.12)';e.target.style.background='#fff';}}
+                  onBlur={e=>{e.target.style.borderColor='rgba(0,0,0,0.1)';e.target.style.boxShadow='none';e.target.style.background='#F5F0EB';}}
                 />
-                <button type="button" onClick={()=>setShowPw(p=>!p)} style={{ position:'absolute', right:12, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'rgba(28,25,23,0.35)', cursor:'pointer', padding:4, display:'flex', alignItems:'center', minHeight:'auto', minWidth:'auto' }}>
+                <button type="button" onClick={()=>setShowPw(p=>!p)} style={{ position:'absolute', right:12, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'rgba(28,25,23,0.6)', cursor:'pointer', padding:4, display:'flex', alignItems:'center', minHeight:'auto', minWidth:'auto' }}>
                   {showPw
                     ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                     : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
