@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 const COLOR = {
-  primary: { accent: '#ea580c', bg: 'rgba(234,88,12,0.12)',   border: 'rgba(234,88,12,0.3)'  },
+  primary: { accent: '#ea580c', bg: 'rgba(234,88,12,0.08)',   border: 'rgba(234,88,12,0.3)'  },
   green:   { accent: '#22c55e', bg: 'rgba(34,197,94,0.12)',   border: 'rgba(34,197,94,0.3)'  },
   red:     { accent: '#f43f5e', bg: 'rgba(244,63,94,0.12)',   border: 'rgba(244,63,94,0.3)'  },
   amber:   { accent: '#f59e0b', bg: 'rgba(245,158,11,0.12)',  border: 'rgba(245,158,11,0.3)' },
@@ -38,7 +38,7 @@ export default function StatCard({ label, value, colorKey = 'primary', delay = 0
       onMouseLeave={() => setHovered(false)}
     >
       <div style={{
-        background: hovered ? c.bg : 'var(--surface)',
+        background: hovered ? c.bg : '#FFFFFF',
         border: `1px solid ${hovered ? c.border : 'var(--border)'}`,
         borderRadius: 14, padding: '18px 16px',
         transition: 'all 0.22s', cursor: 'default',
@@ -60,7 +60,7 @@ export default function StatCard({ label, value, colorKey = 'primary', delay = 0
           position: 'relative', zIndex: 1,
         }}>{animated}</div>
         <div style={{
-          fontSize: 11.5, color: 'var(--text3)', fontWeight: 500,
+          fontSize: 11.5, color: '#78716C', fontWeight: 500,
           marginTop: 5, letterSpacing: 0.3, position: 'relative', zIndex: 1,
         }}>{label}</div>
         <div style={{

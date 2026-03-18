@@ -60,11 +60,11 @@ export default function Navbar() {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 500,
         height: 'var(--nav-h)',
         background: scrolled
-          ? 'rgba(10,10,15,0.95)'
-          : 'rgba(10,10,15,0.80)',
+          ? 'rgba(250,247,244,0.96)'
+          : 'rgba(250,247,244,0.88)',
         backdropFilter: 'blur(24px) saturate(180%)',
         WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-        borderBottom: `1px solid ${scrolled ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)'}`,
+        borderBottom: `1px solid ${scrolled ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.04)'}`,
         display: 'flex', alignItems: 'center', padding: '0 28px', gap: 8,
         boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.5)' : 'none',
         transition: 'all 0.25s',
@@ -84,7 +84,7 @@ export default function Navbar() {
           </div>
         </NavLink>
 
-        <div style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.1)', marginRight: 4 }} />
+        <div style={{ width: 1, height: 18, background: 'rgba(0,0,0,0.1)', marginRight: 4 }} />
 
         {/* Links */}
         <div style={{ display: 'flex', gap: 2, flex: 1 }}>
@@ -100,7 +100,7 @@ export default function Navbar() {
           <div style={{
             display: 'flex', alignItems: 'center', gap: 8,
             padding: '5px 14px 5px 6px',
-            background: 'rgba(255,255,255,0.05)',
+            background: 'rgba(0,0,0,0.05)',
             borderRadius: 99, border: '1px solid rgba(255,255,255,0.1)',
           }}>
             <div style={{
@@ -109,7 +109,7 @@ export default function Navbar() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 11, fontWeight: 700, color: 'white',
             }}>{initial}</div>
-            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text2)' }}>{user?.username}</span>
+            <span style={{ fontSize: 13, fontWeight: 500, color: '#44403C' }}>{user?.username}</span>
           </div>
           <button
             onClick={() => { logout(); navigate('/login'); }}
@@ -126,8 +126,8 @@ export default function Navbar() {
         <button onClick={() => setOpen(o => !o)} className="nav-mobile-btn"
           style={{
             marginLeft: 'auto',
-            background: open ? 'var(--primary-pale)' : 'rgba(255,255,255,0.06)',
-            border: `1px solid ${open ? 'var(--primary)' : 'rgba(255,255,255,0.1)'}`,
+            background: open ? 'var(--primary-pale)' : 'rgba(0,0,0,0.06)',
+            border: `1px solid ${open ? 'var(--primary)' : 'rgba(0,0,0,0.1)'}`,
             color: open ? 'var(--primary)' : 'var(--text2)',
             width: 36, height: 36, borderRadius: 8,
             display: 'none', alignItems: 'center', justifyContent: 'center',
@@ -140,11 +140,11 @@ export default function Navbar() {
       {/* ── MOBILE bottom tab bar ────────────────────────────────── */}
       <nav className="bottom-nav" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 500,
-        background: 'rgba(10,10,15,0.96)',
+        background: 'rgba(250,247,244,0.97)',
         backdropFilter: 'blur(24px) saturate(200%)',
         WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-        borderTop: '0.5px solid rgba(255,255,255,0.08)',
-        boxShadow: '0 -1px 0 rgba(255,255,255,0.04), 0 -8px 30px rgba(0,0,0,0.6)',
+        borderTop: '0.5px solid rgba(0,0,0,0.1)',
+        boxShadow: '0 -1px 0 rgba(0,0,0,0.06), 0 -4px 20px rgba(0,0,0,0.08)',
         paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)',
       }}>
         <style>{`.bottom-nav-inner{display:flex;width:100%;align-items:stretch;}`}</style>
@@ -164,14 +164,14 @@ export default function Navbar() {
                     />
                   )}
                   <motion.div className="bottom-tab-icon"
-                    animate={{ scale: isActive ? 1.08 : 1, y: isActive ? -1 : 0, color: isActive ? '#ea580c' : 'rgba(255,255,255,0.35)' }}
+                    animate={{ scale: isActive ? 1.08 : 1, y: isActive ? -1 : 0, color: isActive ? '#ea580c' : 'rgba(28,25,23,0.35)' }}
                     transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-                    style={{ color: isActive ? '#ea580c' : 'rgba(255,255,255,0.35)', position: 'relative', zIndex: 1 }}
+                    style={{ color: isActive ? '#ea580c' : 'rgba(28,25,23,0.35)', position: 'relative', zIndex: 1 }}
                   >
                     <NavIcon name={tab.icon} size={21} />
                   </motion.div>
                   <span className="bottom-tab-label"
-                    style={{ color: isActive ? '#ea580c' : 'rgba(255,255,255,0.35)', fontWeight: isActive ? 600 : 500 }}
+                    style={{ color: isActive ? '#ea580c' : 'rgba(28,25,23,0.35)', fontWeight: isActive ? 600 : 500 }}
                   >{tab.label}</span>
                 </>
               )}

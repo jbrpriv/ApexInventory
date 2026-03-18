@@ -12,7 +12,7 @@ function PremiumButton({ children, onClick, disabled, color='#ea580c', style={} 
       onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)}
       whileHover={!disabled?{y:-1, boxShadow:`0 6px 20px ${color}45`}:{}}
       whileTap={!disabled?{scale:0.98}:{}}
-      style={{ position:'relative', overflow:'hidden', padding:'12px 20px', borderRadius:10, fontSize:14, fontWeight:700, background:disabled?`${color}35`:`linear-gradient(135deg,${color},${color}dd)`, border:'none', color:'white', cursor:disabled?'not-allowed':'pointer', transition:'all 0.18s', display:'flex', alignItems:'center', justifyContent:'center', gap:8, fontFamily:'inherit', ...style }}
+      style={{ position:'relative', overflow:'hidden', padding:'12px 20px', borderRadius:10, fontSize:14, fontWeight:700, background:disabled?`${color}35`:`linear-gradient(135deg,${color},${color}dd)`, border:'none', color:'#1C1917', cursor:disabled?'not-allowed':'pointer', transition:'all 0.18s', display:'flex', alignItems:'center', justifyContent:'center', gap:8, fontFamily:'inherit', ...style }}
     >
       <motion.div initial={{x:'-100%'}} animate={{x:hovered&&!disabled?'200%':'-100%'}} transition={{duration:0.9}}
         style={{ position:'absolute', top:0, left:0, width:'60%', height:'100%', background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent)', pointerEvents:'none' }}
@@ -66,11 +66,11 @@ export default function ProfilePage() {
     catch { toast.error('Reset failed'); }
   };
 
-  const inpStyle = { background:'rgba(255,255,255,0.05)', border:'1.5px solid rgba(255,255,255,0.1)', color:'white', padding:'10px 42px 10px 14px', borderRadius:10, fontSize:14, fontFamily:'inherit', outline:'none', width:'100%', transition:'all 0.18s' };
-  const cardStyle = { background:'#0c0c14', border:'1px solid rgba(255,255,255,0.07)', borderRadius:16, padding:'22px 24px', marginBottom:16, boxShadow:'0 2px 12px rgba(0,0,0,0.4)' };
-  const lbl = { display:'block', fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', letterSpacing:1, textTransform:'uppercase', marginBottom:7 };
+  const inpStyle = { background:'rgba(0,0,0,0.05)', border:'1.5px solid rgba(0,0,0,0.1)', color:'#1C1917', padding:'10px 42px 10px 14px', borderRadius:10, fontSize:14, fontFamily:'inherit', outline:'none', width:'100%', transition:'all 0.18s' };
+  const cardStyle = { background:'#FFFFFF', border:'1px solid rgba(0,0,0,0.08)', borderRadius:16, padding:'22px 24px', marginBottom:16, boxShadow:'0 2px 12px rgba(0,0,0,0.4)' };
+  const lbl = { display:'block', fontSize:11, fontWeight:700, color:'rgba(28,25,23,0.45)', letterSpacing:1, textTransform:'uppercase', marginBottom:7 };
   const fi = e => { e.target.style.borderColor='rgba(234,88,12,0.5)'; e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.1)'; e.target.style.background='rgba(234,88,12,0.06)'; };
-  const fo = e => { e.target.style.borderColor='rgba(255,255,255,0.1)'; e.target.style.boxShadow='none'; e.target.style.background='rgba(255,255,255,0.05)'; };
+  const fo = e => { e.target.style.borderColor='rgba(0,0,0,0.1)'; e.target.style.boxShadow='none'; e.target.style.background='rgba(0,0,0,0.05)'; };
 
   return (
     <div className="fade-in" style={{ padding:'28px 20px', maxWidth:540, margin:'0 auto', minHeight:'100vh' }}>
@@ -79,7 +79,7 @@ export default function ProfilePage() {
           <span style={{ width:3, height:16, borderRadius:99, background:'#ea580c', display:'inline-block', boxShadow:'0 0 8px rgba(234,88,12,0.5)' }} />
           <p style={{ fontSize:11, fontWeight:700, color:'#ea580c', letterSpacing:2, textTransform:'uppercase' }}>Account</p>
         </div>
-        <h1 style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:800, color:'white', marginBottom:28, letterSpacing:'-0.5px' }}>Profile</h1>
+        <h1 style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:800, color:'#1C1917', marginBottom:28, letterSpacing:'-0.5px' }}>Profile</h1>
       </motion.div>
 
       <motion.div variants={containerV} initial="hidden" animate="visible">
@@ -88,11 +88,11 @@ export default function ProfilePage() {
         <motion.div variants={cardV} style={{ ...cardStyle, borderTop:'2px solid #ea580c', position:'relative', overflow:'hidden' }}>
           <div style={{ position:'absolute', top:-30, right:-30, width:120, height:120, borderRadius:'50%', background:'#ea580c', opacity:0.04, filter:'blur(30px)', pointerEvents:'none' }} />
           <div style={{ display:'flex', alignItems:'center', gap:16 }}>
-            <div style={{ width:56, height:56, borderRadius:'50%', background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:800, color:'white', fontFamily:'var(--font-display)', boxShadow:'0 4px 20px rgba(234,88,12,0.4)' }}>
+            <div style={{ width:56, height:56, borderRadius:'50%', background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:800, color:'#1C1917', fontFamily:'var(--font-display)', boxShadow:'0 4px 20px rgba(234,88,12,0.4)' }}>
               {(user?.username?.[0]||'A').toUpperCase()}
             </div>
             <div>
-              <div style={{ fontFamily:'var(--font-display)', fontSize:20, fontWeight:800, color:'white' }}>{user?.username||'Admin'}</div>
+              <div style={{ fontFamily:'var(--font-display)', fontSize:20, fontWeight:800, color:'#1C1917' }}>{user?.username||'Admin'}</div>
               <div style={{ fontSize:11, color:'#ea580c', letterSpacing:2, marginTop:2, fontWeight:700, textTransform:'uppercase' }}>Administrator</div>
             </div>
           </div>
@@ -101,8 +101,8 @@ export default function ProfilePage() {
         {/* Change Password */}
         <motion.div variants={cardV} style={cardStyle}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:20 }}>
-            <span style={{ width:3, height:12, borderRadius:99, background:'rgba(255,255,255,0.3)', display:'inline-block' }} />
-            <p style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', letterSpacing:1.5, textTransform:'uppercase' }}>Change Password</p>
+            <span style={{ width:3, height:12, borderRadius:99, background:'rgba(28,25,23,0.35)', display:'inline-block' }} />
+            <p style={{ fontSize:11, fontWeight:700, color:'rgba(28,25,23,0.45)', letterSpacing:1.5, textTransform:'uppercase' }}>Change Password</p>
           </div>
           <form onSubmit={handleChangePassword} style={{ display:'flex', flexDirection:'column', gap:14 }}>
             {[{key:'currentPassword',label:'Current Password'},{key:'newPassword',label:'New Password'},{key:'confirm',label:'Confirm New Password'}].map(f=>(
@@ -110,7 +110,7 @@ export default function ProfilePage() {
                 <label style={lbl}>{f.label}</label>
                 <div style={{ position:'relative' }}>
                   <input type={showPws[f.key]?'text':'password'} value={pwForm[f.key]} onChange={setPw(f.key)} placeholder="••••••••" style={inpStyle} onFocus={fi} onBlur={fo}/>
-                  <button type="button" onClick={()=>setShowPws(p=>({...p,[f.key]:!p[f.key]}))} style={{ position:'absolute', right:11, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'rgba(255,255,255,0.3)', cursor:'pointer', display:'flex', alignItems:'center', padding:4, transition:'color 0.15s', minHeight:'auto', minWidth:'auto' }} onMouseEnter={e=>e.currentTarget.style.color='#ea580c'} onMouseLeave={e=>e.currentTarget.style.color='rgba(255,255,255,0.3)'}>
+                  <button type="button" onClick={()=>setShowPws(p=>({...p,[f.key]:!p[f.key]}))} style={{ position:'absolute', right:11, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'rgba(28,25,23,0.35)', cursor:'pointer', display:'flex', alignItems:'center', padding:4, transition:'color 0.15s', minHeight:'auto', minWidth:'auto' }} onMouseEnter={e=>e.currentTarget.style.color='#ea580c'} onMouseLeave={e=>e.currentTarget.style.color='rgba(28,25,23,0.35)'}>
                     {showPws[f.key]
                       ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                       : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -128,12 +128,12 @@ export default function ProfilePage() {
         {/* Background */}
         <motion.div variants={cardV} style={cardStyle}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
-            <span style={{ width:3, height:12, borderRadius:99, background:'rgba(255,255,255,0.3)', display:'inline-block' }} />
-            <p style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', letterSpacing:1.5, textTransform:'uppercase' }}>Dashboard Background</p>
+            <span style={{ width:3, height:12, borderRadius:99, background:'rgba(28,25,23,0.35)', display:'inline-block' }} />
+            <p style={{ fontSize:11, fontWeight:700, color:'rgba(28,25,23,0.45)', letterSpacing:1.5, textTransform:'uppercase' }}>Dashboard Background</p>
           </div>
-          <p style={{ fontSize:13.5, color:'rgba(255,255,255,0.35)', marginBottom:18, lineHeight:1.55 }}>Customize the hero image on the home page.</p>
+          <p style={{ fontSize:13.5, color:'rgba(28,25,23,0.4)', marginBottom:18, lineHeight:1.55 }}>Customize the hero image on the home page.</p>
           {bgUrl && (
-            <div style={{ borderRadius:12, overflow:'hidden', height:120, marginBottom:16, position:'relative', border:'1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ borderRadius:12, overflow:'hidden', height:120, marginBottom:16, position:'relative', border:'1px solid rgba(0,0,0,0.1)' }}>
               <img src={bgUrl} alt="Background" style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
               <div style={{ position:'absolute', inset:0, background:'linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.6) 100%)', display:'flex', alignItems:'flex-end', padding:'10px 12px' }}>
                 <span style={{ fontSize:11, color:'rgba(255,255,255,0.7)', fontWeight:600, background:'rgba(0,0,0,0.5)', padding:'3px 10px', borderRadius:99 }}>Current Background</span>
@@ -155,7 +155,7 @@ export default function ProfilePage() {
               </motion.button>
             )}
           </div>
-          <p style={{ fontSize:11.5, color:'rgba(255,255,255,0.2)', marginTop:10 }}>JPG, PNG, WEBP · Max 10MB</p>
+          <p style={{ fontSize:11.5, color:'rgba(28,25,23,0.25)', marginTop:10 }}>JPG, PNG, WEBP · Max 10MB</p>
         </motion.div>
 
         {/* Danger Zone */}

@@ -14,12 +14,12 @@ const DarkTip = ({ active, payload, label, color = '#ea580c' }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: '#0c0c14', border: `1px solid ${color}40`,
+      background: '#FFFFFF', border: `1px solid ${color}40`,
       borderRadius: 10, padding: '8px 14px',
       boxShadow: `0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px ${color}20`,
       fontSize: 12,
     }}>
-      <p style={{ color: 'rgba(255,255,255,0.4)', marginBottom: 3, fontSize: 11 }}>{label}</p>
+      <p style={{ color: 'rgba(28,25,23,0.45)', marginBottom: 3, fontSize: 11 }}>{label}</p>
       <p style={{ color, fontWeight: 700, fontSize: 15 }}>{payload[0]?.value}</p>
     </div>
   );
@@ -27,14 +27,14 @@ const DarkTip = ({ active, payload, label, color = '#ea580c' }) => {
 
 /* ── Card / label styles ────────────────────────────────── */
 const card = {
-  background: '#0c0c14',
-  border: '1px solid rgba(255,255,255,0.07)',
+  background: '#FFFFFF',
+  border: '1px solid rgba(0,0,0,0.08)',
   borderRadius: 16, padding: '22px 24px',
-  boxShadow: '0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)',
+  boxShadow: '0 2px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.04)',
 };
 
 const sl = {
-  fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.4)',
+  fontSize: 11, fontWeight: 600, color: 'rgba(28,25,23,0.45)',
   letterSpacing: 1, textTransform: 'uppercase',
   marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8,
 };
@@ -69,9 +69,9 @@ export default function StatsPage() {
   if (loading) return <LoadingScreen message="Loading stats…" />;
 
   const statusData = [
-    { name: 'Unbanned', value: stats.unbanned || 0, fill: '#22c55e' },
-    { name: 'Banned',   value: stats.banned   || 0, fill: '#f43f5e' },
-    { name: 'Sold',     value: stats.sold     || 0, fill: '#f59e0b' },
+    { name: 'Unbanned', value: stats.unbanned || 0, fill: '#16a34a' },
+    { name: 'Banned',   value: stats.banned   || 0, fill: '#e11d48' },
+    { name: 'Sold',     value: stats.sold     || 0, fill: '#d97706' },
     { name: 'Unsold',   value: stats.unsold   || 0, fill: '#94a3b8' },
   ];
 
@@ -99,7 +99,7 @@ export default function StatsPage() {
           <span style={{ width: 3, height: 16, borderRadius: 99, background: '#ea580c', display: 'inline-block', boxShadow: '0 0 8px rgba(234,88,12,0.5)' }} />
           <p style={{ fontSize: 11, fontWeight: 700, color: '#ea580c', letterSpacing: 2, textTransform: 'uppercase' }}>Analytics</p>
         </div>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 800, color: 'white', marginBottom: 32, letterSpacing: '-0.5px' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 800, color: '#1C1917', marginBottom: 32, letterSpacing: '-0.5px' }}>
           Statistics
         </h1>
       </motion.div>
@@ -117,9 +117,9 @@ export default function StatsPage() {
           <div style={sl}>{dot('#a78bfa')} Level Distribution</div>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={levelDist} margin={{ top: 4, right: 4, left: -28, bottom: 0 }} barSize={20}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'rgba(28,25,23,0.35)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'rgba(28,25,23,0.35)' }} axisLine={false} tickLine={false} />
               <Tooltip content={<DarkTip color="#a78bfa" />} />
               <Bar dataKey="count" radius={[5, 5, 0, 0]} animationBegin={200} animationDuration={1000}>
                 {levelDist.map((_, i) => (
@@ -141,9 +141,9 @@ export default function StatsPage() {
                   <stop offset="95%" stopColor="#ea580c" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-              <XAxis dataKey="day" tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }} axisLine={false} tickLine={false} allowDecimals={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" vertical={false} />
+              <XAxis dataKey="day" tick={{ fontSize: 10, fill: 'rgba(28,25,23,0.35)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'rgba(28,25,23,0.35)' }} axisLine={false} tickLine={false} allowDecimals={false} />
               <Tooltip content={<DarkTip color="#ea580c" />} />
               <Area type="monotone" dataKey="count" stroke="#ea580c" strokeWidth={2.5} fill="url(#statsGrad)"
                 dot={{ r: 3, fill: '#ea580c', strokeWidth: 0 }}
@@ -162,14 +162,14 @@ export default function StatsPage() {
               barSize={14} data={radialData} startAngle={180} endAngle={-180}
             >
               <RadialBar dataKey="value" cornerRadius={6}
-                background={{ fill: 'rgba(255,255,255,0.04)' }}
+                background={{ fill: 'rgba(0,0,0,0.04)' }}
                 animationBegin={400} animationDuration={1200}
               />
               <Tooltip
                 formatter={(v, n, p) => [`${v} (${p.payload.pct}%)`, p.payload.name]}
                 contentStyle={{
-                  background: '#0c0c14', border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 10, fontSize: 12, color: 'white',
+                  background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.1)',
+                  borderRadius: 10, fontSize: 12, color: '#1C1917',
                 }}
               />
             </RadialBarChart>
@@ -184,11 +184,11 @@ export default function StatsPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                       <div style={{ width: 6, height: 6, borderRadius: '50%', background: d.fill, boxShadow: `0 0 6px ${d.fill}` }} />
-                      <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>{d.name}</span>
+                      <span style={{ fontSize: 12.5, color: 'rgba(28,25,23,0.55)', fontWeight: 500 }}>{d.name}</span>
                     </div>
                     <span style={{ fontSize: 13, fontWeight: 700, color: d.fill }}>{d.value}</span>
                   </div>
-                  <div style={{ height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 99, overflow: 'hidden' }}>
+                  <div style={{ height: 3, background: 'rgba(0,0,0,0.06)', borderRadius: 99, overflow: 'hidden' }}>
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${pct}%` }}

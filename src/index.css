@@ -1,45 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg:         #0a0a0f;
-  --surface:    #0c0c14;
-  --surface2:   #050507;
-  --surface3:   #111120;
-  --border:     rgba(255,255,255,0.07);
-  --border-md:  rgba(255,255,255,0.13);
+  --bg:         #FAF7F4;
+  --surface:    #FFFFFF;
+  --surface2:   #F5F0EB;
+  --surface3:   #EDE8E3;
+  --border:     rgba(0,0,0,0.08);
+  --border-md:  rgba(0,0,0,0.13);
   --border-hi:  rgba(234,88,12,0.4);
 
   --primary:       #ea580c;
   --primary-h:     #c2410c;
   --primary-light: #fb923c;
-  --primary-pale:  rgba(234,88,12,0.12);
-  --primary-glow:  rgba(234,88,12,0.18);
+  --primary-pale:  rgba(234,88,12,0.1);
+  --primary-glow:  rgba(234,88,12,0.15);
 
-  --emerald:   #22c55e;  --emerald-bg: rgba(34,197,94,0.12);   --emerald-b: rgba(34,197,94,0.3);
-  --rose:      #f43f5e;  --rose-bg:    rgba(244,63,94,0.12);   --rose-b:    rgba(244,63,94,0.3);
-  --amber:     #f59e0b;  --amber-bg:   rgba(245,158,11,0.12);  --amber-b:   rgba(245,158,11,0.3);
-  --sky:       #38bdf8;  --sky-bg:     rgba(56,189,248,0.12);  --sky-b:     rgba(56,189,248,0.3);
-  --violet:    #a78bfa;  --violet-bg:  rgba(167,139,250,0.12); --violet-b:  rgba(167,139,250,0.3);
-  --slate:     #94a3b8;  --slate-bg:   rgba(148,163,184,0.10); --slate-b:   rgba(148,163,184,0.2);
+  --emerald:   #16a34a;  --emerald-bg: rgba(22,163,74,0.1);    --emerald-b: rgba(22,163,74,0.25);
+  --rose:      #e11d48;  --rose-bg:    rgba(225,29,72,0.1);    --rose-b:    rgba(225,29,72,0.25);
+  --amber:     #d97706;  --amber-bg:   rgba(217,119,6,0.1);    --amber-b:   rgba(217,119,6,0.25);
+  --sky:       #0284c7;  --sky-bg:     rgba(2,132,199,0.1);    --sky-b:     rgba(2,132,199,0.25);
+  --violet:    #7c3aed;  --violet-bg:  rgba(124,58,237,0.1);   --violet-b:  rgba(124,58,237,0.25);
+  --slate:     #64748b;  --slate-bg:   rgba(100,116,139,0.08); --slate-b:   rgba(100,116,139,0.2);
 
-  --text:    #ffffff;
-  --text2:   rgba(255,255,255,0.75);
-  --text3:   rgba(255,255,255,0.45);
-  --text4:   rgba(255,255,255,0.28);
-  --text5:   rgba(255,255,255,0.10);
+  --text:    #1C1917;
+  --text2:   #44403C;
+  --text3:   #78716C;
+  --text4:   #A8A29E;
+  --text5:   #D6D3D1;
 
   --nav-h:       62px;
   --radius-sm:   8px;
   --radius:      14px;
   --radius-lg:   20px;
 
-  --sh-xs:   0 1px 2px rgba(0,0,0,0.4);
-  --sh-sm:   0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.35);
-  --sh-md:   0 4px 16px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
-  --sh-lg:   0 10px 40px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.4);
-  --sh-xl:   0 24px 64px rgba(0,0,0,0.7), 0 8px 16px rgba(0,0,0,0.4);
-  --sh-card: 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
-  --sh-glow: 0 0 40px rgba(234,88,12,0.15);
+  --sh-xs:   0 1px 2px rgba(0,0,0,0.06);
+  --sh-sm:   0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --sh-md:   0 4px 16px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+  --sh-lg:   0 10px 40px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.07);
+  --sh-xl:   0 24px 64px rgba(0,0,0,0.14), 0 8px 16px rgba(0,0,0,0.08);
+  --sh-card: 0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05);
+  --sh-glow: 0 0 40px rgba(234,88,12,0.12);
 
   --font-display: 'Outfit', sans-serif;
   --font-body:    'Inter', system-ui, sans-serif;
@@ -60,8 +60,8 @@ body {
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--surface2); }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
 *:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
 ::selection { background: #ea580c; color: white; }
@@ -74,7 +74,6 @@ input, select, textarea, button { font-family: var(--font-body); }
 @keyframes slideDown  { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
 @keyframes spin       { to{transform:rotate(360deg)} }
 @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:.4} }
-@keyframes float      { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
 @keyframes shimmer    { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
 @keyframes countUp    { from{opacity:0;transform:translateY(8px) scale(0.88)} to{opacity:1;transform:translateY(0) scale(1)} }
 
@@ -86,7 +85,6 @@ input, select, textarea, button { font-family: var(--font-body); }
 
 .d1{animation-delay:.05s} .d2{animation-delay:.10s} .d3{animation-delay:.15s}
 .d4{animation-delay:.20s} .d5{animation-delay:.25s} .d6{animation-delay:.30s}
-.d7{animation-delay:.35s} .d8{animation-delay:.40s}
 
 .card {
   background: var(--surface);
@@ -95,11 +93,7 @@ input, select, textarea, button { font-family: var(--font-body); }
   box-shadow: var(--sh-card);
   transition: box-shadow 0.22s, transform 0.22s, border-color 0.22s;
 }
-.card:hover {
-  box-shadow: var(--sh-md);
-  transform: translateY(-2px);
-  border-color: var(--border-md);
-}
+.card:hover { box-shadow: var(--sh-md); transform: translateY(-2px); border-color: var(--border-md); }
 
 table { width: 100%; border-collapse: collapse; }
 thead th {
@@ -114,11 +108,11 @@ thead th {
 }
 thead th:hover { color: var(--primary); }
 tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
-tbody tr:hover { background: rgba(255,255,255,0.025); }
+tbody tr:hover { background: var(--surface2); }
 tbody td { padding: 11px 13px; vertical-align: middle; font-size: 13.5px; color: var(--text2); }
 
 .skeleton {
-  background: linear-gradient(90deg, var(--surface2) 25%, rgba(255,255,255,0.04) 50%, var(--surface2) 75%);
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
   background-size: 800px 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 6px;
@@ -129,28 +123,17 @@ tbody td { padding: 11px 13px; vertical-align: middle; font-size: 13.5px; color:
   font-size: 13.5px; font-weight: 500; color: var(--text3);
   background: transparent; transition: all 0.18s;
 }
-.nav-link:hover  { color: var(--text); background: rgba(255,255,255,0.06); }
+.nav-link:hover  { color: var(--text); background: var(--surface2); }
 .nav-link-active { color: var(--primary)!important; background: var(--primary-pale)!important; font-weight: 600!important; }
-.nav-mobile-link {
-  display: block; text-decoration: none; padding: 13px 24px;
-  font-size: 15px; font-weight: 500; color: var(--text2);
-  background: transparent; border-left: 3px solid transparent; transition: all 0.15s;
-}
-.nav-mobile-link:hover { background: rgba(255,255,255,0.04); color: var(--text); }
-.nav-mobile-link-active { color: var(--primary)!important; background: var(--primary-pale)!important; border-left-color: var(--primary)!important; font-weight: 600!important; }
 
 .btn-primary {
   background: var(--primary); color: white; border: none;
   border-radius: var(--radius-sm); padding: 10px 22px;
   font-size: 14px; font-weight: 600; cursor: pointer;
   transition: background 0.18s, box-shadow 0.18s, transform 0.1s;
-  box-shadow: 0 2px 8px rgba(234,88,12,0.35);
+  box-shadow: 0 2px 8px rgba(234,88,12,0.3);
 }
-.btn-primary:hover {
-  background: var(--primary-h);
-  box-shadow: 0 4px 20px rgba(234,88,12,0.5);
-  transform: translateY(-1px);
-}
+.btn-primary:hover { background: var(--primary-h); box-shadow: 0 4px 20px rgba(234,88,12,0.4); transform: translateY(-1px); }
 
 .account-card {
   background: var(--surface);
@@ -160,12 +143,8 @@ tbody td { padding: 11px 13px; vertical-align: middle; font-size: 13.5px; color:
   box-shadow: var(--sh-sm);
   -webkit-tap-highlight-color: transparent;
   transition: box-shadow 0.18s, transform 0.15s;
-  will-change: transform;
 }
-.account-card:active {
-  transform: scale(0.985);
-  box-shadow: var(--sh-xs);
-}
+.account-card:active { transform: scale(0.985); }
 
 @media (max-width: 768px) {
   .accounts-table  { display: none!important; }
@@ -173,6 +152,4 @@ tbody td { padding: 11px 13px; vertical-align: middle; font-size: 13.5px; color:
   .nav-desktop     { display: none!important; }
   .nav-mobile-btn  { display: flex!important; }
 }
-@media (min-width: 769px) {
-  .nav-mobile-btn { display: none!important; }
-}
+@media (min-width: 769px) { .nav-mobile-btn { display: none!important; } }

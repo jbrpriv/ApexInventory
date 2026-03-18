@@ -83,7 +83,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
       className="modal-overlay"
       style={{
         position:'fixed', inset:0, zIndex:9999,
-        background:'rgba(0,0,0,0.75)', backdropFilter:'blur(8px)',
+        background:'rgba(0,0,0,0.4)', backdropFilter:'blur(8px)',
         display:'flex',
         /* alignItems intentionally removed from inline style — mobile.css sets it */
         justifyContent:'center', padding:20,
