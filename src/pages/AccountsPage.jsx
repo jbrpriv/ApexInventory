@@ -128,13 +128,13 @@ export default function AccountsPage() {
 
   const CopyBtn=({text,id})=>(
     <button type="button" onClick={()=>copyText(text,id)} className="compact-btn"
-      style={{ background:copied===id?'rgba(34,197,94,0.15)':'rgba(0,0,0,0.06)', border:`1px solid ${copied===id?'rgba(34,197,94,0.3)':'rgba(255,255,255,0.12)'}`, color:copied===id?'#22c55e':'rgba(28,25,23,0.35)', borderRadius:5, padding:'2px 7px', fontSize:11, fontWeight:600, cursor:'pointer', transition:'all 0.15s', display:'inline-flex', alignItems:'center', gap:3, minHeight:'auto', minWidth:'auto' }}>
+      style={{ background:copied===id?'rgba(34,197,94,0.15)':'rgba(0,0,0,0.06)', border:`1px solid ${copied===id?'rgba(34,197,94,0.3)':'rgba(0,0,0,0.1)'}`, color:copied===id?'#22c55e':'rgba(28,25,23,0.45)', borderRadius:5, padding:'2px 7px', fontSize:11, fontWeight:600, cursor:'pointer', transition:'all 0.15s', display:'inline-flex', alignItems:'center', gap:3, minHeight:'auto', minWidth:'auto' }}>
       {copied===id?'✓':<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>}
     </button>
   );
   const EyeBtn=({id})=>(
     <button type="button" onClick={()=>togglePw(id)} className="compact-btn"
-      style={{ background:'rgba(0,0,0,0.06)', border:'1px solid rgba(255,255,255,0.12)', color:'rgba(28,25,23,0.35)', borderRadius:5, padding:'2px 7px', fontSize:11, cursor:'pointer', display:'inline-flex', alignItems:'center', minHeight:'auto', minWidth:'auto' }}>
+      style={{ background:'rgba(0,0,0,0.06)', border:'1px solid rgba(0,0,0,0.1)', color:'rgba(28,25,23,0.45)', borderRadius:5, padding:'2px 7px', fontSize:11, cursor:'pointer', display:'inline-flex', alignItems:'center', minHeight:'auto', minWidth:'auto' }}>
       {showPws[id]
         ?<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         :<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -173,10 +173,10 @@ export default function AccountsPage() {
           <AnimatePresence>
             {syncResult && !syncing && (
               <motion.div className="sync-result-banner" initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-8 }} transition={{ type:'spring', stiffness:300, damping:28 }}
-                style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 12px', borderRadius:8, fontSize:12.5, background:syncResult.failed>0?'rgba(245,158,11,0.1)':'rgba(34,197,94,0.1)', border:`1px solid ${syncResult.failed>0?'rgba(245,158,11,0.3)':'rgba(34,197,94,0.3)'}`, color:syncResult.failed>0?'#f59e0b':'#22c55e' }}
+                style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 12px', borderRadius:8, fontSize:12.5, background:syncResult.failed>0?'rgba(245,158,11,0.1)':'rgba(34,197,94,0.1)', border:`1px solid ${syncResult.failed>0?'rgba(245,158,11,0.3)':'rgba(34,197,94,0.3)'}`, color:syncResult.failed>0?'#d97706':'#16a34a' }}
               >
                 <span>✓ {syncResult.synced} updated</span>
-                {syncResult.failed>0&&<span style={{ color:'#f43f5e' }}>· {syncResult.failed} failed</span>}
+                {syncResult.failed>0&&<span style={{ color:'#e11d48' }}>· {syncResult.failed} failed</span>}
                 <span style={{ color:'rgba(28,25,23,0.35)' }}>· {syncResult.total} checked</span>
                 <button type="button" onClick={()=>setSyncResult(null)} style={{ background:'none', border:'none', cursor:'pointer', color:'inherit', opacity:0.5, fontSize:12, padding:0, lineHeight:1, minHeight:'auto', minWidth:'auto' }}>✕</button>
               </motion.div>
@@ -185,12 +185,12 @@ export default function AccountsPage() {
         </div>
       </motion.div>
 
-      {/* Main card */}
+      {/* Main card — FIX: shadow was rgba(0,0,0,0.5) creating a near-black box effect */}
       <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1, type:'spring', stiffness:240, damping:24 }}
-        style={{ background:'#FFFFFF', borderRadius:18, border:'1px solid rgba(0,0,0,0.09)', boxShadow:'0 4px 40px rgba(0,0,0,0.5)', overflow:'hidden' }}
+        style={{ background:'#FFFFFF', borderRadius:18, border:'1px solid rgba(0,0,0,0.09)', boxShadow:'0 4px 24px rgba(0,0,0,0.1)', overflow:'hidden' }}
       >
         {/* Tabs */}
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8, padding:'0 20px', borderBottom:'1px solid rgba(0,0,0,0.08)', background:'rgba(255,255,255,0.02)' }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8, padding:'0 20px', borderBottom:'1px solid rgba(0,0,0,0.08)', background:'rgba(0,0,0,0.01)' }}>
           <div className="tab-scroll" style={{ display:'flex' }}>
             {TABS.map(t=>{
               const active=tab===t.id, col=tabAccent[t.id];
@@ -207,12 +207,12 @@ export default function AccountsPage() {
 
           {selected.length>0&&(
             <div className="bulk-bar" style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 0' }}>
-              <span style={{ fontSize:12.5, fontWeight:600, color:'#ea580c', background:'rgba(234,88,12,0.12)', padding:'4px 10px', borderRadius:99, border:'1px solid rgba(234,88,12,0.2)' }}>{selected.length} selected</span>
+              <span style={{ fontSize:12.5, fontWeight:600, color:'#ea580c', background:'rgba(234,88,12,0.1)', padding:'4px 10px', borderRadius:99, border:'1px solid rgba(234,88,12,0.2)' }}>{selected.length} selected</span>
               {tab==='edit'&&<>
-                <button type="button" onClick={()=>handleBulkStatus('Unbanned')} style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, background:'rgba(34,197,94,0.12)', border:'1px solid rgba(34,197,94,0.25)', color:'#22c55e', cursor:'pointer', minHeight:'auto' }}>✅ Unbanned</button>
-                <button type="button" onClick={()=>handleBulkStatus('Banned')} style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, background:'rgba(244,63,94,0.12)', border:'1px solid rgba(244,63,94,0.25)', color:'#f43f5e', cursor:'pointer', minHeight:'auto' }}>🚫 Banned</button>
+                <button type="button" onClick={()=>handleBulkStatus('Unbanned')} style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, background:'rgba(34,197,94,0.12)', border:'1px solid rgba(34,197,94,0.25)', color:'#16a34a', cursor:'pointer', minHeight:'auto' }}>✅ Unbanned</button>
+                <button type="button" onClick={()=>handleBulkStatus('Banned')} style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, background:'rgba(244,63,94,0.12)', border:'1px solid rgba(244,63,94,0.25)', color:'#e11d48', cursor:'pointer', minHeight:'auto' }}>🚫 Banned</button>
               </>}
-              {tab==='remove'&&<button type="button" onClick={()=>setConfirmDel('bulk')} style={{ padding:'6px 14px', borderRadius:6, fontSize:12, fontWeight:700, background:'#f43f5e', border:'none', color:'#1C1917', cursor:'pointer', boxShadow:'0 2px 8px rgba(244,63,94,0.3)', minHeight:'auto' }}>Delete {selected.length}</button>}
+              {tab==='remove'&&<button type="button" onClick={()=>setConfirmDel('bulk')} style={{ padding:'6px 14px', borderRadius:6, fontSize:12, fontWeight:700, background:'#f43f5e', border:'none', color:'white', cursor:'pointer', boxShadow:'0 2px 8px rgba(244,63,94,0.3)', minHeight:'auto' }}>Delete {selected.length}</button>}
             </div>
           )}
         </div>
@@ -221,7 +221,7 @@ export default function AccountsPage() {
         {tab==='add'&&(
           <div style={{ padding:'64px 24px', display:'flex', flexDirection:'column', alignItems:'center', minHeight:400, background:'radial-gradient(ellipse at center, rgba(234,88,12,0.04) 0%, transparent 70%)' }}>
             <motion.div initial={{ opacity:0, scale:0.85, y:20 }} animate={{ opacity:1, scale:1, y:0 }} transition={{ type:'spring', stiffness:260, damping:22 }}
-              style={{ width:64, height:64, borderRadius:'50%', background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:30, color:'#1C1917', boxShadow:'0 8px 32px rgba(234,88,12,0.4)', marginBottom:20 }}
+              style={{ width:64, height:64, borderRadius:'50%', background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:30, color:'white', boxShadow:'0 8px 32px rgba(234,88,12,0.4)', marginBottom:20 }}
             >+</motion.div>
             <h2 style={{ fontFamily:'var(--font-display)', fontSize:22, fontWeight:800, color:'#1C1917', marginBottom:8 }}>Add New Account</h2>
             <p style={{ color:'rgba(28,25,23,0.45)', fontSize:14, marginBottom:32, textAlign:'center', maxWidth:380 }}>Register a new Apex Legends account with credentials, rank, level, and pricing info.</p>
@@ -249,7 +249,7 @@ export default function AccountsPage() {
             {/* Filters */}
             <div className="filters-row" style={{ display:'flex', gap:10, flexWrap:'wrap', alignItems:'center', marginBottom:16 }}>
               <div style={{ position:'relative', flex:'1 1 200px', minWidth:0 }}>
-                <svg style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:'rgba(255,255,255,0.25)', pointerEvents:'none' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <svg style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:'rgba(28,25,23,0.3)', pointerEvents:'none' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search email, recovery…"
                   style={{ background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.1)', borderRadius:9, padding:'9px 14px 9px 34px', fontSize:13.5, color:'#1C1917', outline:'none', width:'100%', transition:'all 0.18s' }}
                   onFocus={e=>{e.target.style.borderColor='rgba(234,88,12,0.5)';e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.1)';}}
@@ -260,8 +260,9 @@ export default function AccountsPage() {
                 {val:filterStatus,set:setFilterStatus,opts:[{v:'',l:'All Status'},{v:'Unbanned',l:'✅ Unbanned'},{v:'Banned',l:'🚫 Banned'}]},
                 {val:filterSales, set:setFilterSales, opts:[{v:'',l:'All Sales'},{v:'Sold',l:'💰 Sold'},{v:'Unsold',l:'🏪 Unsold'}]},
               ].map((f,i)=>(
+                // FIX: was `color: f.val ? 'white' : ...` — white text on near-white background when active
                 <select key={i} value={f.val} onChange={e=>f.set(e.target.value)}
-                  style={{ background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.1)', borderRadius:9, padding:'9px 12px', fontSize:13.5, color:f.val?'white':'rgba(28,25,23,0.4)', cursor:'pointer', minWidth:135, outline:'none' }}>
+                  style={{ background: f.val ? 'rgba(234,88,12,0.08)' : 'rgba(0,0,0,0.05)', border: `1px solid ${f.val ? 'rgba(234,88,12,0.35)' : 'rgba(0,0,0,0.1)'}`, borderRadius:9, padding:'9px 12px', fontSize:13.5, color: f.val ? '#ea580c' : 'rgba(28,25,23,0.45)', cursor:'pointer', minWidth:135, outline:'none', fontWeight: f.val ? 600 : 400, transition:'all 0.18s' }}>
                   {f.opts.map(o=><option key={o.v} value={o.v} style={{ background:'#FFFFFF',color:'#1C1917' }}>{o.l}</option>)}
                 </select>
               ))}
@@ -285,7 +286,8 @@ export default function AccountsPage() {
                     <table>
                       <thead>
                         <tr>
-                          {(tab==='edit'||tab==='remove')&&<th style={{ width:42, cursor:'default', background:'#050507' }}><input type="checkbox" checked={selected.length===sorted.length&&sorted.length>0} onChange={toggleAll} style={{ cursor:'pointer', width:14, height:14 }}/></th>}
+                          {/* FIX: checkbox th had background:'#050507' (near-black) — removed, uses standard thead style */}
+                          {(tab==='edit'||tab==='remove')&&<th style={{ width:42, cursor:'default' }}><input type="checkbox" checked={selected.length===sorted.length&&sorted.length>0} onChange={toggleAll} style={{ cursor:'pointer', width:14, height:14 }}/></th>}
                           {[{f:'accountStatus',l:'Ban'},{f:'accountEmail',l:'Email'},{f:'apexUsername',l:'Apex ID'},{f:'accountPassword',l:'Password'},{f:'accountRecovery',l:'Recovery'},{f:'accountLevel',l:'Level'},{f:'lv20',l:'Lv 20'},{f:'rank',l:'Rank'},{f:'salesStatus',l:'Sales'},{f:'price',l:'Price'},{f:'lastSynced',l:'Synced'}].map(c=><th key={c.f} onClick={()=>handleSort(c.f)}>{c.l}<SortIcon field={c.f}/></th>)}
                           <th style={{ cursor:'default' }}>Actions</th>
                         </tr>
@@ -306,13 +308,13 @@ export default function AccountsPage() {
                               <td><Lv20Badge level={acc.accountLevel} rfrBought={acc.rfrBought}/></td>
                               <td><RankBadge rank={acc.rank}/></td>
                               <td><SalesBadge status={acc.salesStatus}/></td>
-                              <td><span style={{ fontFamily:'var(--font-mono)', fontWeight:600, color:'#f59e0b', fontSize:13 }}>{acc.price>0?'Rs '+Number(acc.price).toLocaleString('en-PK'):'—'}</span></td>
-                              <td>{acc.lastSynced?<div style={{ fontSize:11.5, color:acc.syncError?'#f43f5e':'#22c55e' }}>{acc.syncError?'⚠ Error':new Date(acc.lastSynced).toLocaleDateString('en-PK',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>:<span style={{ color:'rgba(28,25,23,0.18)', fontSize:12 }}>Never</span>}</td>
+                              <td><span style={{ fontFamily:'var(--font-mono)', fontWeight:600, color:'#d97706', fontSize:13 }}>{acc.price>0?'Rs '+Number(acc.price).toLocaleString('en-PK'):'—'}</span></td>
+                              <td>{acc.lastSynced?<div style={{ fontSize:11.5, color:acc.syncError?'#e11d48':'#16a34a' }}>{acc.syncError?'⚠ Error':new Date(acc.lastSynced).toLocaleDateString('en-PK',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>:<span style={{ color:'rgba(28,25,23,0.18)', fontSize:12 }}>Never</span>}</td>
                               <td>
                                 <div style={{ display:'flex', gap:5 }}>
                                   {tab==='view'&&<button type="button" onClick={()=>setViewAccount(acc)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(234,88,12,0.12)', color:'#ea580c', minHeight:'auto', minWidth:'auto' }}>View</button>}
-                                  {tab==='edit'&&<button type="button" onClick={()=>setEditAccount(acc)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(56,189,248,0.12)', color:'#38bdf8', minHeight:'auto', minWidth:'auto' }}>Edit</button>}
-                                  {tab==='remove'&&<button type="button" onClick={()=>setConfirmDel(acc._id)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(244,63,94,0.12)', color:'#f43f5e', minHeight:'auto', minWidth:'auto' }}>Delete</button>}
+                                  {tab==='edit'&&<button type="button" onClick={()=>setEditAccount(acc)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(56,189,248,0.12)', color:'#0284c7', minHeight:'auto', minWidth:'auto' }}>Edit</button>}
+                                  {tab==='remove'&&<button type="button" onClick={()=>setConfirmDel(acc._id)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(244,63,94,0.12)', color:'#e11d48', minHeight:'auto', minWidth:'auto' }}>Delete</button>}
                                 </div>
                               </td>
                             </motion.tr>
@@ -335,17 +337,18 @@ export default function AccountsPage() {
                         </div>
                         {(tab==='edit'||tab==='remove')&&<input type="checkbox" checked={selected.includes(acc._id)} onChange={()=>toggleSel(acc._id)} style={{ cursor:'pointer', width:18, height:18 }}/>}
                       </div>
-                      <div style={{ fontFamily:'var(--font-mono)', color:'rgba(255,255,255,0.8)', marginBottom:6, wordBreak:'break-all', fontSize:13 }}>{acc.accountEmail}</div>
+                      {/* FIX: was color rgba(255,255,255,0.8) — white text on white card */}
+                      <div style={{ fontFamily:'var(--font-mono)', color:'rgba(28,25,23,0.8)', marginBottom:6, wordBreak:'break-all', fontSize:13 }}>{acc.accountEmail}</div>
                       <div style={{ display:'flex', gap:10, flexWrap:'wrap', marginBottom:12, alignItems:'center' }}>
                         <span style={{ fontFamily:'var(--font-display)', fontWeight:700, color:'#ea580c', fontSize:14 }}>Lv.{acc.accountLevel}</span>
                         <RankBadge rank={acc.rank}/>
-                        {acc.price>0&&<span style={{ color:'#f59e0b', fontWeight:600, fontSize:13, fontFamily:'var(--font-mono)' }}>Rs {Number(acc.price).toLocaleString('en-PK')}</span>}
+                        {acc.price>0&&<span style={{ color:'#d97706', fontWeight:600, fontSize:13, fontFamily:'var(--font-mono)' }}>Rs {Number(acc.price).toLocaleString('en-PK')}</span>}
                         {acc.apexUsername&&<span style={{ fontFamily:'var(--font-mono)', color:'#ea580c', fontSize:12 }}>@{acc.apexUsername}</span>}
                       </div>
                       <div style={{ display:'flex', gap:8 }}>
-                        {tab==='view'&&<button type="button" onClick={()=>setViewAccount(acc)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(234,88,12,0.12)', border:'1px solid rgba(234,88,12,0.2)', color:'#ea580c', fontSize:13, fontWeight:600, cursor:'pointer' }}>View Details</button>}
-                        {tab==='edit'&&<button type="button" onClick={()=>setEditAccount(acc)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(56,189,248,0.12)', border:'1px solid rgba(56,189,248,0.2)', color:'#38bdf8', fontSize:13, fontWeight:600, cursor:'pointer' }}>Edit</button>}
-                        {tab==='remove'&&<button type="button" onClick={()=>setConfirmDel(acc._id)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(244,63,94,0.12)', border:'1px solid rgba(244,63,94,0.2)', color:'#f43f5e', fontSize:13, fontWeight:600, cursor:'pointer' }}>Delete</button>}
+                        {tab==='view'&&<button type="button" onClick={()=>setViewAccount(acc)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.2)', color:'#ea580c', fontSize:13, fontWeight:600, cursor:'pointer' }}>View Details</button>}
+                        {tab==='edit'&&<button type="button" onClick={()=>setEditAccount(acc)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(56,189,248,0.1)', border:'1px solid rgba(56,189,248,0.2)', color:'#0284c7', fontSize:13, fontWeight:600, cursor:'pointer' }}>Edit</button>}
+                        {tab==='remove'&&<button type="button" onClick={()=>setConfirmDel(acc._id)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(244,63,94,0.1)', border:'1px solid rgba(244,63,94,0.2)', color:'#e11d48', fontSize:13, fontWeight:600, cursor:'pointer' }}>Delete</button>}
                       </div>
                     </div>
                   ))}

@@ -66,7 +66,7 @@ export default function Navbar() {
         WebkitBackdropFilter: 'blur(24px) saturate(180%)',
         borderBottom: `1px solid ${scrolled ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.04)'}`,
         display: 'flex', alignItems: 'center', padding: '0 28px', gap: 8,
-        boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.5)' : 'none',
+        boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.08)' : 'none',
         transition: 'all 0.25s',
       }}>
         {/* Logo */}
@@ -79,8 +79,9 @@ export default function Navbar() {
             boxShadow: '0 2px 12px rgba(234,88,12,0.45)',
           }}>A</div>
           <div>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'white', letterSpacing: '-0.3px', lineHeight: 1 }}>Apex</div>
-            <div style={{ fontSize: 8.5, color: 'var(--primary-light)', letterSpacing: 2, fontWeight: 600 }}>MANAGER</div>
+            {/* FIX: was 'white' — now dark so it reads on the cream navbar background */}
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: '#1C1917', letterSpacing: '-0.3px', lineHeight: 1 }}>Apex</div>
+            <div style={{ fontSize: 8.5, color: '#ea580c', letterSpacing: 2, fontWeight: 600 }}>MANAGER</div>
           </div>
         </NavLink>
 
@@ -101,7 +102,7 @@ export default function Navbar() {
             display: 'flex', alignItems: 'center', gap: 8,
             padding: '5px 14px 5px 6px',
             background: 'rgba(0,0,0,0.05)',
-            borderRadius: 99, border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 99, border: '1px solid rgba(0,0,0,0.08)',
           }}>
             <div style={{
               width: 26, height: 26, borderRadius: '50%',
@@ -116,7 +117,7 @@ export default function Navbar() {
             style={{
               padding: '6px 14px', borderRadius: 7, fontSize: 12.5, fontWeight: 600,
               background: 'rgba(244,63,94,0.12)', border: '1px solid rgba(244,63,94,0.25)',
-              color: '#f43f5e', cursor: 'pointer', transition: 'all 0.18s',
+              color: '#e11d48', cursor: 'pointer', transition: 'all 0.18s',
             }}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(244,63,94,0.2)'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(244,63,94,0.12)'; }}
