@@ -42,24 +42,24 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
   };
 
   /* ── Styles ─────────────────────────────────────────── */
-  const inp = { display:'block', width:'100%', background:'#F5F0EB', border:'1.5px solid rgba(0,0,0,0.1)', borderRadius:9, padding:'10px 13px', fontSize:14, color:'#1C1917', fontFamily:'var(--font-body)', outline:'none', transition:'all 0.18s', boxSizing:'border-box' };
-  const inpRO = { ...inp, background:'#EDE8E3', color:'#78716C', cursor:'default' };
-  const lbl = { display:'block', fontSize:11, fontWeight:600, color:'#78716C', letterSpacing:0.8, textTransform:'uppercase', marginBottom:6 };
+  const inp = { display:'block', width:'100%', background:'var(--surface2)', border:'1.5px solid var(--border)', borderRadius:9, padding:'10px 13px', fontSize:14, color:'var(--text)', fontFamily:'var(--font-body)', outline:'none', transition:'all 0.18s', boxSizing:'border-box' };
+  const inpRO = { ...inp, background:'var(--surface3)', color:'var(--text3)', cursor:'default' };
+  const lbl = { display:'block', fontSize:11, fontWeight:600, color:'var(--text3)', letterSpacing:0.8, textTransform:'uppercase', marginBottom:6 };
   const fi = e => { e.target.style.borderColor='#ea580c'; e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.1)'; e.target.style.background='#fff'; };
-  const fo = e => { e.target.style.borderColor='rgba(0,0,0,0.1)'; e.target.style.boxShadow='none'; e.target.style.background='#F5F0EB'; };
+  const fo = e => { e.target.style.borderColor='var(--border)'; e.target.style.boxShadow='none'; e.target.style.background='var(--surface2)'; };
 
   const isBanned = form.accountStatus==='Banned';
 
   const CopyBtn = ({text,id}) => (
     <button type="button" onClick={()=>copyField(text,id)}
-      style={{ background:copied===id?'rgba(22,163,74,0.1)':'rgba(0,0,0,0.06)', border:`1px solid ${copied===id?'rgba(22,163,74,0.3)':'rgba(0,0,0,0.1)'}`, color:copied===id?'#16a34a':'#78716C', borderRadius:5, padding:'3px 8px', fontSize:11, fontWeight:600, cursor:'pointer', transition:'all 0.15s', display:'inline-flex', alignItems:'center', gap:4 }}>
+      style={{ background:copied===id?'rgba(22,163,74,0.1)':'var(--border-sm)', border:`1px solid ${copied===id?'rgba(22,163,74,0.3)':'var(--border)'}`, color:copied===id?'#16a34a':'var(--text3)', borderRadius:5, padding:'3px 8px', fontSize:11, fontWeight:600, cursor:'pointer', transition:'all 0.15s', display:'inline-flex', alignItems:'center', gap:4 }}>
       {copied===id?<><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>Copied</>:<><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</>}
     </button>
   );
 
   const EyeBtn = ({show,onToggle}) => (
     <button type="button" onClick={onToggle}
-      style={{ background:'rgba(0,0,0,0.06)', border:'1px solid rgba(0,0,0,0.1)', color:'#78716C', borderRadius:5, padding:'3px 8px', fontSize:11, fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:3, transition:'all 0.15s' }}>
+      style={{ background:'var(--border-sm)', border:'1px solid var(--border)', color:'var(--text3)', borderRadius:5, padding:'3px 8px', fontSize:11, fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:3, transition:'all 0.15s' }}>
       {show?<><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>Hide</>:<><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Show</>}
     </button>
   );
@@ -83,25 +83,25 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
         initial={{ opacity:0, scale:0.94, y:16 }}
         animate={{ opacity:1, scale:1, y:0 }}
         transition={{ type:'spring', stiffness:300, damping:28 }}
-        style={{ background:'#FFFFFF', borderRadius:20, width:'100%', maxWidth:580, maxHeight:'92vh', overflowY:'auto', boxShadow:'0 24px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.06)' }}
+        style={{ background:'var(--surface)', borderRadius:20, width:'100%', maxWidth:580, maxHeight:'92vh', overflowY:'auto', boxShadow:'0 24px 60px var(--border-md), 0 0 0 1px var(--border-sm)' }}
       >
         {/* Header */}
-        <div style={{ padding:'22px 24px 18px', borderBottom:'1px solid rgba(0,0,0,0.07)', position:'sticky', top:0, background:'#FFFFFF', zIndex:1, borderRadius:'20px 20px 0 0' }}>
+        <div style={{ padding:'22px 24px 18px', borderBottom:'1px solid rgba(0,0,0,0.07)', position:'sticky', top:0, background:'var(--surface)', zIndex:1, borderRadius:'20px 20px 0 0' }}>
           {/* Orange top line */}
           <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:'linear-gradient(90deg,#ea580c,#f97316,transparent)', borderRadius:'20px 20px 0 0' }} />
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
             <div>
-              <div style={{ fontFamily:'var(--font-display)', fontWeight:700, fontSize:19, color:'#1C1917' }}>
+              <div style={{ fontFamily:'var(--font-display)', fontWeight:700, fontSize:19, color:'var(--text)' }}>
                 {isView?'Account Details':isAdd?'Add New Account':'Edit Account'}
               </div>
-              <div style={{ color:'#78716C', fontSize:13, marginTop:3 }}>
+              <div style={{ color:'var(--text3)', fontSize:13, marginTop:3 }}>
                 {isView?'View credentials & info':isAdd?'Fill in account information':'Update account information'}
               </div>
             </div>
             <button type="button" onClick={onClose}
-              style={{ width:32, height:32, borderRadius:8, background:'#F5F0EB', border:'1px solid rgba(0,0,0,0.1)', color:'#78716C', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s', minHeight:'auto', minWidth:'auto' }}
+              style={{ width:32, height:32, borderRadius:8, background:'var(--surface2)', border:'1px solid var(--border)', color:'var(--text3)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s', minHeight:'auto', minWidth:'auto' }}
               onMouseEnter={e=>{e.currentTarget.style.background='rgba(225,29,72,0.1)';e.currentTarget.style.color='#e11d48';e.currentTarget.style.borderColor='rgba(225,29,72,0.25)';}}
-              onMouseLeave={e=>{e.currentTarget.style.background='#F5F0EB';e.currentTarget.style.color='#78716C';e.currentTarget.style.borderColor='rgba(0,0,0,0.1)';}}
+              onMouseLeave={e=>{e.currentTarget.style.background='var(--surface2)';e.currentTarget.style.color='var(--text3)';e.currentTarget.style.borderColor='var(--border)';}}
             >✕</button>
           </div>
 
@@ -127,9 +127,9 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               <div style={{ display:'flex', gap:10 }}>
                 {[{val:'Unbanned',icon:'✅',label:'Unbanned',col:'#16a34a',bg:'rgba(22,163,74,0.08)',border:'rgba(22,163,74,0.3)'},{val:'Banned',icon:'🚫',label:'Banned',col:'#e11d48',bg:'rgba(225,29,72,0.08)',border:'rgba(225,29,72,0.3)'}].map(opt=>{
                   const active=form.accountStatus===opt.val;
-                  return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,accountStatus:opt.val}))} style={{ flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'rgba(0,0,0,0.08)'}`,background:active?opt.bg:'#FAFAF9',cursor:'pointer',transition:'all 0.18s' }}>
+                  return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,accountStatus:opt.val}))} style={{ flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'var(--border)'}`,background:active?opt.bg:'#FAFAF9',cursor:'pointer',transition:'all 0.18s' }}>
                     <div style={{fontSize:18,marginBottom:4}}>{opt.icon}</div>
-                    <div style={{fontSize:12.5,fontWeight:600,color:active?opt.col:'#A8A29E'}}>{opt.label}</div>
+                    <div style={{fontSize:12.5,fontWeight:600,color:active?opt.col:'var(--text4)'}}>{opt.label}</div>
                   </button>;
                 })}
               </div>
@@ -142,9 +142,9 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               <div style={{display:'flex',gap:10}}>
                 {[{val:'Unsold',icon:'🏪',label:'Unsold',col:'#64748b',bg:'rgba(100,116,139,0.08)',border:'rgba(100,116,139,0.25)'},{val:'Sold',icon:'💰',label:'Sold',col:'#d97706',bg:'rgba(217,119,6,0.08)',border:'rgba(217,119,6,0.3)'}].map(opt=>{
                   const active=form.salesStatus===opt.val;
-                  return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,salesStatus:opt.val}))} style={{flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'rgba(0,0,0,0.08)'}`,background:active?opt.bg:'#FAFAF9',cursor:'pointer',transition:'all 0.18s'}}>
+                  return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,salesStatus:opt.val}))} style={{flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'var(--border)'}`,background:active?opt.bg:'#FAFAF9',cursor:'pointer',transition:'all 0.18s'}}>
                     <div style={{fontSize:18,marginBottom:4}}>{opt.icon}</div>
-                    <div style={{fontSize:12.5,fontWeight:600,color:active?opt.col:'#A8A29E'}}>{opt.label}</div>
+                    <div style={{fontSize:12.5,fontWeight:600,color:active?opt.col:'var(--text4)'}}>{opt.label}</div>
                   </button>;
                 })}
               </div>
@@ -171,7 +171,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
 
           <div>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
-              <label style={{...lbl,marginBottom:0}}>Additional Password <span style={{fontSize:10,color:'#A8A29E',fontWeight:400,textTransform:'none',letterSpacing:0}}>(optional)</span></label>
+              <label style={{...lbl,marginBottom:0}}>Additional Password <span style={{fontSize:10,color:'var(--text4)',fontWeight:400,textTransform:'none',letterSpacing:0}}>(optional)</span></label>
               <div style={{display:'flex',gap:6}}>
                 {(form.additionalAccountPassword||!isView)&&<EyeBtn show={showAddPw} onToggle={()=>setShowAddPw(p=>!p)}/>}
                 {isView&&form.additionalAccountPassword&&<CopyBtn text={form.additionalAccountPassword} id="addpw"/>}
@@ -200,13 +200,13 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
           <div>
             <label style={lbl}>Rank</label>
             {isView
-              ? <div style={{padding:'10px 14px',background:'#F5F0EB',borderRadius:9,border:'1px solid rgba(0,0,0,0.08)',display:'flex',alignItems:'center',gap:10}}><RankBadge rank={form.rank}/></div>
+              ? <div style={{padding:'10px 14px',background:'var(--surface2)',borderRadius:9,border:'1px solid var(--border)',display:'flex',alignItems:'center',gap:10}}><RankBadge rank={form.rank}/></div>
               : <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:6}}>
                   {RANKS.map(r=>{
                     const tier=(r==='Unranked'||r==='Master'||r==='Predator')?r:r.split(' ')[0];
                     const tc=TIER_BTN[tier]||TIER_BTN.Unranked;
                     const sel=form.rank===r;
-                    return <button key={r} type="button" onClick={()=>setForm(f=>({...f,rank:r}))} style={{ padding:'7px 4px',borderRadius:7,fontSize:10.5,fontWeight:sel?700:500,border:`1px solid ${sel?tc.selBorder:'rgba(0,0,0,0.08)'}`,background:sel?tc.selBg:'#FAFAF9',color:sel?tc.sel:'#A8A29E',cursor:'pointer',transition:'all 0.15s',textAlign:'center' }}>{r}</button>;
+                    return <button key={r} type="button" onClick={()=>setForm(f=>({...f,rank:r}))} style={{ padding:'7px 4px',borderRadius:7,fontSize:10.5,fontWeight:sel?700:500,border:`1px solid ${sel?tc.selBorder:'var(--border)'}`,background:sel?tc.selBg:'#FAFAF9',color:sel?tc.sel:'var(--text4)',cursor:'pointer',transition:'all 0.15s',textAlign:'center' }}>{r}</button>;
                   })}
                 </div>
             }
@@ -219,16 +219,16 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
                   <span style={{fontSize:20}}>{form.rfrBought?'💰':'🎮'}</span>
                   <div>
                     <div style={{fontSize:14,fontWeight:600,color:form.rfrBought?'#92400e':'#16a34a'}}>{form.rfrBought?'RFR Bought':'Made It Myself'}</div>
-                    <div style={{fontSize:12.5,color:'#78716C',marginTop:2}}>{form.rfrBought?'Level 20 was purchased / boosted':'Reached level 20 through normal gameplay'}</div>
+                    <div style={{fontSize:12.5,color:'var(--text3)',marginTop:2}}>{form.rfrBought?'Level 20 was purchased / boosted':'Reached level 20 through normal gameplay'}</div>
                   </div>
                 </div>
               : <div style={{display:'flex',gap:10}}>
                   {[{val:false,icon:'🎮',label:'Made It Myself',sub:'Natural gameplay',col:'#16a34a',bg:'rgba(22,163,74,0.08)',border:'rgba(22,163,74,0.3)'},{val:true,icon:'💰',label:'RFR Bought',sub:'Purchased/boosted',col:'#92400e',bg:'rgba(217,119,6,0.08)',border:'rgba(217,119,6,0.3)'}].map(opt=>{
                     const sel=form.rfrBought===opt.val;
-                    return <button key={String(opt.val)} type="button" onClick={()=>setForm(f=>({...f,rfrBought:opt.val}))} style={{flex:1,padding:'12px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${sel?opt.border:'rgba(0,0,0,0.08)'}`,background:sel?opt.bg:'#FAFAF9',cursor:'pointer',transition:'all 0.18s'}}>
+                    return <button key={String(opt.val)} type="button" onClick={()=>setForm(f=>({...f,rfrBought:opt.val}))} style={{flex:1,padding:'12px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${sel?opt.border:'var(--border)'}`,background:sel?opt.bg:'#FAFAF9',cursor:'pointer',transition:'all 0.18s'}}>
                       <div style={{fontSize:18,marginBottom:4}}>{opt.icon}</div>
-                      <div style={{fontSize:12.5,fontWeight:600,color:sel?opt.col:'#A8A29E'}}>{opt.label}</div>
-                      <div style={{fontSize:11,color:'#A8A29E',marginTop:2}}>{opt.sub}</div>
+                      <div style={{fontSize:12.5,fontWeight:600,color:sel?opt.col:'var(--text4)'}}>{opt.label}</div>
+                      <div style={{fontSize:11,color:'var(--text4)',marginTop:2}}>{opt.sub}</div>
                     </button>;
                   })}
                 </div>
@@ -252,14 +252,14 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
               <div style={{width:3,height:14,background:'#ea580c',borderRadius:2}}/>
               <span style={{...lbl,marginBottom:0}}>Apex Sync</span>
-              <span style={{fontSize:11.5,color:'#A8A29E',fontWeight:400,textTransform:'none',letterSpacing:0}}>Used for auto level & rank updates</span>
+              <span style={{fontSize:11.5,color:'var(--text4)',fontWeight:400,textTransform:'none',letterSpacing:0}}>Used for auto level & rank updates</span>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 90px',gap:12}}>
               <div>
                 <label style={lbl}>Apex Username</label>
                 {isView
                   ? <div style={{...inpRO,fontFamily:'var(--font-mono)',fontSize:13,display:'flex',alignItems:'center',gap:8}}>
-                      {form.apexUsername?<><span style={{color:'#ea580c'}}>{form.apexUsername}</span>{account?.lastSynced&&<span style={{fontSize:10,color:'#A8A29E',marginLeft:'auto'}}>Synced {new Date(account.lastSynced).toLocaleString('en-PK',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>}</>:<span style={{color:'#A8A29E'}}>Not set</span>}
+                      {form.apexUsername?<><span style={{color:'#ea580c'}}>{form.apexUsername}</span>{account?.lastSynced&&<span style={{fontSize:10,color:'var(--text4)',marginLeft:'auto'}}>Synced {new Date(account.lastSynced).toLocaleString('en-PK',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>}</>:<span style={{color:'var(--text4)'}}>Not set</span>}
                     </div>
                   : <input value={form.apexUsername} onChange={set('apexUsername')} placeholder="e.g. tashbottle7001" style={inp} onFocus={fi} onBlur={fo}/>
                 }
@@ -273,15 +273,15 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
             </div>
           </div>
 
-          {isView&&account?.createdAt&&<div style={{padding:'8px 12px',background:'#F5F0EB',borderRadius:7,fontSize:12,color:'#78716C',border:'1px solid rgba(0,0,0,0.07)'}}>Added {new Date(account.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>}
+          {isView&&account?.createdAt&&<div style={{padding:'8px 12px',background:'var(--surface2)',borderRadius:7,fontSize:12,color:'var(--text3)',border:'1px solid rgba(0,0,0,0.07)'}}>Added {new Date(account.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>}
 
           {isView&&<motion.button type="button" onClick={onClose} whileHover={{ y:-1, boxShadow:'0 6px 20px rgba(234,88,12,0.35)' }} whileTap={{ scale:0.97 }}
             style={{width:'100%',padding:'12px',borderRadius:10,fontSize:14,fontWeight:700,background:'linear-gradient(135deg,#ea580c,#f97316)',border:'none',color:'white',cursor:'pointer',boxShadow:'0 2px 10px rgba(234,88,12,0.3)',transition:'all 0.18s',position:'relative',overflow:'hidden'}}>Close</motion.button>}
 
           {!isView&&<div style={{display:'flex',gap:10,paddingTop:4}}>
-            <button type="button" onClick={onClose} style={{flex:1,padding:'12px',borderRadius:10,fontSize:14,fontWeight:600,background:'#F5F0EB',border:'1px solid rgba(0,0,0,0.1)',color:'#78716C',cursor:'pointer',transition:'all 0.15s'}}
+            <button type="button" onClick={onClose} style={{flex:1,padding:'12px',borderRadius:10,fontSize:14,fontWeight:600,background:'var(--surface2)',border:'1px solid var(--border)',color:'var(--text3)',cursor:'pointer',transition:'all 0.15s'}}
               onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(234,88,12,0.3)';e.currentTarget.style.color='#ea580c';}}
-              onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,0,0,0.1)';e.currentTarget.style.color='#78716C';}}>Cancel</button>
+              onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--text3)';}}>Cancel</button>
             <motion.button type="button" onClick={handleSave} disabled={saving}
               whileHover={!saving?{y:-1,boxShadow:`0 6px 20px ${isEdit?'rgba(2,132,199,0.4)':'rgba(234,88,12,0.4)'}`}:{}}
               whileTap={!saving?{scale:0.97}:{}}

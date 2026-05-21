@@ -256,7 +256,7 @@ export default function Dashboard() {
                 <div style={{ color: '#00e5a0', fontSize: 12, letterSpacing: 6, textTransform: 'uppercase', marginBottom: 8, opacity: 0.8 }}>
                   APEX LEGENDS INVENTORY
                 </div>
-                <h1 style={{ margin: 0, fontSize: 'clamp(28px, 6vw, 52px)', fontWeight: 900, letterSpacing: 2, color: '#ffffff', textShadow: '0 0 40px rgba(0,229,160,0.3)' }}>
+                <h1 style={{ margin: 0, fontSize: 'clamp(28px, 6vw, 52px)', fontWeight: 900, letterSpacing: 2, color: 'var(--surface)', textShadow: '0 0 40px rgba(0,229,160,0.3)' }}>
                   Welcome Back
                 </h1>
                 <div style={{ color: '#00e5a0', fontSize: 'clamp(16px, 3vw, 22px)', fontWeight: 600, letterSpacing: 3, marginTop: 4 }}>

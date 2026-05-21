@@ -24,7 +24,7 @@ function PremiumButton({ children, onClick, disabled, loading, style = {} }) {
         width: '100%', padding: '14px',
         borderRadius: 12, fontSize: 15, fontWeight: 700,
         background: disabled ? 'rgba(234,88,12,0.3)' : 'linear-gradient(135deg,#ea580c,#f97316)',
-        border: 'none', color: '#1C1917',
+        border: 'none', color: 'var(--text)',
         cursor: disabled ? 'not-allowed' : 'pointer',
         boxShadow: disabled ? 'none' : '0 4px 20px rgba(234,88,12,0.35)',
         transition: 'background 0.18s',
@@ -84,9 +84,9 @@ export default function LoginPage() {
 
   const inpStyle = {
     width: '100%', padding: '13px 14px 13px 42px',
-    background: '#F5F0EB',
-    border: '1.5px solid rgba(0,0,0,0.1)',
-    color: '#1C1917', borderRadius: 11,
+    background: 'var(--surface2)',
+    border: '1.5px solid var(--border)',
+    color: 'var(--text)', borderRadius: 11,
     fontFamily: 'inherit', fontSize: 15, outline: 'none',
     transition: 'all 0.18s', WebkitAppearance: 'none',
   };
@@ -94,14 +94,14 @@ export default function LoginPage() {
   return (
     <div className="login-root" style={{
       minHeight: '100dvh', display: 'flex',
-      position: 'relative', background: '#FAF7F4',
+      position: 'relative', background: 'var(--bg)',
       fontFamily: "'Inter', sans-serif", overflow: 'hidden',
       alignItems: 'center', justifyContent: 'center',
     }}>
       <style>{`
         @keyframes spin{to{transform:rotate(360deg)}}
-        input::placeholder{color:#A8A29E!important}
-        input:-webkit-autofill{-webkit-box-shadow:0 0 0 999px #F5F0EB inset!important;-webkit-text-fill-color:#1C1917!important;}
+        input::placeholder{color:var(--text4)!important}
+        input:-webkit-autofill{-webkit-box-shadow:0 0 0 999px var(--surface2) inset!important;-webkit-text-fill-color:var(--text)!important;}
       `}</style>
 
       {ParticleBackground && <ParticleBackground />}
@@ -117,9 +117,9 @@ export default function LoginPage() {
       <div className="login-brand" style={{ position:'relative', zIndex:2, flex:1, display:'flex', flexDirection:'column', justifyContent:'center', padding:'60px 64px' }}>
         <motion.div initial={{ opacity:0, x:-30 }} animate={{ opacity:1, x:0 }} transition={{ delay:0.1, type:'spring', stiffness:200, damping:26 }}>
           <div style={{ display:'inline-flex', alignItems:'center', gap:12, marginBottom:56 }}>
-            <div style={{ width:44, height:44, borderRadius:11, background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Outfit',sans-serif", fontSize:20, fontWeight:800, color:'#1C1917', boxShadow:'0 4px 20px rgba(234,88,12,0.45)' }}>A</div>
+            <div style={{ width:44, height:44, borderRadius:11, background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Outfit',sans-serif", fontSize:20, fontWeight:800, color:'var(--text)', boxShadow:'0 4px 20px rgba(234,88,12,0.45)' }}>A</div>
             <div>
-              <div style={{ fontFamily:"'Outfit',sans-serif", fontSize:18, fontWeight:700, color:'#1C1917', lineHeight:1 }}>Apex Manager</div>
+              <div style={{ fontFamily:"'Outfit',sans-serif", fontSize:18, fontWeight:700, color:'var(--text)', lineHeight:1 }}>Apex Manager</div>
               <div style={{ fontSize:10, color:'rgba(28,25,23,0.4)', letterSpacing:2, marginTop:2 }}>ACCOUNT INVENTORY</div>
             </div>
           </div>
@@ -129,7 +129,7 @@ export default function LoginPage() {
             <span style={{ fontSize:11, fontWeight:600, color:'#fb923c', letterSpacing:2, textTransform:'uppercase' }}>Command Your Accounts</span>
           </div>
 
-          <h1 style={{ fontFamily:"'Outfit',sans-serif", fontSize:'clamp(32px,4vw,52px)', fontWeight:800, color:'#1C1917', lineHeight:1.05, letterSpacing:'-1px', marginBottom:18 }}>
+          <h1 style={{ fontFamily:"'Outfit',sans-serif", fontSize:'clamp(32px,4vw,52px)', fontWeight:800, color:'var(--text)', lineHeight:1.05, letterSpacing:'-1px', marginBottom:18 }}>
             Manage your<br />
             <span style={{ color:'transparent', backgroundClip:'text', WebkitBackgroundClip:'text', backgroundImage:'linear-gradient(135deg,#ea580c,#fb923c)' }}>Apex Legends</span><br />
             accounts
@@ -141,7 +141,7 @@ export default function LoginPage() {
           <div style={{ display:'flex', gap:10, marginTop:40, flexWrap:'wrap' }}>
             {['Account Tracking','Sales Management','Apex Sync','Stats & Analytics'].map((f, i) => (
               <motion.span key={f} initial={{ opacity:0, scale:0.88 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0.5+i*0.07, type:'spring', stiffness:300 }}
-                style={{ padding:'5px 14px', borderRadius:99, fontSize:12, fontWeight:500, background:'rgba(0,0,0,0.06)', border:'1px solid rgba(0,0,0,0.1)', color:'rgba(255,255,255,0.6)' }}
+                style={{ padding:'5px 14px', borderRadius:99, fontSize:12, fontWeight:500, background:'var(--border-sm)', border:'1px solid var(--border)', color:'rgba(255,255,255,0.6)' }}
               >{f}</motion.span>
             ))}
           </div>
@@ -154,19 +154,19 @@ export default function LoginPage() {
           initial={{ opacity:0, y:60 }}
           animate={{ opacity:1, y:0 }}
           transition={{ type:'spring', stiffness:280, damping:30, delay:0.15 }}
-          style={{ background:'#FFFFFF', border:'1px solid rgba(0,0,0,0.1)', borderRadius:22, padding:'36px 32px', width:'100%', maxWidth:400, boxShadow:'0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,0,0,0.05)' }}
+          style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:22, padding:'36px 32px', width:'100%', maxWidth:400, boxShadow:'0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px var(--hover-bg)' }}
         >
           {/* Top accent line */}
           <div style={{ height:2, background:'linear-gradient(90deg,#ea580c,#f97316,transparent)', borderRadius:99, marginBottom:28 }} />
 
           {/* Mobile logo */}
           <div className="show-mobile" style={{ display:'none', alignItems:'center', gap:10, marginBottom:24 }}>
-            <div style={{ width:36, height:36, borderRadius:9, background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, fontWeight:800, color:'#1C1917' }}>A</div>
-            <div style={{ fontFamily:"'Outfit',sans-serif", fontSize:16, fontWeight:700, color:'#1C1917' }}>Apex Manager</div>
+            <div style={{ width:36, height:36, borderRadius:9, background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, fontWeight:800, color:'var(--text)' }}>A</div>
+            <div style={{ fontFamily:"'Outfit',sans-serif", fontSize:16, fontWeight:700, color:'var(--text)' }}>Apex Manager</div>
           </div>
 
           <div style={{ marginBottom:28 }}>
-            <h2 style={{ fontFamily:"'Outfit',sans-serif", fontSize:24, fontWeight:800, color:'#1C1917', marginBottom:6, letterSpacing:'-0.5px' }}>Welcome back</h2>
+            <h2 style={{ fontFamily:"'Outfit',sans-serif", fontSize:24, fontWeight:800, color:'var(--text)', marginBottom:6, letterSpacing:'-0.5px' }}>Welcome back</h2>
             <p style={{ color:'rgba(28,25,23,0.45)', fontSize:14 }}>Sign in to access your dashboard</p>
           </div>
 
@@ -180,7 +180,7 @@ export default function LoginPage() {
                 </div>
                 <input type="text" value={form.username} onChange={set('username')} placeholder="Your username" autoFocus autoComplete="username" style={inpStyle}
                   onFocus={e=>{e.target.style.borderColor='rgba(234,88,12,0.6)';e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.12)';e.target.style.background='#fff';}}
-                  onBlur={e=>{e.target.style.borderColor='rgba(0,0,0,0.1)';e.target.style.boxShadow='none';e.target.style.background='#F5F0EB';}}
+                  onBlur={e=>{e.target.style.borderColor='var(--border)';e.target.style.boxShadow='none';e.target.style.background='var(--surface2)';}}
                 />
               </div>
             </motion.div>
@@ -194,7 +194,7 @@ export default function LoginPage() {
                 </div>
                 <input type={showPw?'text':'password'} value={form.password} onChange={set('password')} placeholder="Your password" autoComplete="current-password" style={{...inpStyle,paddingRight:44}}
                   onFocus={e=>{e.target.style.borderColor='rgba(234,88,12,0.6)';e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.12)';e.target.style.background='#fff';}}
-                  onBlur={e=>{e.target.style.borderColor='rgba(0,0,0,0.1)';e.target.style.boxShadow='none';e.target.style.background='#F5F0EB';}}
+                  onBlur={e=>{e.target.style.borderColor='var(--border)';e.target.style.boxShadow='none';e.target.style.background='var(--surface2)';}}
                 />
                 <button type="button" onClick={()=>setShowPw(p=>!p)} style={{ position:'absolute', right:12, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'rgba(28,25,23,0.6)', cursor:'pointer', padding:4, display:'flex', alignItems:'center', minHeight:'auto', minWidth:'auto' }}>
                   {showPw

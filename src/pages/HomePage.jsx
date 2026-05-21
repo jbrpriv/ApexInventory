@@ -16,8 +16,8 @@ import {
 const LightTooltip = ({ active, payload, label, color = '#ea580c' }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background:'#fff', border:`1px solid ${color}30`, borderRadius:10, padding:'8px 14px', boxShadow:`0 8px 24px rgba(0,0,0,0.1)`, fontSize:12 }}>
-      <p style={{ color:'#78716C', marginBottom:4, fontSize:11 }}>{label}</p>
+    <div style={{ background:'#fff', border:`1px solid ${color}30`, borderRadius:10, padding:'8px 14px', boxShadow:`0 8px 24px var(--border)`, fontSize:12 }}>
+      <p style={{ color:'var(--text3)', marginBottom:4, fontSize:11 }}>{label}</p>
       <p style={{ color, fontWeight:700, fontSize:16 }}>{payload[0]?.value}</p>
     </div>
   );
@@ -51,8 +51,8 @@ function PremiumButton({ children, style = {}, onClick, disabled }) {
   );
 }
 
-const card = { background:'#FFFFFF', border:'1px solid rgba(0,0,0,0.08)', borderRadius:16, padding:'22px 24px', boxShadow:'0 2px 12px rgba(0,0,0,0.07)' };
-const sl = { fontSize:11, fontWeight:600, color:'#78716C', letterSpacing:1, textTransform:'uppercase', marginBottom:18, display:'flex', alignItems:'center', gap:8 };
+const card = { background:'var(--surface)', border:'1px solid var(--border)', borderRadius:16, padding:'22px 24px', boxShadow:'0 2px 12px rgba(0,0,0,0.07)' };
+const sl = { fontSize:11, fontWeight:600, color:'var(--text3)', letterSpacing:1, textTransform:'uppercase', marginBottom:18, display:'flex', alignItems:'center', gap:8 };
 const dot = c => <span style={{ width:6, height:6, borderRadius:'50%', background:c, display:'inline-block', flexShrink:0 }} />;
 
 const chartsV = { hidden:{}, visible:{ transition:{ staggerChildren:0.1 } } };
@@ -118,7 +118,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div style={{ background:'#FAF7F4', minHeight:'100vh' }}>
+    <div style={{ background:'var(--bg)', minHeight:'100vh' }}>
 
       {/* ── HERO ──────────────────────────────────────────── */}
       <div ref={heroRef} className="hero-section" style={{
@@ -151,7 +151,7 @@ export default function HomePage() {
             <motion.h1 className="hero-title"
               initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }}
               transition={{ delay:0.15, type:'spring', stiffness:180, damping:22 }}
-              style={{ fontFamily:'var(--font-display)', fontWeight:800, fontSize:'clamp(38px,6vw,72px)', color:bgUrl?'white':'#1C1917', lineHeight:1.05, letterSpacing:'-1.5px', marginBottom:16, maxWidth:720 }}
+              style={{ fontFamily:'var(--font-display)', fontWeight:800, fontSize:'clamp(38px,6vw,72px)', color:bgUrl?'white':'var(--text)', lineHeight:1.05, letterSpacing:'-1.5px', marginBottom:16, maxWidth:720 }}
             >
               Welcome back,{' '}
               <span style={{ color:'transparent', backgroundClip:'text', WebkitBackgroundClip:'text', backgroundImage:'linear-gradient(135deg,#ea580c,#f97316)' }}>
@@ -161,7 +161,7 @@ export default function HomePage() {
           </motion.div>
 
           <motion.p initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.3, duration:0.5 }}
-            style={{ color:bgUrl?'rgba(255,255,255,0.7)':'#78716C', fontSize:14.5, letterSpacing:0.2, marginBottom:40 }}
+            style={{ color:bgUrl?'rgba(255,255,255,0.7)':'var(--text3)', fontSize:14.5, letterSpacing:0.2, marginBottom:40 }}
           >
             {new Date().toLocaleDateString('en-PK',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
           </motion.p>
@@ -173,7 +173,7 @@ export default function HomePage() {
             <div style={{ display:'flex', gap:14, marginBottom:40, justifyContent:'center', flexWrap:'wrap' }}>
               <PremiumButton onClick={() => navigate('/accounts')}>View Accounts →</PremiumButton>
               <motion.button onClick={() => navigate('/stats')} whileHover={{ y:-2, borderColor:'rgba(0,0,0,0.3)' }} whileTap={{ scale:0.97 }}
-                style={{ padding:'12px 28px', borderRadius:12, fontSize:14, fontWeight:700, background:'rgba(255,255,255,0.7)', backdropFilter:'blur(8px)', border:'1px solid rgba(0,0,0,0.12)', color:'#1C1917', cursor:'pointer', fontFamily:'inherit', transition:'border-color 0.2s' }}>
+                style={{ padding:'12px 28px', borderRadius:12, fontSize:14, fontWeight:700, background:'rgba(255,255,255,0.7)', backdropFilter:'blur(8px)', border:'1px solid var(--border-md)', color:'var(--text)', cursor:'pointer', fontFamily:'inherit', transition:'border-color 0.2s' }}>
                 View Stats
               </motion.button>
             </div>
@@ -183,13 +183,13 @@ export default function HomePage() {
                 <motion.div key={s.label} className="hero-float-card"
                   initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }}
                   transition={{ delay:0.5+i*0.1, type:'spring', stiffness:240, damping:22 }}
-                  whileHover={{ y:-5, boxShadow:`0 12px 40px rgba(0,0,0,0.15), 0 0 0 1px ${s.col}20` }}
-                  style={{ background:'rgba(255,255,255,0.85)', backdropFilter:'blur(16px)', border:`1px solid ${s.col}20`, borderRadius:16, padding:'14px 20px', display:'flex', alignItems:'center', gap:12, boxShadow:'0 4px 24px rgba(0,0,0,0.1)', minWidth:150, cursor:'default' }}
+                  whileHover={{ y:-5, boxShadow:`0 12px 40px var(--border-md), 0 0 0 1px ${s.col}20` }}
+                  style={{ background:'rgba(255,255,255,0.85)', backdropFilter:'blur(16px)', border:`1px solid ${s.col}20`, borderRadius:16, padding:'14px 20px', display:'flex', alignItems:'center', gap:12, boxShadow:'0 4px 24px var(--border)', minWidth:150, cursor:'default' }}
                 >
                   <div style={{ width:38, height:38, borderRadius:10, background:`${s.col}12`, border:`1px solid ${s.col}25`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:18 }}>{s.icon}</div>
                   <div>
                     <div style={{ fontSize:22, fontWeight:700, color:s.col, lineHeight:1, fontFamily:'var(--font-display)' }}><AnimatedNumber value={s.value} color={s.col}/></div>
-                    <div style={{ fontSize:11, color:'#78716C', marginTop:3, fontWeight:500 }}>{s.label}</div>
+                    <div style={{ fontSize:11, color:'var(--text3)', marginTop:3, fontWeight:500 }}>{s.label}</div>
                   </div>
                 </motion.div>
               ))}
@@ -202,8 +202,8 @@ export default function HomePage() {
           style={{ position:'absolute', bottom:28, left:'50%', transform:'translateX(-50%)', zIndex:3 }}
         >
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, opacity:0.35 }}>
-            <span style={{ fontSize:9, color:bgUrl?'white':'#78716C', letterSpacing:2.5, textTransform:'uppercase' }}>Scroll</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={bgUrl?'white':'#78716C'} strokeWidth="2" strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            <span style={{ fontSize:9, color:bgUrl?'white':'var(--text3)', letterSpacing:2.5, textTransform:'uppercase' }}>Scroll</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={bgUrl?'white':'var(--text3)'} strokeWidth="2" strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
         </motion.div>
       </div>
@@ -238,7 +238,7 @@ export default function HomePage() {
         <motion.div className="dashboard-grid" variants={chartsV} initial="hidden" whileInView="visible" viewport={{ once:true, margin:'-60px' }}
           style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(290px,1fr))', gap:16 }}
         >
-          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 32px rgba(0,0,0,0.12)' }} style={card}>
+          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 32px var(--border-md)' }} style={card}>
             <div style={sl}>{dot('#16a34a')} Ban Status</div>
             <ResponsiveContainer width="100%" height={160}>
               <PieChart><Pie data={banData} cx="50%" cy="50%" innerRadius={44} outerRadius={68} dataKey="value" paddingAngle={banData[0].value>0&&banData[1].value>0?3:0} animationBegin={200} animationDuration={900}>
@@ -246,11 +246,11 @@ export default function HomePage() {
                 <Tooltip content={<LightTooltip color="#16a34a"/>}/></PieChart>
             </ResponsiveContainer>
             <div style={{ display:'flex', justifyContent:'center', gap:20, marginTop:4 }}>
-              {banData.map(d=><div key={d.name} style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:7, height:7, borderRadius:'50%', background:d.color }}/><span style={{ fontSize:12, color:'#78716C', fontWeight:500 }}>{d.name}</span><span style={{ fontSize:13, fontWeight:700, color:d.color }}>{d.value}</span></div>)}
+              {banData.map(d=><div key={d.name} style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:7, height:7, borderRadius:'50%', background:d.color }}/><span style={{ fontSize:12, color:'var(--text3)', fontWeight:500 }}>{d.name}</span><span style={{ fontSize:13, fontWeight:700, color:d.color }}>{d.value}</span></div>)}
             </div>
           </motion.div>
 
-          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 32px rgba(0,0,0,0.12)' }} style={card}>
+          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 32px var(--border-md)' }} style={card}>
             <div style={sl}>{dot('#d97706')} Sales Status</div>
             <ResponsiveContainer width="100%" height={160}>
               <PieChart><Pie data={saleData} cx="50%" cy="50%" innerRadius={44} outerRadius={68} dataKey="value" paddingAngle={saleData[0].value>0&&saleData[1].value>0?3:0} animationBegin={300} animationDuration={900}>
@@ -258,31 +258,31 @@ export default function HomePage() {
                 <Tooltip content={<LightTooltip color="#d97706"/>}/></PieChart>
             </ResponsiveContainer>
             <div style={{ display:'flex', justifyContent:'center', gap:20, marginTop:4 }}>
-              {saleData.map(d=><div key={d.name} style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:7, height:7, borderRadius:'50%', background:d.color }}/><span style={{ fontSize:12, color:'#78716C', fontWeight:500 }}>{d.name}</span><span style={{ fontSize:13, fontWeight:700, color:d.color }}>{d.value}</span></div>)}
+              {saleData.map(d=><div key={d.name} style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:7, height:7, borderRadius:'50%', background:d.color }}/><span style={{ fontSize:12, color:'var(--text3)', fontWeight:500 }}>{d.name}</span><span style={{ fontSize:13, fontWeight:700, color:d.color }}>{d.value}</span></div>)}
             </div>
           </motion.div>
 
-          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 32px rgba(0,0,0,0.12)' }} style={card}>
+          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 32px var(--border-md)' }} style={card}>
             <div style={sl}>{dot('#7c3aed')} Level Distribution</div>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart data={levelDist} margin={{ top:4, right:4, left:-28, bottom:0 }} barSize={18}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false}/>
-                <XAxis dataKey="name" tick={{ fontSize:10, fill:'#A8A29E' }} axisLine={false} tickLine={false}/>
-                <YAxis tick={{ fontSize:10, fill:'#A8A29E' }} axisLine={false} tickLine={false}/>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--hover-bg)" vertical={false}/>
+                <XAxis dataKey="name" tick={{ fontSize:10, fill:'var(--text4)' }} axisLine={false} tickLine={false}/>
+                <YAxis tick={{ fontSize:10, fill:'var(--text4)' }} axisLine={false} tickLine={false}/>
                 <Tooltip content={<LightTooltip color="#7c3aed"/>}/>
                 <Bar dataKey="count" fill="#7c3aed" radius={[5,5,0,0]} animationBegin={400} animationDuration={1000}/>
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
 
-          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 32px rgba(0,0,0,0.12)' }} style={{ ...card, gridColumn:'span 2' }} data-span2>
+          <motion.div variants={chartV} whileHover={{ y:-3, boxShadow:'0 8px 32px var(--border-md)' }} style={{ ...card, gridColumn:'span 2' }} data-span2>
             <div style={sl}>{dot('#ea580c')} Activity — Last 7 Days</div>
             <ResponsiveContainer width="100%" height={140}>
               <AreaChart data={recent} margin={{ top:4, right:4, left:-28, bottom:0 }}>
                 <defs><linearGradient id="actGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#ea580c" stopOpacity={0.18}/><stop offset="95%" stopColor="#ea580c" stopOpacity={0.01}/></linearGradient></defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false}/>
-                <XAxis dataKey="day" tick={{ fontSize:10, fill:'#A8A29E' }} axisLine={false} tickLine={false}/>
-                <YAxis tick={{ fontSize:10, fill:'#A8A29E' }} axisLine={false} tickLine={false} allowDecimals={false}/>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--hover-bg)" vertical={false}/>
+                <XAxis dataKey="day" tick={{ fontSize:10, fill:'var(--text4)' }} axisLine={false} tickLine={false}/>
+                <YAxis tick={{ fontSize:10, fill:'var(--text4)' }} axisLine={false} tickLine={false} allowDecimals={false}/>
                 <Tooltip content={<LightTooltip color="#ea580c"/>}/>
                 <Area type="monotone" dataKey="count" stroke="#ea580c" strokeWidth={2.5} fill="url(#actGrad)" dot={{ r:3, fill:'#ea580c', strokeWidth:0 }} activeDot={{ r:5, fill:'#ea580c' }} animationBegin={500} animationDuration={1200}/>
               </AreaChart>

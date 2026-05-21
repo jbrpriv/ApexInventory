@@ -38,7 +38,7 @@ export default function StatCard({ label, value, colorKey = 'primary', delay = 0
       onMouseLeave={() => setHovered(false)}
     >
       <div style={{
-        background: hovered ? c.bg : '#FFFFFF',
+        background: hovered ? c.bg : 'var(--surface)',
         border: `1px solid ${hovered ? c.border : 'var(--border)'}`,
         borderRadius: 14, padding: '18px 16px',
         transition: 'all 0.22s', cursor: 'default',
@@ -60,7 +60,7 @@ export default function StatCard({ label, value, colorKey = 'primary', delay = 0
           position: 'relative', zIndex: 1,
         }}>{animated}</div>
         <div style={{
-          fontSize: 11.5, color: '#78716C', fontWeight: 500,
+          fontSize: 11.5, color: 'var(--text3)', fontWeight: 500,
           marginTop: 5, letterSpacing: 0.3, position: 'relative', zIndex: 1,
         }}>{label}</div>
         <div style={{

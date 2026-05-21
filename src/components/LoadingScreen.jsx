@@ -14,7 +14,7 @@ export default function LoadingScreen({ message = 'Loading...' }) {
           boxShadow: '0 0 20px rgba(234,88,12,0.2)',
         }} />
       </div>
-      <div style={{ color: '#78716C', fontSize: 13.5, fontWeight: 500 }}>{message}</div>
+      <div style={{ color: 'var(--text3)', fontSize: 13.5, fontWeight: 500 }}>{message}</div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );

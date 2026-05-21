@@ -23,7 +23,7 @@ export default function AboutPage() {
           <span style={{ width:3, height:16, borderRadius:99, background:'#ea580c', display:'inline-block', boxShadow:'0 0 8px rgba(234,88,12,0.5)' }} />
           <p style={{ fontSize:11, fontWeight:700, color:'#ea580c', letterSpacing:2, textTransform:'uppercase' }}>About</p>
         </div>
-        <h1 style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:800, color:'#1C1917', marginBottom:10, letterSpacing:'-0.5px' }}>Apex Manager</h1>
+        <h1 style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:800, color:'var(--text)', marginBottom:10, letterSpacing:'-0.5px' }}>Apex Manager</h1>
         <p style={{ color:'rgba(28,25,23,0.55)', fontSize:15, marginBottom:40, lineHeight:1.7, maxWidth:560 }}>
           A private account management system for Apex Legends accounts. Track status, manage credentials, auto-sync rank and level, and monitor sales — all in one clean dashboard.
         </p>
@@ -36,12 +36,12 @@ export default function AboutPage() {
         {FEATURES.map(f => (
           <motion.div key={f.title} variants={itemV}
             whileHover={{ y:-3, borderColor:`${f.color}40`, boxShadow:`0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px ${f.color}20` }}
-            style={{ background:'#FFFFFF', border:'1px solid rgba(0,0,0,0.08)', borderRadius:14, padding:'18px 20px', display:'flex', gap:14, alignItems:'flex-start', cursor:'default', transition:'border-color 0.2s', position:'relative', overflow:'hidden' }}
+            style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:14, padding:'18px 20px', display:'flex', gap:14, alignItems:'flex-start', cursor:'default', transition:'border-color 0.2s', position:'relative', overflow:'hidden' }}
           >
             <div style={{ position:'absolute', top:-20, right:-20, width:80, height:80, borderRadius:'50%', background:f.color, opacity:0.04, filter:'blur(20px)', pointerEvents:'none' }} />
             <div style={{ width:40, height:40, borderRadius:10, background:`${f.color}15`, border:`1px solid ${f.color}25`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:20, flexShrink:0 }}>{f.icon}</div>
             <div>
-              <div style={{ fontSize:14.5, fontWeight:700, color:'#1C1917', marginBottom:4 }}>{f.title}</div>
+              <div style={{ fontSize:14.5, fontWeight:700, color:'var(--text)', marginBottom:4 }}>{f.title}</div>
               <div style={{ fontSize:13, color:'rgba(28,25,23,0.45)', lineHeight:1.55 }}>{f.desc}</div>
             </div>
           </motion.div>
@@ -50,7 +50,7 @@ export default function AboutPage() {
 
       {/* Tech Stack */}
       <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5 }}
-        style={{ background:'#FFFFFF', border:'1px solid rgba(0,0,0,0.08)', borderRadius:16, padding:'22px 24px' }}
+        style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:16, padding:'22px 24px' }}
       >
         <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
           <span style={{ width:3, height:14, borderRadius:99, background:'#ea580c', display:'inline-block' }} />

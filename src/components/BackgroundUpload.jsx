@@ -38,7 +38,7 @@ export default function BackgroundUpload({ currentUrl, onUpdate }) {
         border: '1.5px solid rgba(255,255,255,0.35)',
         color: 'white', fontSize: 13.5, fontWeight: 600,
         cursor: 'pointer', transition: 'all 0.18s',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
+        boxShadow: '0 2px 12px var(--border-md)',
         letterSpacing: 0.2,
       }}
         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.26)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}

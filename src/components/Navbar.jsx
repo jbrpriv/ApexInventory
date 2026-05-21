@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { motion } from 'framer-motion';
 
 const NavIcon = ({ name, size = 22 }) => {
@@ -38,6 +39,7 @@ const ALL_LINKS = [
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
@@ -76,9 +78,9 @@ export default function Navbar() {
           : 'transparent',
         backdropFilter: scrolled ? 'blur(24px) saturate(180%)' : 'none',
         WebkitBackdropFilter: scrolled ? 'blur(24px) saturate(180%)' : 'none',
-        borderBottom: `1px solid ${scrolled ? 'rgba(0,0,0,0.08)' : 'transparent'}`,
+        borderBottom: `1px solid ${scrolled ? 'var(--border)' : 'transparent'}`,
         display: 'flex', alignItems: 'center', padding: '0 28px', gap: 8,
-        boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.08)' : 'none',
+        boxShadow: scrolled ? '0 4px 30px var(--border)' : 'none',
         transition: 'all 0.25s',
       }}>
         {/* Logo */}
@@ -92,12 +94,12 @@ export default function Navbar() {
           }}>A</div>
           <div>
             {/* FIX: was 'white' — now dark so it reads on the cream navbar background */}
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: '#1C1917', letterSpacing: '-0.3px', lineHeight: 1 }}>Apex</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1 }}>Apex</div>
             <div style={{ fontSize: 8.5, color: '#ea580c', letterSpacing: 2, fontWeight: 600 }}>MANAGER</div>
           </div>
         </NavLink>
 
-        <div style={{ width: 1, height: 18, background: 'rgba(0,0,0,0.1)', marginRight: 4 }} />
+        <div style={{ width: 1, height: 18, background: 'var(--border)', marginRight: 4 }} />
 
         {/* Links */}
         <div style={{ display: 'flex', gap: 2, flex: 1 }}>
@@ -110,35 +112,39 @@ export default function Navbar() {
 
         {/* Actions (Avatar Pill + Theme) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'relative' }} ref={menuRef}>
-          {/* Light/Dark Mode toggle placeholder */}
-          <button style={{
-            width:34, height:34, borderRadius:8, background:'rgba(0,0,0,0.03)', border:'1px solid rgba(0,0,0,0.08)',
-            display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:'#44403C', transition:'all 0.15s'
-          }} onMouseEnter={e=>e.currentTarget.style.background='rgba(0,0,0,0.06)'} onMouseLeave={e=>e.currentTarget.style.background='rgba(0,0,0,0.03)'}>
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          {/* Light/Dark Mode toggle */}
+          <button onClick={toggleTheme} style={{
+            width:34, height:34, borderRadius:8, background:'var(--bg)', border:'1px solid var(--border)',
+            display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:'var(--text2)', transition:'all 0.15s'
+          }} onMouseEnter={e=>e.currentTarget.style.background='var(--hover-bg)'} onMouseLeave={e=>e.currentTarget.style.background='var(--bg)'}>
+            {theme === 'dark' ? (
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            ) : (
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            )}
           </button>
 
           {/* Avatar Dropdown Button */}
           <button onClick={() => setMenuOpen(m => !m)} style={{
             display:'flex', alignItems:'center', gap:8,
             padding:'3px 12px 3px 3px', borderRadius:99, background:'transparent',
-            border:'1px solid rgba(0,0,0,0.15)', cursor:'pointer', transition:'all 0.15s'
-          }} onMouseEnter={e=>e.currentTarget.style.background='rgba(0,0,0,0.04)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+            border:'1px solid var(--border-md)', cursor:'pointer', transition:'all 0.15s'
+          }} onMouseEnter={e=>e.currentTarget.style.background='var(--hover-bg)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
             <div style={{
               width:28, height:28, borderRadius:'50%',
               background:'linear-gradient(135deg, #0284c7, #0369a1)',
               display:'flex', alignItems:'center', justifyContent:'center',
               fontSize:13, fontWeight:800, color:'white',
             }}>{initial}</div>
-            <span style={{ fontSize:14, fontWeight:600, color:'#44403C' }}>{user?.username || 'Admin'}</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#78716C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: menuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
+            <span style={{ fontSize:14, fontWeight:600, color:'var(--text2)' }}>{user?.username || 'Admin'}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: menuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           
           {menuOpen && (
-            <div style={{ position:'absolute', top:'100%', right:0, marginTop:10, background:'#FFFFFF', border:'1px solid rgba(0,0,0,0.08)', borderRadius:16, width:220, display:'flex', flexDirection:'column', boxShadow:'0 12px 40px rgba(0,0,0,0.12)', overflow:'hidden' }}>
-              <div style={{ padding:'16px 16px 12px', borderBottom:'1px solid rgba(0,0,0,0.06)' }}>
-                <div style={{ fontSize:14, fontWeight:800, color:'#1C1917' }}>{user?.username || 'Admin'} {user?.role || ''}</div>
-                <div style={{ fontSize:12, color:'#78716C', marginTop:2 }}>{user?.email || 'admin@apex.com'}</div>
+            <div style={{ position:'absolute', top:'100%', right:0, marginTop:10, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:16, width:220, display:'flex', flexDirection:'column', boxShadow:'0 12px 40px var(--border-md)', overflow:'hidden' }}>
+              <div style={{ padding:'16px 16px 12px', borderBottom:'1px solid var(--border-sm)' }}>
+                <div style={{ fontSize:14, fontWeight:800, color:'var(--text)' }}>{user?.username || 'Admin'} {user?.role || ''}</div>
+                <div style={{ fontSize:12, color:'var(--text3)', marginTop:2 }}>{user?.email || 'admin@apex.com'}</div>
               </div>
               <div style={{ padding: '8px' }}>
                 <button onClick={() => { setMenuOpen(false); logout(); navigate('/login'); }} style={{ width:'100%', display:'flex', alignItems:'center', gap:10, textAlign:'left', padding:'10px 12px', background:'transparent', border:'none', borderRadius:8, cursor:'pointer', fontSize:14, fontWeight:600, color:'#e11d48', transition:'all 0.15s' }} onMouseEnter={e=>e.currentTarget.style.background='rgba(225,29,72,0.08)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
@@ -153,8 +159,8 @@ export default function Navbar() {
         <button onClick={() => setOpen(o => !o)} className="nav-mobile-btn"
           style={{
             marginLeft: 'auto',
-            background: open ? 'var(--primary-pale)' : 'rgba(0,0,0,0.06)',
-            border: `1px solid ${open ? 'var(--primary)' : 'rgba(0,0,0,0.1)'}`,
+            background: open ? 'var(--primary-pale)' : 'var(--border-sm)',
+            border: `1px solid ${open ? 'var(--primary)' : 'var(--border)'}`,
             color: open ? 'var(--primary)' : 'var(--text2)',
             width: 36, height: 36, borderRadius: 8,
             display: 'none', alignItems: 'center', justifyContent: 'center',
@@ -170,8 +176,8 @@ export default function Navbar() {
         background: 'rgba(250,247,244,0.97)',
         backdropFilter: 'blur(24px) saturate(200%)',
         WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-        borderTop: '0.5px solid rgba(0,0,0,0.1)',
-        boxShadow: '0 -1px 0 rgba(0,0,0,0.06), 0 -4px 20px rgba(0,0,0,0.08)',
+        borderTop: '0.5px solid var(--border)',
+        boxShadow: '0 -1px 0 var(--border-sm), 0 -4px 20px var(--border)',
         paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)',
       }}>
         <style>{`.bottom-nav-inner{display:flex;width:100%;align-items:stretch;}`}</style>

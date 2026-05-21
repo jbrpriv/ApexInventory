@@ -6,8 +6,10 @@
   --surface2:   #F5F0EB;
   --surface3:   #EDE8E3;
   --border:     rgba(0,0,0,0.08);
+  --border-sm:  rgba(0,0,0,0.06);
   --border-md:  rgba(0,0,0,0.13);
   --border-hi:  rgba(234,88,12,0.4);
+  --hover-bg:   rgba(0,0,0,0.04);
 
   --primary:       #ea580c;
   --primary-h:     #c2410c;
@@ -46,6 +48,33 @@
   --font-mono:    'JetBrains Mono', monospace;
 }
 
+.dark {
+  --bg:         #050507;
+  --surface:    #111114;
+  --surface2:   #1C1C21;
+  --surface3:   #2A2A31;
+  
+  --border:     rgba(255,255,255,0.08);
+  --border-sm:  rgba(255,255,255,0.04);
+  --border-md:  rgba(255,255,255,0.12);
+  --border-hi:  rgba(234,88,12,0.6);
+  --hover-bg:   rgba(255,255,255,0.05);
+
+  --text:       #FAFAF9;
+  --text2:      #D6D3D1;
+  --text3:      #A8A29E;
+  --text4:      #78716C;
+  --text5:      #44403C;
+
+  --sh-xs:   0 1px 2px rgba(0,0,0,0.5);
+  --sh-sm:   0 1px 3px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4);
+  --sh-md:   0 4px 16px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.4);
+  --sh-lg:   0 10px 40px rgba(0,0,0,0.7), 0 4px 8px rgba(0,0,0,0.5);
+  --sh-xl:   0 24px 64px rgba(0,0,0,0.8), 0 8px 16px rgba(0,0,0,0.6);
+  --sh-card: 0 1px 3px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06);
+  --sh-glow: 0 0 40px rgba(234,88,12,0.25);
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
@@ -67,6 +96,7 @@ body {
 ::selection { background: #ea580c; color: white; }
 
 input, select, textarea, button { font-family: var(--font-body); }
+input { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
 
 @keyframes fadeUp     { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeIn     { from{opacity:0} to{opacity:1} }

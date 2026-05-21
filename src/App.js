@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import LoadingScreen from './components/LoadingScreen';
 import ParticleBackground from './components/ParticleBackground';
@@ -19,7 +20,7 @@ function ProtectedLayout() {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return (
-    <div style={{ minHeight: '100vh', background: '#FAF7F4', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', position: 'relative' }}>
       <ParticleBackground />
       <Navbar />
       {/*
@@ -68,21 +69,23 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Toaster position="top-right" toastOptions={{
-          style: {
-            background: 'white', color: 'var(--text)',
-            border: '1px solid var(--border)',
-            fontFamily: "'Inter', sans-serif",
-            fontSize: 13.5, borderRadius: 10,
-            boxShadow: 'var(--sh-md)',
-          },
-          success: { iconTheme: { primary: '#059669', secondary: 'white' } },
-          error:   { iconTheme: { primary: '#E11D48', secondary: 'white' } },
-        }} />
-        <AppRoutes />
-      </BrowserRouter>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster position="top-right" toastOptions={{
+            style: {
+              background: 'var(--surface)', color: 'var(--text)',
+              border: '1px solid var(--border)',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 13.5, borderRadius: 10,
+              boxShadow: 'var(--sh-md)',
+            },
+            success: { iconTheme: { primary: '#059669', secondary: 'white' } },
+            error:   { iconTheme: { primary: '#E11D48', secondary: 'white' } },
+          }} />
+          <AppRoutes />
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

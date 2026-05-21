@@ -9,7 +9,7 @@ function PremiumButton({ children, onClick, disabled, style={}, color='#ea580c' 
       onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)}
       whileHover={!disabled?{y:-2, boxShadow:`0 8px 28px ${color}50`}:{}}
       whileTap={!disabled?{scale:0.98}:{}}
-      style={{ position:'relative', overflow:'hidden', padding:'12px 20px', borderRadius:10, fontSize:13.5, fontWeight:700, background:disabled?`${color}40`:`linear-gradient(135deg,${color},${color}dd)`, border:'none', color:'#1C1917', cursor:disabled?'not-allowed':'pointer', boxShadow:disabled?'none':`0 2px 12px ${color}40`, transition:'background 0.18s', display:'flex', alignItems:'center', justifyContent:'center', gap:8, width:'100%', marginTop:4, fontFamily:'inherit', ...style }}
+      style={{ position:'relative', overflow:'hidden', padding:'12px 20px', borderRadius:10, fontSize:13.5, fontWeight:700, background:disabled?`${color}40`:`linear-gradient(135deg,${color},${color}dd)`, border:'none', color:'var(--text)', cursor:disabled?'not-allowed':'pointer', boxShadow:disabled?'none':`0 2px 12px ${color}40`, transition:'background 0.18s', display:'flex', alignItems:'center', justifyContent:'center', gap:8, width:'100%', marginTop:4, fontFamily:'inherit', ...style }}
     >
       <motion.div initial={{x:'-100%'}} animate={{x:hovered&&!disabled?'200%':'-100%'}} transition={{duration:0.9}}
         style={{ position:'absolute', top:0, left:0, width:'60%', height:'100%', background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent)', pointerEvents:'none' }}
@@ -47,7 +47,7 @@ export default function ExportPage() {
           <span style={{ width:3, height:16, borderRadius:99, background:'#ea580c', display:'inline-block', boxShadow:'0 0 8px rgba(234,88,12,0.5)' }} />
           <p style={{ fontSize:11, fontWeight:700, color:'#ea580c', letterSpacing:2, textTransform:'uppercase' }}>Data</p>
         </div>
-        <h1 style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:800, color:'#1C1917', marginBottom:8, letterSpacing:'-0.5px' }}>Export Accounts</h1>
+        <h1 style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:800, color:'var(--text)', marginBottom:8, letterSpacing:'-0.5px' }}>Export Accounts</h1>
         <p style={{ color:'rgba(28,25,23,0.45)', fontSize:14, marginBottom:36 }}>Download all account data in your preferred format.</p>
       </motion.div>
 
@@ -59,7 +59,7 @@ export default function ExportPage() {
           return (
             <motion.div key={ex.id} variants={cardV}
               whileHover={{ y:-3, boxShadow:'0 12px 40px rgba(0,0,0,0.6)' }}
-              style={{ background:'#FFFFFF', border:`1px solid ${ex.color}25`, borderRadius:16, padding:'26px 24px', display:'flex', flexDirection:'column', gap:16, position:'relative', overflow:'hidden' }}
+              style={{ background:'var(--surface)', border:`1px solid ${ex.color}25`, borderRadius:16, padding:'26px 24px', display:'flex', flexDirection:'column', gap:16, position:'relative', overflow:'hidden' }}
             >
               {/* Top accent */}
               <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,${ex.color},transparent)` }} />
@@ -74,11 +74,11 @@ export default function ExportPage() {
               </div>
 
               <div>
-                <div style={{ fontFamily:'var(--font-display)', fontSize:18, fontWeight:700, color:'#1C1917', marginBottom:6 }}>{ex.title}</div>
+                <div style={{ fontFamily:'var(--font-display)', fontSize:18, fontWeight:700, color:'var(--text)', marginBottom:6 }}>{ex.title}</div>
                 <div style={{ fontSize:13.5, color:'rgba(28,25,23,0.5)', lineHeight:1.65 }}>{ex.desc}</div>
               </div>
 
-              <div style={{ fontSize:12, color:'rgba(28,25,23,0.35)', background:'rgba(0,0,0,0.04)', padding:'8px 12px', borderRadius:8, fontFamily:'var(--font-mono)', border:'1px solid rgba(0,0,0,0.06)' }}>{ex.meta}</div>
+              <div style={{ fontSize:12, color:'rgba(28,25,23,0.35)', background:'var(--hover-bg)', padding:'8px 12px', borderRadius:8, fontFamily:'var(--font-mono)', border:'1px solid var(--border-sm)' }}>{ex.meta}</div>
 
               <PremiumButton onClick={()=>download(ex.id,ex.path)} disabled={isLoading} color={ex.color}>
                 {isLoading
