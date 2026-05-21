@@ -76,10 +76,10 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
   };
 
   const modal = (
-    <div className="modal-overlay" onClick={onClose}
+    <div className="modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
       style={{ position:'fixed', inset:0, zIndex:9999, background:'rgba(0,0,0,0.35)', backdropFilter:'blur(6px)', display:'flex', justifyContent:'center', padding:20 }}
     >
-      <motion.div className="modal-box" onClick={e=>e.stopPropagation()}
+      <motion.div className="modal-box"
         initial={{ opacity:0, scale:0.94, y:16 }}
         animate={{ opacity:1, scale:1, y:0 }}
         transition={{ type:'spring', stiffness:300, damping:28 }}

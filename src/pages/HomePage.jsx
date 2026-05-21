@@ -5,6 +5,7 @@ import StatCard from '../components/StatCard';
 import LoadingScreen from '../components/LoadingScreen';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { gsap } from 'gsap';
+import { useNavigate } from 'react-router-dom';
 import {
   ResponsiveContainer, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip,
@@ -57,6 +58,7 @@ const chartV  = { hidden:{ opacity:0, y:28 }, visible:{ opacity:1, y:0, transiti
 
 export default function HomePage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats,     setStats]     = useState({});
   const [levelDist, setLevelDist] = useState([]);
   const [recent,    setRecent]    = useState([]);
@@ -158,8 +160,8 @@ export default function HomePage() {
             initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.35 }}
           >
             <div style={{ display:'flex', gap:14, marginBottom:40, justifyContent:'center', flexWrap:'wrap' }}>
-              <PremiumButton>View Accounts →</PremiumButton>
-              <motion.button whileHover={{ y:-2, borderColor:'rgba(0,0,0,0.3)' }} whileTap={{ scale:0.97 }}
+              <PremiumButton onClick={() => navigate('/accounts')}>View Accounts →</PremiumButton>
+              <motion.button onClick={() => navigate('/stats')} whileHover={{ y:-2, borderColor:'rgba(0,0,0,0.3)' }} whileTap={{ scale:0.97 }}
                 style={{ padding:'12px 28px', borderRadius:12, fontSize:14, fontWeight:700, background:'rgba(255,255,255,0.7)', backdropFilter:'blur(8px)', border:'1px solid rgba(0,0,0,0.12)', color:'#1C1917', cursor:'pointer', fontFamily:'inherit', transition:'border-color 0.2s' }}>
                 View Stats
               </motion.button>

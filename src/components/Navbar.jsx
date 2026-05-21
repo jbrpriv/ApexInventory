@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -42,6 +42,18 @@ export default function Navbar() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [menuOpen]);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 10);
@@ -96,32 +108,36 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* User + logout */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '5px 14px 5px 6px',
-            background: 'rgba(0,0,0,0.05)',
-            borderRadius: 99, border: '1px solid rgba(0,0,0,0.08)',
-          }}>
-            <div style={{
-              width: 26, height: 26, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #ea580c, #f97316)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 11, fontWeight: 700, color: 'white',
-            }}>{initial}</div>
-            <span style={{ fontSize: 13, fontWeight: 500, color: '#44403C' }}>{user?.username}</span>
-          </div>
-          <button
-            onClick={() => { logout(); navigate('/login'); }}
-            style={{
-              padding: '6px 14px', borderRadius: 7, fontSize: 12.5, fontWeight: 600,
-              background: 'rgba(244,63,94,0.12)', border: '1px solid rgba(244,63,94,0.25)',
-              color: '#e11d48', cursor: 'pointer', transition: 'all 0.18s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(244,63,94,0.2)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(244,63,94,0.12)'; }}
-          >Sign Out</button>
+        {/* Actions (Hamburger + Theme) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'relative' }} ref={menuRef}>
+          {/* Light/Dark Mode toggle placeholder */}
+          <button style={{
+            width:34, height:34, borderRadius:8, background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.08)',
+            display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:'#44403C', transition:'all 0.15s'
+          }} onMouseEnter={e=>e.currentTarget.style.background='rgba(0,0,0,0.08)'} onMouseLeave={e=>e.currentTarget.style.background='rgba(0,0,0,0.05)'}>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </button>
+
+          {/* Hamburger Menu */}
+          <button onClick={() => setMenuOpen(m => !m)} style={{
+            width:34, height:34, borderRadius:8, background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.08)',
+            display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:'#44403C', transition:'all 0.15s'
+          }} onMouseEnter={e=>e.currentTarget.style.background='rgba(0,0,0,0.08)'} onMouseLeave={e=>e.currentTarget.style.background='rgba(0,0,0,0.05)'}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          
+          {menuOpen && (
+            <div style={{ position:'absolute', top:'100%', right:0, marginTop:10, background:'#FFFFFF', border:'1px solid rgba(0,0,0,0.08)', borderRadius:12, padding:6, width:170, display:'flex', flexDirection:'column', gap:4, boxShadow:'0 10px 40px rgba(0,0,0,0.08)' }}>
+              <div style={{ padding:'6px 10px 8px', borderBottom:'1px solid rgba(0,0,0,0.05)', marginBottom:4 }}>
+                <div style={{ fontSize:13, fontWeight:600, color:'#1C1917' }}>{user?.username}</div>
+                <div style={{ fontSize:11, color:'#ea580c', fontWeight:600, marginTop:2 }}>ADMIN</div>
+              </div>
+              <button onClick={() => { setMenuOpen(false); navigate('/accounts?add=true'); }} style={{ textAlign:'left', padding:'8px 10px', background:'transparent', border:'none', borderRadius:6, cursor:'pointer', fontSize:13.5, fontWeight:500, color:'#44403C', transition:'all 0.15s' }} onMouseEnter={e=>e.currentTarget.style.background='rgba(0,0,0,0.04)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Add Account</button>
+              <button onClick={() => { setMenuOpen(false); navigate('/accounts'); }} style={{ textAlign:'left', padding:'8px 10px', background:'transparent', border:'none', borderRadius:6, cursor:'pointer', fontSize:13.5, fontWeight:500, color:'#44403C', transition:'all 0.15s' }} onMouseEnter={e=>e.currentTarget.style.background='rgba(0,0,0,0.04)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>View Accounts</button>
+              <div style={{ height:1, background:'rgba(0,0,0,0.05)', margin:'2px 0' }} />
+              <button onClick={() => { setMenuOpen(false); logout(); navigate('/login'); }} style={{ textAlign:'left', padding:'8px 10px', background:'transparent', border:'none', borderRadius:6, cursor:'pointer', fontSize:13.5, fontWeight:600, color:'#e11d48', transition:'all 0.15s' }} onMouseEnter={e=>e.currentTarget.style.background='rgba(225,29,72,0.08)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Sign Out</button>
+            </div>
+          )}
         </div>
 
         <button onClick={() => setOpen(o => !o)} className="nav-mobile-btn"

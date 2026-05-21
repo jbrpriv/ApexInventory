@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts } from '../api';
 import AccountModal from '../components/AccountModal';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -55,7 +56,8 @@ function PremiumButton({ children, onClick, disabled, color='#ea580c', style={} 
 }
 
 export default function AccountsPage() {
-  const [tab,           setTab]           = useState('view');
+  const location = useLocation();
+  const [tab,           setTab]           = useState(() => new URLSearchParams(location.search).get('add') === 'true' ? 'add' : 'view');
   const [accounts,      setAccounts]      = useState([]);
   const [loading,       setLoading]       = useState(true);
   const [search,        setSearch]        = useState('');
