@@ -32,13 +32,14 @@ function AnimatedNumber({ value, color }) {
   return <span ref={ref} style={{ color }}>0</span>;
 }
 
-function PremiumButton({ children, style = {} }) {
+function PremiumButton({ children, style = {}, onClick, disabled }) {
   const [hovered, setHovered] = useState(false);
   return (
     <motion.button
+      onClick={onClick} disabled={disabled}
       onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)}
-      whileHover={{ y:-2, boxShadow:'0 8px 32px rgba(234,88,12,0.4)' }}
-      whileTap={{ scale:0.97 }}
+      whileHover={!disabled ? { y:-2, boxShadow:'0 8px 32px rgba(234,88,12,0.4)' } : {}}
+      whileTap={!disabled ? { scale:0.97 } : {}}
       style={{ position:'relative', overflow:'hidden', padding:'12px 28px', borderRadius:12, fontSize:14, fontWeight:700, background:'linear-gradient(135deg,#ea580c,#f97316)', border:'none', color:'white', cursor:'pointer', boxShadow:'0 4px 16px rgba(234,88,12,0.3)', fontFamily:'inherit', ...style }}
     >
       <motion.div initial={{x:'-100%'}} animate={{x:hovered?'200%':'-100%'}} transition={{duration:0.9}}
