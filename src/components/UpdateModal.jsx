@@ -13,18 +13,18 @@ const UPDATES = [
   },
   {
     id: 2,
-    title: "Accounts Table Cleanup",
+    title: "Level 20 Account Images",
     date: "May 2026",
-    description: "We've removed the Price and Synced columns from the main accounts table to give you a cleaner view without horizontal scrolling.",
-    icon: "✨",
-    color: "#ea580c"
+    description: "When an account hits Level 20, the Tasks column will now prompt you to upload 'Lobby' and 'Stats' images. You can securely upload and manage these directly from the table!",
+    icon: "📷",
+    color: "#38bdf8"
   },
   {
     id: 3,
-    title: "Pending Tasks Column",
+    title: "Apex ID Tracking",
     date: "May 2026",
-    description: "A new Tasks column has been added to the accounts table. We'll soon use this to highlight missing information like Apex IDs or screenshots.",
-    icon: "📋",
+    description: "Easily track and manage missing Apex IDs! The Tasks column will dynamically flag accounts missing an ID and give you a quick-add modal to link it instantly.",
+    icon: "🆔",
     color: "#16a34a"
   }
 ];

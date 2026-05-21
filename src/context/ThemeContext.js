@@ -4,7 +4,7 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('apex_theme') || 'dark'; // User wanted everything dark, maybe default to dark?
+    return localStorage.getItem('apex_theme') || 'light';
   });
 
   useEffect(() => {

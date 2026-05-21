@@ -6,6 +6,30 @@ import RankBadge from './RankBadge';
 
 export default function AccountViewModal({ account, onClose }) {
   const [activeImage, setActiveImage] = useState('lobby');
+  const [hoverImage, setHoverImage] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async (url, type) => {
+    if (downloading) return;
+    setDownloading(true);
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `${account.apexUsername || 'account'}-${type}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      console.error('Download failed', err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
 
   if (!account) return null;
 
@@ -56,7 +80,7 @@ export default function AccountViewModal({ account, onClose }) {
           <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexWrap: 'wrap', minHeight: 500 }}>
             
             {/* LEFT SIDE: Image Showcase */}
-            <div style={{ flex: '1 1 350px', padding: 30, display: 'flex', flexDirection: 'column', gap: 20, borderRight: '1px solid var(--border-sm)' }}>
+            <div style={{ flex: '1.4 1 450px', padding: 30, display: 'flex', flexDirection: 'column', gap: 20, borderRight: '1px solid var(--border-sm)' }}>
               
               <div style={{ display: 'flex', gap: 10 }}>
                 <button type="button" onClick={() => setActiveImage('lobby')}
@@ -69,11 +93,43 @@ export default function AccountViewModal({ account, onClose }) {
                 </button>
               </div>
               
-              <div style={{ flex: 1, borderRadius: 16, background: 'var(--surface2)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-sm)', minHeight: 250 }}>
+              <div 
+                style={{ flex: 1, borderRadius: 16, background: 'var(--surface2)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-sm)', minHeight: 250, position: 'relative', cursor: (activeImage === 'lobby' && account.lobbyImage) || (activeImage === 'stats' && account.statsImage) ? (downloading ? 'wait' : 'pointer') : 'default' }}
+                onMouseEnter={() => setHoverImage(true)}
+                onMouseLeave={() => setHoverImage(false)}
+                onClick={() => {
+                  const currentImage = activeImage === 'lobby' ? account.lobbyImage : account.statsImage;
+                  if (currentImage) handleDownload(currentImage, activeImage);
+                }}
+              >
                 {activeImage === 'lobby' && account.lobbyImage ? (
-                  <img src={account.lobbyImage} alt="Lobby" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  <>
+                    <img src={account.lobbyImage} alt="Lobby" style={{ width: '100%', height: '100%', objectFit: 'contain', filter: hoverImage ? 'blur(6px) brightness(0.7)' : 'none', transition: 'all 0.25s' }} />
+                    <AnimatePresence>
+                      {hoverImage && (
+                        <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', background: 'rgba(0,0,0,0.2)' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, background: 'rgba(0,0,0,0.6)', padding: '16px 24px', borderRadius: 16, backdropFilter: 'blur(4px)' }}>
+                            {downloading ? <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{animation:'spin 1s linear infinite'}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> : <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>}
+                            <span style={{ fontWeight: 700, letterSpacing: 1, fontSize: 13 }}>{downloading ? 'Downloading...' : 'Download Image'}</span>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </>
                 ) : activeImage === 'stats' && account.statsImage ? (
-                  <img src={account.statsImage} alt="Stats" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  <>
+                    <img src={account.statsImage} alt="Stats" style={{ width: '100%', height: '100%', objectFit: 'contain', filter: hoverImage ? 'blur(6px) brightness(0.7)' : 'none', transition: 'all 0.25s' }} />
+                    <AnimatePresence>
+                      {hoverImage && (
+                        <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', background: 'rgba(0,0,0,0.2)' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, background: 'rgba(0,0,0,0.6)', padding: '16px 24px', borderRadius: 16, backdropFilter: 'blur(4px)' }}>
+                            {downloading ? <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{animation:'spin 1s linear infinite'}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> : <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>}
+                            <span style={{ fontWeight: 700, letterSpacing: 1, fontSize: 13 }}>{downloading ? 'Downloading...' : 'Download Image'}</span>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </>
                 ) : (
                   <div style={{ color: 'var(--text4)', textAlign: 'center' }}>
                     <div style={{ fontSize: 40, marginBottom: 10, opacity: 0.5 }}>📷</div>

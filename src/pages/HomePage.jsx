@@ -69,7 +69,11 @@ export default function HomePage() {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   useEffect(() => {
-    setShowUpdateModal(true);
+    const views = parseInt(localStorage.getItem('update_modal_views') || '0', 10);
+    if (views < 3) {
+      setShowUpdateModal(true);
+      localStorage.setItem('update_modal_views', (views + 1).toString());
+    }
   }, []);
 
   const handleCloseUpdate = () => {
