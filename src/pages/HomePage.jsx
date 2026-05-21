@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getOverviewStats, getLevelDist, getRecentStats, getBackground } from '../api';
 import StatCard from '../components/StatCard';
 import LoadingScreen from '../components/LoadingScreen';
+import UpdateModal from '../components/UpdateModal';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { gsap } from 'gsap';
 import { useNavigate } from 'react-router-dom';
@@ -65,6 +66,19 @@ export default function HomePage() {
   const [recent,    setRecent]    = useState([]);
   const [bgUrl,     setBgUrl]     = useState('');
   const [loading,   setLoading]   = useState(true);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+  useEffect(() => {
+    const lastSeen = localStorage.getItem('apex_lastSeenUpdate');
+    if (lastSeen !== '1.0.0') {
+      setShowUpdateModal(true);
+    }
+  }, []);
+
+  const handleCloseUpdate = () => {
+    localStorage.setItem('apex_lastSeenUpdate', '1.0.0');
+    setShowUpdateModal(false);
+  };
 
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -280,6 +294,7 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
       </div>
+      {showUpdateModal && <UpdateModal onClose={handleCloseUpdate} />}
     </div>
   );
 }
