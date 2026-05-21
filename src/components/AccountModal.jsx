@@ -127,7 +127,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               <div style={{ display:'flex', gap:10 }}>
                 {[{val:'Unbanned',icon:'✅',label:'Unbanned',col:'#16a34a',bg:'rgba(22,163,74,0.08)',border:'rgba(22,163,74,0.3)'},{val:'Banned',icon:'🚫',label:'Banned',col:'#e11d48',bg:'rgba(225,29,72,0.08)',border:'rgba(225,29,72,0.3)'}].map(opt=>{
                   const active=form.accountStatus===opt.val;
-                  return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,accountStatus:opt.val}))} style={{ flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'var(--border)'}`,background:active?opt.bg:'#FAFAF9',cursor:'pointer',transition:'all 0.18s' }}>
+                  return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,accountStatus:opt.val}))} style={{ flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'var(--border)'}`,background:active?opt.bg:'var(--surface2)',cursor:'pointer',transition:'all 0.18s' }}>
                     <div style={{fontSize:18,marginBottom:4}}>{opt.icon}</div>
                     <div style={{fontSize:12.5,fontWeight:600,color:active?opt.col:'var(--text4)'}}>{opt.label}</div>
                   </button>;
@@ -142,7 +142,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               <div style={{display:'flex',gap:10}}>
                 {[{val:'Unsold',icon:'🏪',label:'Unsold',col:'#64748b',bg:'rgba(100,116,139,0.08)',border:'rgba(100,116,139,0.25)'},{val:'Sold',icon:'💰',label:'Sold',col:'#d97706',bg:'rgba(217,119,6,0.08)',border:'rgba(217,119,6,0.3)'}].map(opt=>{
                   const active=form.salesStatus===opt.val;
-                  return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,salesStatus:opt.val}))} style={{flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'var(--border)'}`,background:active?opt.bg:'#FAFAF9',cursor:'pointer',transition:'all 0.18s'}}>
+                  return <button key={opt.val} type="button" onClick={()=>setForm(f=>({...f,salesStatus:opt.val}))} style={{flex:1,padding:'11px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${active?opt.border:'var(--border)'}`,background:active?opt.bg:'var(--surface2)',cursor:'pointer',transition:'all 0.18s'}}>
                     <div style={{fontSize:18,marginBottom:4}}>{opt.icon}</div>
                     <div style={{fontSize:12.5,fontWeight:600,color:active?opt.col:'var(--text4)'}}>{opt.label}</div>
                   </button>;
@@ -206,7 +206,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
                     const tier=(r==='Unranked'||r==='Master'||r==='Predator')?r:r.split(' ')[0];
                     const tc=TIER_BTN[tier]||TIER_BTN.Unranked;
                     const sel=form.rank===r;
-                    return <button key={r} type="button" onClick={()=>setForm(f=>({...f,rank:r}))} style={{ padding:'7px 4px',borderRadius:7,fontSize:10.5,fontWeight:sel?700:500,border:`1px solid ${sel?tc.selBorder:'var(--border)'}`,background:sel?tc.selBg:'#FAFAF9',color:sel?tc.sel:'var(--text4)',cursor:'pointer',transition:'all 0.15s',textAlign:'center' }}>{r}</button>;
+                    return <button key={r} type="button" onClick={()=>setForm(f=>({...f,rank:r}))} style={{ padding:'7px 4px',borderRadius:7,fontSize:10.5,fontWeight:sel?700:500,border:`1px solid ${sel?tc.selBorder:'var(--border)'}`,background:sel?tc.selBg:'var(--surface2)',color:sel?tc.sel:'var(--text4)',cursor:'pointer',transition:'all 0.15s',textAlign:'center' }}>{r}</button>;
                   })}
                 </div>
             }
@@ -225,7 +225,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
               : <div style={{display:'flex',gap:10}}>
                   {[{val:false,icon:'🎮',label:'Made It Myself',sub:'Natural gameplay',col:'#16a34a',bg:'rgba(22,163,74,0.08)',border:'rgba(22,163,74,0.3)'},{val:true,icon:'💰',label:'RFR Bought',sub:'Purchased/boosted',col:'#92400e',bg:'rgba(217,119,6,0.08)',border:'rgba(217,119,6,0.3)'}].map(opt=>{
                     const sel=form.rfrBought===opt.val;
-                    return <button key={String(opt.val)} type="button" onClick={()=>setForm(f=>({...f,rfrBought:opt.val}))} style={{flex:1,padding:'12px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${sel?opt.border:'var(--border)'}`,background:sel?opt.bg:'#FAFAF9',cursor:'pointer',transition:'all 0.18s'}}>
+                    return <button key={String(opt.val)} type="button" onClick={()=>setForm(f=>({...f,rfrBought:opt.val}))} style={{flex:1,padding:'12px 10px',borderRadius:10,textAlign:'center',border:`1.5px solid ${sel?opt.border:'var(--border)'}`,background:sel?opt.bg:'var(--surface2)',cursor:'pointer',transition:'all 0.18s'}}>
                       <div style={{fontSize:18,marginBottom:4}}>{opt.icon}</div>
                       <div style={{fontSize:12.5,fontWeight:600,color:sel?opt.col:'var(--text4)'}}>{opt.label}</div>
                       <div style={{fontSize:11,color:'var(--text4)',marginTop:2}}>{opt.sub}</div>
