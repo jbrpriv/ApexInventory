@@ -6,6 +6,7 @@
   --surface:    #FFFFFF;
   --surface2:   #F5F0EB;
   --surface3:   #EDE8E3;
+  --view-modal-bg: linear-gradient(135deg, #fff3e0, #ffedd5);
   --border:     rgba(0,0,0,0.08);
   --border-sm:  rgba(0,0,0,0.06);
   --border-md:  rgba(0,0,0,0.13);
@@ -55,6 +56,7 @@
   --surface:    #111114;
   --surface2:   #1C1C21;
   --surface3:   #2A2A31;
+  --view-modal-bg: linear-gradient(135deg, #431407, #2a0a03);
   
   --border:     rgba(255,255,255,0.08);
   --border-sm:  rgba(255,255,255,0.04);

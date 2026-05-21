@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts, updateAccount, uploadAccountImages } from '../api';
+import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts, updateAccount, uploadAccountImages, getAccount } from '../api';
 import AccountModal from '../components/AccountModal';
 import AccountViewModal from '../components/AccountViewModal';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -84,6 +84,7 @@ export default function AccountsPage() {
   const [lobbyImgFile, setLobbyImgFile] = useState(null);
   const [statsImgFile, setStatsImgFile] = useState(null);
   const [imagesLoading, setImagesLoading] = useState(false);
+  const [viewLoadingId, setViewLoadingId] = useState(null);
   const cardListRef = useRef(null);
 
   useEffect(() => {
@@ -170,7 +171,35 @@ export default function AccountsPage() {
     }
   };
 
+  const handleOpenView = async (acc) => {
+    setViewLoadingId(acc._id);
+    try {
+      const res = await getAccount(acc._id);
+      const latestAcc = res.data;
+      
+      const preloadImage = (src) => new Promise((resolve) => {
+        if (!src) return resolve();
+        const img = new Image();
+        img.src = src;
+        img.onload = resolve;
+        img.onerror = resolve; 
+      });
+      
+      await Promise.all([
+        preloadImage(latestAcc.lobbyImage),
+        preloadImage(latestAcc.statsImage)
+      ]);
+      
+      setViewAccount(latestAcc);
+    } catch (err) {
+      toast.error('Failed to load details');
+    } finally {
+      setViewLoadingId(null);
+    }
+  };
+
   const SortIcon=({field})=>(<span style={{marginLeft:4,opacity:sortField===field?1:0.25,fontSize:9}}>{sortField===field?(sortDir==='asc'?'▲':'▼'):'▼'}</span>);
+  const Spinner=({size=14})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{animation:'spin 1s linear infinite'}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>);
 
   const CopyBtn=({text,id})=>(
     <button type="button" onClick={()=>copyText(text,id)} className="compact-btn"
@@ -370,8 +399,8 @@ export default function AccountsPage() {
                                 )}
                               </td>
                               <td>
-                                <div style={{ display:'flex', gap:5 }}>
-                                  {tab==='view'&&<button type="button" onClick={()=>setViewAccount(acc)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(234,88,12,0.12)', color:'#ea580c', minHeight:'auto', minWidth:'auto' }}>View</button>}
+                                <div style={{ display:'flex', gap:6, justifyContent:'center' }}>
+                                  {tab==='view'&&<button type="button" onClick={()=>handleOpenView(acc)} disabled={viewLoadingId === acc._id} className="compact-btn" style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:viewLoadingId === acc._id ? 'wait' : 'pointer', background:'rgba(234,88,12,0.12)', color:'#ea580c', minHeight:26, minWidth:50, opacity:viewLoadingId === acc._id ? 0.6 : 1 }}>{viewLoadingId === acc._id ? <Spinner size={13} /> : 'View'}</button>}
                                   {tab==='edit'&&<button type="button" onClick={()=>setEditAccount(acc)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(56,189,248,0.12)', color:'#0284c7', minHeight:'auto', minWidth:'auto' }}>Edit</button>}
                                   {tab==='remove'&&<button type="button" onClick={()=>setConfirmDel(acc._id)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(244,63,94,0.12)', color:'#e11d48', minHeight:'auto', minWidth:'auto' }}>Delete</button>}
                                 </div>
@@ -423,8 +452,8 @@ export default function AccountsPage() {
                         </div>
                       )}
 
-                      <div style={{ display:'flex', gap:8 }}>
-                        {tab==='view'&&<button type="button" onClick={()=>setViewAccount(acc)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.2)', color:'#ea580c', fontSize:13, fontWeight:600, cursor:'pointer' }}>View Details</button>}
+                      <div style={{ padding:16, borderTop:'1px solid var(--border-sm)', display:'flex', gap:8, background:'var(--surface)' }}>
+                        {tab==='view'&&<button type="button" onClick={()=>handleOpenView(acc)} disabled={viewLoadingId === acc._id} style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'10px', borderRadius:9, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.2)', color:'#ea580c', fontSize:13, fontWeight:600, cursor:viewLoadingId === acc._id ? 'wait' : 'pointer', opacity:viewLoadingId === acc._id ? 0.6 : 1 }}>{viewLoadingId === acc._id ? <Spinner size={16} /> : 'View Details'}</button>}
                         {tab==='edit'&&<button type="button" onClick={()=>setEditAccount(acc)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(56,189,248,0.1)', border:'1px solid rgba(56,189,248,0.2)', color:'#0284c7', fontSize:13, fontWeight:600, cursor:'pointer' }}>Edit</button>}
                         {tab==='remove'&&<button type="button" onClick={()=>setConfirmDel(acc._id)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(244,63,94,0.1)', border:'1px solid rgba(244,63,94,0.2)', color:'#e11d48', fontSize:13, fontWeight:600, cursor:'pointer' }}>Delete</button>}
                       </div>

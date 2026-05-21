@@ -36,7 +36,7 @@ function ProtectedLayout() {
           #main-content { padding-top: var(--nav-h); }
         }
       `}</style>
-      <main id="main-content" style={{ position: 'relative', zIndex: 1 }}>
+      <main id="main-content" style={{ position: 'relative' }}>
         <Outlet />
       </main>
     </div>
