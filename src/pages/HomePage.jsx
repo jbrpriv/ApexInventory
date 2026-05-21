@@ -69,14 +69,10 @@ export default function HomePage() {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   useEffect(() => {
-    const lastSeen = localStorage.getItem('apex_lastSeenUpdate');
-    if (lastSeen !== '1.0.0') {
-      setShowUpdateModal(true);
-    }
+    setShowUpdateModal(true);
   }, []);
 
   const handleCloseUpdate = () => {
-    localStorage.setItem('apex_lastSeenUpdate', '1.0.0');
     setShowUpdateModal(false);
   };
 

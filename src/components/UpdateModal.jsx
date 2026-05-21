@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 const UPDATES = [
   {
     id: 1,
-    title: "New Avatar Dropdown",
+    title: "Major Interface & Navigation Overhaul",
     date: "May 2026",
-    description: "The top right navigation now features a sleek new Avatar pill. Click it to reveal a beautiful dropdown menu with quick access to Add Account and View Accounts.",
-    icon: "👤",
+    description: "The top right navigation now features a sleek new Avatar pill. Click it to reveal a beautiful dropdown menu with quick access to Add Account and View Accounts. The navbar also intelligently fades in when you scroll!",
+    icon: "🚀",
     color: "#0284c7"
   },
   {
@@ -75,7 +75,7 @@ export default function UpdateModal({ onClose }) {
         initial={{ opacity:0, scale:0.94, y:16 }}
         animate={{ opacity:1, scale:1, y:0 }}
         transition={{ type:'spring', stiffness:300, damping:28 }}
-        style={{ background:'#FFFFFF', borderRadius:20, width:'100%', maxWidth:500, overflow:'hidden', boxShadow:'0 24px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.06)' }}
+        style={{ background:'#FFFFFF', borderRadius:20, width:'100%', maxWidth:680, overflow:'hidden', boxShadow:'0 24px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.06)' }}
       >
         <div style={{ position:'absolute', top:0, left:0, right:0, height:4, background:'linear-gradient(90deg,#ea580c,#f97316)', zIndex:10 }} />
         
@@ -93,7 +93,7 @@ export default function UpdateModal({ onClose }) {
         </div>
 
         {/* Carousel Body */}
-        <div style={{ position:'relative', height:220, padding:'0 24px' }}>
+        <div style={{ position:'relative', height:280, padding:'0 24px' }}>
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={currentIndex}
@@ -105,12 +105,12 @@ export default function UpdateModal({ onClose }) {
               transition={{ x: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}
               style={{ position:'absolute', top:0, left:24, right:24, bottom:0, display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', justifyContent:'center' }}
             >
-              <div style={{ width:64, height:64, borderRadius:16, background:`${currentUpdate.color}15`, border:`1px solid ${currentUpdate.color}30`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:32, marginBottom:16 }}>
+              <div style={{ width:80, height:80, borderRadius:20, background:`${currentUpdate.color}15`, border:`1px solid ${currentUpdate.color}30`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:40, marginBottom:20 }}>
                 {currentUpdate.icon}
               </div>
-              <h3 style={{ fontSize:18, fontWeight:700, color:'#1C1917', marginBottom:8 }}>{currentUpdate.title}</h3>
-              <p style={{ fontSize:14, color:'#78716C', lineHeight:1.5 }}>{currentUpdate.description}</p>
-              <div style={{ fontSize:12, color:'#A8A29E', marginTop:12, fontWeight:500 }}>{currentUpdate.date}</div>
+              <h3 style={{ fontSize:22, fontWeight:800, color:'#1C1917', marginBottom:12 }}>{currentUpdate.title}</h3>
+              <p style={{ fontSize:15.5, color:'#78716C', lineHeight:1.6, maxWidth:520 }}>{currentUpdate.description}</p>
+              <div style={{ fontSize:13, color:'#A8A29E', marginTop:16, fontWeight:600 }}>{currentUpdate.date}</div>
             </motion.div>
           </AnimatePresence>
         </div>
