@@ -33,6 +33,7 @@ export const getAccounts = (params) => api.get('/api/accounts', { params });
 export const getAccount = (id) => api.get('/api/accounts/' + id);
 export const createAccount = (data) => api.post('/api/accounts', data);
 export const updateAccount = (id, data) => api.put('/api/accounts/' + id, data);
+export const uploadAccountImages = (id, formData) => api.post('/api/accounts/' + id + '/images', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 export const patchStatus = (id, data) => api.patch('/api/accounts/' + id + '/status', data);
 export const deleteAccount = (id) => api.delete('/api/accounts/' + id);
 export const bulkDelete = (ids) => api.delete('/api/accounts', { data: { ids } });

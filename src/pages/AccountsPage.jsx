@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts, updateAccount } from '../api';
+import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts, updateAccount, uploadAccountImages } from '../api';
 import AccountModal from '../components/AccountModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { BanStatusBadge, SalesBadge } from '../components/StatusBadge';
@@ -79,6 +79,10 @@ export default function AccountsPage() {
   const [quickApexIdAcc, setQuickApexIdAcc] = useState(null);
   const [quickApexIdVal, setQuickApexIdVal] = useState('');
   const [quickLoading,   setQuickLoading]   = useState(false);
+  const [missingImagesAcc, setMissingImagesAcc] = useState(null);
+  const [lobbyImgFile, setLobbyImgFile] = useState(null);
+  const [statsImgFile, setStatsImgFile] = useState(null);
+  const [imagesLoading, setImagesLoading] = useState(false);
   const cardListRef = useRef(null);
 
   useEffect(() => {
@@ -142,6 +146,26 @@ export default function AccountsPage() {
       toast.error('Failed to update Apex ID');
     } finally {
       setQuickLoading(false);
+    }
+  };
+
+  const saveAccountImages = async () => {
+    if (!lobbyImgFile && !statsImgFile) return;
+    setImagesLoading(true);
+    try {
+      const fd = new FormData();
+      if (lobbyImgFile) fd.append('lobbyImage', lobbyImgFile);
+      if (statsImgFile) fd.append('statsImage', statsImgFile);
+      await uploadAccountImages(missingImagesAcc._id, fd);
+      toast.success('Images uploaded successfully!');
+      setMissingImagesAcc(null);
+      setLobbyImgFile(null);
+      setStatsImgFile(null);
+      load();
+    } catch (err) {
+      toast.error('Failed to upload images');
+    } finally {
+      setImagesLoading(false);
     }
   };
 
@@ -335,8 +359,13 @@ export default function AccountsPage() {
                                     style={{ padding:'4px 10px', borderRadius:6, fontSize:11, fontWeight:600, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.25)', color:'#ea580c', cursor:'pointer', whiteSpace:'nowrap' }}>
                                     + Add Apex ID
                                   </button>
+                                ) : (acc.accountLevel >= 20 && (!acc.lobbyImage || !acc.statsImage)) ? (
+                                  <button type="button" onClick={() => { setMissingImagesAcc(acc); setLobbyImgFile(null); setStatsImgFile(null); }}
+                                    style={{ padding:'4px 10px', borderRadius:6, fontSize:11, fontWeight:600, background:'rgba(139,92,246,0.1)', border:'1px solid rgba(139,92,246,0.25)', color:'#8b5cf6', cursor:'pointer', whiteSpace:'nowrap' }}>
+                                    + Add Images
+                                  </button>
                                 ) : (
-                                  <div style={{ width:'100%', textAlign:'center', color:'var(--text4)', fontSize:12 }}>—</div>
+                                  <div style={{ textAlign:'center', color:'var(--text4)' }}>—</div>
                                 )}
                               </td>
                               <td>
@@ -376,13 +405,20 @@ export default function AccountsPage() {
                       </div>
                       
                       {/* Tasks (Mobile) */}
-                      {!acc.apexUsername && (
+                      {(!acc.apexUsername || (acc.accountLevel >= 20 && (!acc.lobbyImage || !acc.statsImage))) && (
                         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 12px', background:'var(--hover-bg)', borderRadius:8, marginBottom:12 }}>
                           <span style={{ fontSize:12, color:'var(--text3)', fontWeight:600 }}>Task</span>
-                          <button type="button" onClick={() => { setQuickApexIdAcc(acc); setQuickApexIdVal(''); }}
-                            style={{ padding:'4px 10px', borderRadius:6, fontSize:11, fontWeight:600, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.25)', color:'#ea580c', cursor:'pointer' }}>
-                            + Add Apex ID
-                          </button>
+                          {!acc.apexUsername ? (
+                            <button type="button" onClick={() => { setQuickApexIdAcc(acc); setQuickApexIdVal(''); }}
+                              style={{ padding:'4px 10px', borderRadius:6, fontSize:11, fontWeight:600, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.25)', color:'#ea580c', cursor:'pointer' }}>
+                              + Add Apex ID
+                            </button>
+                          ) : (
+                            <button type="button" onClick={() => { setMissingImagesAcc(acc); setLobbyImgFile(null); setStatsImgFile(null); }}
+                              style={{ padding:'4px 10px', borderRadius:6, fontSize:11, fontWeight:600, background:'rgba(139,92,246,0.1)', border:'1px solid rgba(139,92,246,0.25)', color:'#8b5cf6', cursor:'pointer' }}>
+                              + Add Images
+                            </button>
+                          )}
                         </div>
                       )}
 
@@ -429,6 +465,60 @@ export default function AccountsPage() {
                 <button type="button" onClick={saveQuickApexId} disabled={quickLoading || !quickApexIdVal.trim()}
                   style={{ flex:1, padding:'9px', borderRadius:8, background:'#ea580c', border:'none', color:'white', fontSize:13, fontWeight:600, cursor:quickLoading||!quickApexIdVal.trim()?'not-allowed':'pointer', opacity:quickLoading||!quickApexIdVal.trim()?0.6:1, transition:'opacity 0.15s' }}>
                   {quickLoading ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Image Upload Modal */}
+      <AnimatePresence>
+        {missingImagesAcc && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
+            style={{ position:'fixed', inset:0, zIndex:9999, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(6px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
+            <motion.div initial={{scale:0.95,y:10}} animate={{scale:1,y:0}} exit={{scale:0.95,y:10}}
+              style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:16, width:'100%', maxWidth:400, padding:24, boxShadow:'0 10px 40px rgba(0,0,0,0.5)' }}>
+              <h3 style={{ fontSize:18, fontWeight:700, marginBottom:10, color:'var(--text)' }}>Upload Account Images</h3>
+              <p style={{ fontSize:13, color:'var(--text4)', marginBottom:20, lineHeight:1.5 }}>
+                Level 20 reached! Upload Lobby and Stats screenshots for <strong style={{ color:'var(--text2)' }}>{missingImagesAcc.accountEmail}</strong>.
+              </p>
+
+              <div style={{ display:'flex', flexDirection:'column', gap:16, marginBottom:24 }}>
+                {/* Lobby Image */}
+                <div>
+                  <label style={{ display:'block', fontSize:12, fontWeight:600, color:'var(--text3)', marginBottom:6, textTransform:'uppercase', letterSpacing:1 }}>Lobby Image {missingImagesAcc.lobbyImage && <span style={{color:'#10b981', marginLeft:5}}>✓ Uploaded</span>}</label>
+                  <label style={{ display:'block', padding:lobbyImgFile?0:20, border:'2px dashed var(--border-md)', borderRadius:10, textAlign:'center', cursor:'pointer', background:'var(--hover-bg)', overflow:'hidden', position:'relative' }}>
+                    <input type="file" accept="image/*" onChange={e=>setLobbyImgFile(e.target.files[0])} style={{ display:'none' }} />
+                    {lobbyImgFile ? (
+                      <img src={URL.createObjectURL(lobbyImgFile)} alt="Lobby" style={{ width:'100%', height:120, objectFit:'cover', display:'block' }} />
+                    ) : (
+                      <div style={{ color:'var(--text4)', fontSize:13 }}>Click to select Lobby Image</div>
+                    )}
+                  </label>
+                </div>
+                {/* Stats Image */}
+                <div>
+                  <label style={{ display:'block', fontSize:12, fontWeight:600, color:'var(--text3)', marginBottom:6, textTransform:'uppercase', letterSpacing:1 }}>Stats Image {missingImagesAcc.statsImage && <span style={{color:'#10b981', marginLeft:5}}>✓ Uploaded</span>}</label>
+                  <label style={{ display:'block', padding:statsImgFile?0:20, border:'2px dashed var(--border-md)', borderRadius:10, textAlign:'center', cursor:'pointer', background:'var(--hover-bg)', overflow:'hidden', position:'relative' }}>
+                    <input type="file" accept="image/*" onChange={e=>setStatsImgFile(e.target.files[0])} style={{ display:'none' }} />
+                    {statsImgFile ? (
+                      <img src={URL.createObjectURL(statsImgFile)} alt="Stats" style={{ width:'100%', height:120, objectFit:'cover', display:'block' }} />
+                    ) : (
+                      <div style={{ color:'var(--text4)', fontSize:13 }}>Click to select Stats Image</div>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              <div style={{ display:'flex', gap:10 }}>
+                <button type="button" onClick={()=>{setMissingImagesAcc(null);setLobbyImgFile(null);setStatsImgFile(null);}}
+                  style={{ flex:1, padding:'10px', borderRadius:8, background:'var(--hover-bg)', border:'none', color:'var(--text)', fontSize:13, fontWeight:600, cursor:'pointer' }}>
+                  Cancel
+                </button>
+                <button type="button" onClick={saveAccountImages} disabled={imagesLoading || (!lobbyImgFile && !statsImgFile)}
+                  style={{ flex:1, padding:'10px', borderRadius:8, background:'#8b5cf6', border:'none', color:'white', fontSize:13, fontWeight:600, cursor:imagesLoading||(!lobbyImgFile&&!statsImgFile)?'not-allowed':'pointer', opacity:imagesLoading||(!lobbyImgFile&&!statsImgFile)?0.6:1 }}>
+                  {imagesLoading ? 'Uploading...' : 'Save Images'}
                 </button>
               </div>
             </motion.div>
