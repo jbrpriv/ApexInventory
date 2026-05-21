@@ -45,7 +45,7 @@ export default function AccountModal({ account, mode, onClose, onSaved }) {
   const inp = { display:'block', width:'100%', background:'var(--surface2)', border:'1.5px solid var(--border)', borderRadius:9, padding:'10px 13px', fontSize:14, color:'var(--text)', fontFamily:'var(--font-body)', outline:'none', transition:'all 0.18s', boxSizing:'border-box' };
   const inpRO = { ...inp, background:'var(--surface3)', color:'var(--text3)', cursor:'default' };
   const lbl = { display:'block', fontSize:11, fontWeight:600, color:'var(--text3)', letterSpacing:0.8, textTransform:'uppercase', marginBottom:6 };
-  const fi = e => { e.target.style.borderColor='#ea580c'; e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.1)'; e.target.style.background='#fff'; };
+  const fi = e => { e.target.style.borderColor='#ea580c'; e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.1)'; e.target.style.background='var(--surface)'; };
   const fo = e => { e.target.style.borderColor='var(--border)'; e.target.style.boxShadow='none'; e.target.style.background='var(--surface2)'; };
 
   const isBanned = form.accountStatus==='Banned';
