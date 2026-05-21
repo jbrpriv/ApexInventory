@@ -68,7 +68,7 @@ export default function ProfilePage() {
 
   const inpStyle = { background:'var(--hover-bg)', border:'1.5px solid var(--border)', color:'var(--text)', padding:'10px 42px 10px 14px', borderRadius:10, fontSize:14, fontFamily:'inherit', outline:'none', width:'100%', transition:'all 0.18s' };
   const cardStyle = { background:'var(--surface)', border:'1px solid var(--border)', borderRadius:16, padding:'22px 24px', marginBottom:16, boxShadow:'0 2px 12px rgba(0,0,0,0.4)' };
-  const lbl = { display:'block', fontSize:11, fontWeight:700, color:'rgba(28,25,23,0.45)', letterSpacing:1, textTransform:'uppercase', marginBottom:7 };
+  const lbl = { display:'block', fontSize:11, fontWeight:700, color:'var(--text4)', letterSpacing:1, textTransform:'uppercase', marginBottom:7 };
   const fi = e => { e.target.style.borderColor='rgba(234,88,12,0.5)'; e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.1)'; e.target.style.background='rgba(234,88,12,0.06)'; };
   const fo = e => { e.target.style.borderColor='var(--border)'; e.target.style.boxShadow='none'; e.target.style.background='var(--hover-bg)'; };
 
@@ -101,8 +101,8 @@ export default function ProfilePage() {
         {/* Change Password */}
         <motion.div variants={cardV} style={cardStyle}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:20 }}>
-            <span style={{ width:3, height:12, borderRadius:99, background:'rgba(28,25,23,0.35)', display:'inline-block' }} />
-            <p style={{ fontSize:11, fontWeight:700, color:'rgba(28,25,23,0.45)', letterSpacing:1.5, textTransform:'uppercase' }}>Change Password</p>
+            <span style={{ width:3, height:12, borderRadius:99, background:'var(--text4)', display:'inline-block' }} />
+            <p style={{ fontSize:11, fontWeight:700, color:'var(--text4)', letterSpacing:1.5, textTransform:'uppercase' }}>Change Password</p>
           </div>
           <form onSubmit={handleChangePassword} style={{ display:'flex', flexDirection:'column', gap:14 }}>
             {[{key:'currentPassword',label:'Current Password'},{key:'newPassword',label:'New Password'},{key:'confirm',label:'Confirm New Password'}].map(f=>(
@@ -110,7 +110,7 @@ export default function ProfilePage() {
                 <label style={lbl}>{f.label}</label>
                 <div style={{ position:'relative' }}>
                   <input type={showPws[f.key]?'text':'password'} value={pwForm[f.key]} onChange={setPw(f.key)} placeholder="••••••••" style={inpStyle} onFocus={fi} onBlur={fo}/>
-                  <button type="button" onClick={()=>setShowPws(p=>({...p,[f.key]:!p[f.key]}))} style={{ position:'absolute', right:11, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'rgba(28,25,23,0.35)', cursor:'pointer', display:'flex', alignItems:'center', padding:4, transition:'color 0.15s', minHeight:'auto', minWidth:'auto' }} onMouseEnter={e=>e.currentTarget.style.color='#ea580c'} onMouseLeave={e=>e.currentTarget.style.color='rgba(28,25,23,0.35)'}>
+                  <button type="button" onClick={()=>setShowPws(p=>({...p,[f.key]:!p[f.key]}))} style={{ position:'absolute', right:11, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'var(--text4)', cursor:'pointer', display:'flex', alignItems:'center', padding:4, transition:'color 0.15s', minHeight:'auto', minWidth:'auto' }} onMouseEnter={e=>e.currentTarget.style.color='#ea580c'} onMouseLeave={e=>e.currentTarget.style.color='var(--text4)'}>
                     {showPws[f.key]
                       ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                       : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -128,10 +128,10 @@ export default function ProfilePage() {
         {/* Background */}
         <motion.div variants={cardV} style={cardStyle}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
-            <span style={{ width:3, height:12, borderRadius:99, background:'rgba(28,25,23,0.35)', display:'inline-block' }} />
-            <p style={{ fontSize:11, fontWeight:700, color:'rgba(28,25,23,0.45)', letterSpacing:1.5, textTransform:'uppercase' }}>Dashboard Background</p>
+            <span style={{ width:3, height:12, borderRadius:99, background:'var(--text4)', display:'inline-block' }} />
+            <p style={{ fontSize:11, fontWeight:700, color:'var(--text4)', letterSpacing:1.5, textTransform:'uppercase' }}>Dashboard Background</p>
           </div>
-          <p style={{ fontSize:13.5, color:'rgba(28,25,23,0.4)', marginBottom:18, lineHeight:1.55 }}>Customize the hero image on the home page.</p>
+          <p style={{ fontSize:13.5, color:'var(--text4)', marginBottom:18, lineHeight:1.55 }}>Customize the hero image on the home page.</p>
           {bgUrl && (
             <div style={{ borderRadius:12, overflow:'hidden', height:120, marginBottom:16, position:'relative', border:'1px solid var(--border)' }}>
               <img src={bgUrl} alt="Background" style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
@@ -155,7 +155,7 @@ export default function ProfilePage() {
               </motion.button>
             )}
           </div>
-          <p style={{ fontSize:11.5, color:'rgba(28,25,23,0.25)', marginTop:10 }}>JPG, PNG, WEBP · Max 10MB</p>
+          <p style={{ fontSize:11.5, color:'var(--text4)', marginTop:10 }}>JPG, PNG, WEBP · Max 10MB</p>
         </motion.div>
 
         {/* Danger Zone */}

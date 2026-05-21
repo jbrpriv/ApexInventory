@@ -7,7 +7,7 @@ export default function EmptyState({ title, message, action }) {
     >
       <div style={{ width:60, height:60, borderRadius:'50%', background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.25)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, boxShadow:'0 0 24px rgba(234,88,12,0.15)' }}>◈</div>
       <div style={{ fontFamily:'var(--font-display)', fontSize:18, fontWeight:700, color:'var(--text)' }}>{title}</div>
-      <div style={{ fontSize:14, color:'rgba(28,25,23,0.45)', maxWidth:340, lineHeight:1.65 }}>{message}</div>
+      <div style={{ fontSize:14, color:'var(--text4)', maxWidth:340, lineHeight:1.65 }}>{message}</div>
       {action && <div style={{ marginTop:8 }}>{action}</div>}
     </motion.div>
   );

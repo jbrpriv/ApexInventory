@@ -24,7 +24,7 @@ export default function AboutPage() {
           <p style={{ fontSize:11, fontWeight:700, color:'#ea580c', letterSpacing:2, textTransform:'uppercase' }}>About</p>
         </div>
         <h1 style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:800, color:'var(--text)', marginBottom:10, letterSpacing:'-0.5px' }}>Apex Manager</h1>
-        <p style={{ color:'rgba(28,25,23,0.55)', fontSize:15, marginBottom:40, lineHeight:1.7, maxWidth:560 }}>
+        <p style={{ color:'var(--text4)', fontSize:15, marginBottom:40, lineHeight:1.7, maxWidth:560 }}>
           A private account management system for Apex Legends accounts. Track status, manage credentials, auto-sync rank and level, and monitor sales — all in one clean dashboard.
         </p>
       </motion.div>
@@ -42,7 +42,7 @@ export default function AboutPage() {
             <div style={{ width:40, height:40, borderRadius:10, background:`${f.color}15`, border:`1px solid ${f.color}25`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:20, flexShrink:0 }}>{f.icon}</div>
             <div>
               <div style={{ fontSize:14.5, fontWeight:700, color:'var(--text)', marginBottom:4 }}>{f.title}</div>
-              <div style={{ fontSize:13, color:'rgba(28,25,23,0.45)', lineHeight:1.55 }}>{f.desc}</div>
+              <div style={{ fontSize:13, color:'var(--text4)', lineHeight:1.55 }}>{f.desc}</div>
             </div>
           </motion.div>
         ))}
@@ -54,7 +54,7 @@ export default function AboutPage() {
       >
         <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
           <span style={{ width:3, height:14, borderRadius:99, background:'#ea580c', display:'inline-block' }} />
-          <p style={{ fontSize:11, fontWeight:700, color:'rgba(28,25,23,0.45)', letterSpacing:1.5, textTransform:'uppercase' }}>Tech Stack</p>
+          <p style={{ fontSize:11, fontWeight:700, color:'var(--text4)', letterSpacing:1.5, textTransform:'uppercase' }}>Tech Stack</p>
         </div>
         <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
           {['React','React Router','Axios','Express.js','MongoDB','Mongoose','JWT','bcryptjs','Cloudinary','Multer','mozambiquehe.re API'].map((t,i) => (

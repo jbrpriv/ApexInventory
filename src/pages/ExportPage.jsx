@@ -48,7 +48,7 @@ export default function ExportPage() {
           <p style={{ fontSize:11, fontWeight:700, color:'#ea580c', letterSpacing:2, textTransform:'uppercase' }}>Data</p>
         </div>
         <h1 style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:800, color:'var(--text)', marginBottom:8, letterSpacing:'-0.5px' }}>Export Accounts</h1>
-        <p style={{ color:'rgba(28,25,23,0.45)', fontSize:14, marginBottom:36 }}>Download all account data in your preferred format.</p>
+        <p style={{ color:'var(--text4)', fontSize:14, marginBottom:36 }}>Download all account data in your preferred format.</p>
       </motion.div>
 
       <motion.div variants={containerV} initial="hidden" animate="visible"
@@ -75,10 +75,10 @@ export default function ExportPage() {
 
               <div>
                 <div style={{ fontFamily:'var(--font-display)', fontSize:18, fontWeight:700, color:'var(--text)', marginBottom:6 }}>{ex.title}</div>
-                <div style={{ fontSize:13.5, color:'rgba(28,25,23,0.5)', lineHeight:1.65 }}>{ex.desc}</div>
+                <div style={{ fontSize:13.5, color:'var(--text4)', lineHeight:1.65 }}>{ex.desc}</div>
               </div>
 
-              <div style={{ fontSize:12, color:'rgba(28,25,23,0.35)', background:'var(--hover-bg)', padding:'8px 12px', borderRadius:8, fontFamily:'var(--font-mono)', border:'1px solid var(--border-sm)' }}>{ex.meta}</div>
+              <div style={{ fontSize:12, color:'var(--text4)', background:'var(--hover-bg)', padding:'8px 12px', borderRadius:8, fontFamily:'var(--font-mono)', border:'1px solid var(--border-sm)' }}>{ex.meta}</div>
 
               <PremiumButton onClick={()=>download(ex.id,ex.path)} disabled={isLoading} color={ex.color}>
                 {isLoading

@@ -74,7 +74,7 @@ export default function Navbar() {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 500,
         height: 'var(--nav-h)',
         background: scrolled
-          ? 'rgba(250,247,244,0.96)'
+          ? 'var(--nav-bg)'
           : 'transparent',
         backdropFilter: scrolled ? 'blur(24px) saturate(180%)' : 'none',
         WebkitBackdropFilter: scrolled ? 'blur(24px) saturate(180%)' : 'none',
@@ -197,14 +197,14 @@ export default function Navbar() {
                     />
                   )}
                   <motion.div className="bottom-tab-icon"
-                    animate={{ scale: isActive ? 1.08 : 1, y: isActive ? -1 : 0, color: isActive ? '#ea580c' : 'rgba(28,25,23,0.35)' }}
+                    animate={{ scale: isActive ? 1.08 : 1, y: isActive ? -1 : 0, color: isActive ? '#ea580c' : 'var(--text4)' }}
                     transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-                    style={{ color: isActive ? '#ea580c' : 'rgba(28,25,23,0.35)', position: 'relative', zIndex: 1 }}
+                    style={{ color: isActive ? '#ea580c' : 'var(--text4)', position: 'relative', zIndex: 1 }}
                   >
                     <NavIcon name={tab.icon} size={21} />
                   </motion.div>
                   <span className="bottom-tab-label"
-                    style={{ color: isActive ? '#ea580c' : 'rgba(28,25,23,0.35)', fontWeight: isActive ? 600 : 500 }}
+                    style={{ color: isActive ? '#ea580c' : 'var(--text4)', fontWeight: isActive ? 600 : 500 }}
                   >{tab.label}</span>
                 </>
               )}

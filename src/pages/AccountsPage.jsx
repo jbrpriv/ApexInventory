@@ -23,7 +23,7 @@ const tabAccent = { view:'#ea580c', add:'#22c55e', edit:'#38bdf8', remove:'#f43f
 function Lv20Badge({ level, rfrBought }) {
   if (rfrBought) return <span style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:6, background:'rgba(245,158,11,0.1)', border:'1px solid rgba(245,158,11,0.25)', color:'#f59e0b', fontSize:12, fontWeight:600, whiteSpace:'nowrap' }}>💰 RFR</span>;
   if (level>=20) return <span style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:6, background:'rgba(34,197,94,0.1)', border:'1px solid rgba(34,197,94,0.25)', color:'#22c55e', fontSize:12, fontWeight:600, whiteSpace:'nowrap' }}>🎮 Made It</span>;
-  return <span style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:6, background:'var(--hover-bg)', border:'1px solid var(--border)', color:'rgba(28,25,23,0.35)', fontSize:12, fontWeight:500, whiteSpace:'nowrap' }}>— Under 20</span>;
+  return <span style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:6, background:'var(--hover-bg)', border:'1px solid var(--border)', color:'var(--text4)', fontSize:12, fontWeight:500, whiteSpace:'nowrap' }}>— Under 20</span>;
 }
 
 function sortAccounts(accounts, field, dir) {
@@ -130,13 +130,13 @@ export default function AccountsPage() {
 
   const CopyBtn=({text,id})=>(
     <button type="button" onClick={()=>copyText(text,id)} className="compact-btn"
-      style={{ background:copied===id?'rgba(34,197,94,0.15)':'var(--border-sm)', border:`1px solid ${copied===id?'rgba(34,197,94,0.3)':'var(--border)'}`, color:copied===id?'#22c55e':'rgba(28,25,23,0.45)', borderRadius:5, padding:'2px 7px', fontSize:11, fontWeight:600, cursor:'pointer', transition:'all 0.15s', display:'inline-flex', alignItems:'center', gap:3, minHeight:'auto', minWidth:'auto' }}>
+      style={{ background:copied===id?'rgba(34,197,94,0.15)':'var(--border-sm)', border:`1px solid ${copied===id?'rgba(34,197,94,0.3)':'var(--border)'}`, color:copied===id?'#22c55e':'var(--text4)', borderRadius:5, padding:'2px 7px', fontSize:11, fontWeight:600, cursor:'pointer', transition:'all 0.15s', display:'inline-flex', alignItems:'center', gap:3, minHeight:'auto', minWidth:'auto' }}>
       {copied===id?'✓':<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>}
     </button>
   );
   const EyeBtn=({id})=>(
     <button type="button" onClick={()=>togglePw(id)} className="compact-btn"
-      style={{ background:'var(--border-sm)', border:'1px solid var(--border)', color:'rgba(28,25,23,0.45)', borderRadius:5, padding:'2px 7px', fontSize:11, cursor:'pointer', display:'inline-flex', alignItems:'center', minHeight:'auto', minWidth:'auto' }}>
+      style={{ background:'var(--border-sm)', border:'1px solid var(--border)', color:'var(--text4)', borderRadius:5, padding:'2px 7px', fontSize:11, cursor:'pointer', display:'inline-flex', alignItems:'center', minHeight:'auto', minWidth:'auto' }}>
       {showPws[id]
         ?<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         :<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -160,7 +160,7 @@ export default function AccountsPage() {
             <p style={{ fontSize:11, fontWeight:700, color:'#ea580c', letterSpacing:2, textTransform:'uppercase' }}>Inventory</p>
           </div>
           <h1 style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:800, color:'var(--text)', letterSpacing:'-0.5px' }}>Account Manager</h1>
-          <p style={{ color:'rgba(28,25,23,0.4)', fontSize:13.5, marginTop:3 }}>{accounts.length} accounts</p>
+          <p style={{ color:'var(--text4)', fontSize:13.5, marginTop:3 }}>{accounts.length} accounts</p>
         </div>
 
         <div className="header-actions" style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:10 }}>
@@ -179,7 +179,7 @@ export default function AccountsPage() {
               >
                 <span>✓ {syncResult.synced} updated</span>
                 {syncResult.failed>0&&<span style={{ color:'#e11d48' }}>· {syncResult.failed} failed</span>}
-                <span style={{ color:'rgba(28,25,23,0.35)' }}>· {syncResult.total} checked</span>
+                <span style={{ color:'var(--text4)' }}>· {syncResult.total} checked</span>
                 <button type="button" onClick={()=>setSyncResult(null)} style={{ background:'none', border:'none', cursor:'pointer', color:'inherit', opacity:0.5, fontSize:12, padding:0, lineHeight:1, minHeight:'auto', minWidth:'auto' }}>✕</button>
               </motion.div>
             )}
@@ -198,9 +198,9 @@ export default function AccountsPage() {
               const active=tab===t.id, col=tabAccent[t.id];
               return (
                 <motion.button key={t.id} type="button" onClick={()=>{setTab(t.id);setSelected([]);}} whileTap={{ scale:0.96 }}
-                  style={{ padding:'14px 18px', border:'none', cursor:'pointer', fontSize:13.5, fontWeight:active?600:500, color:active?col:'rgba(28,25,23,0.45)', background:active?`${col}10`:'transparent', borderBottom:`2px solid ${active?col:'transparent'}`, transition:'all 0.18s', display:'flex', alignItems:'center', gap:7, whiteSpace:'nowrap' }}
+                  style={{ padding:'14px 18px', border:'none', cursor:'pointer', fontSize:13.5, fontWeight:active?600:500, color:active?col:'var(--text4)', background:active?`${col}10`:'transparent', borderBottom:`2px solid ${active?col:'transparent'}`, transition:'all 0.18s', display:'flex', alignItems:'center', gap:7, whiteSpace:'nowrap' }}
                 >
-                  <span style={{ width:20, height:20, borderRadius:5, fontSize:12, display:'flex', alignItems:'center', justifyContent:'center', background:active?`${col}20`:'var(--border-sm)', color:active?col:'rgba(28,25,23,0.35)', transition:'all 0.18s' }}>{t.icon}</span>
+                  <span style={{ width:20, height:20, borderRadius:5, fontSize:12, display:'flex', alignItems:'center', justifyContent:'center', background:active?`${col}20`:'var(--border-sm)', color:active?col:'var(--text4)', transition:'all 0.18s' }}>{t.icon}</span>
                   {t.label}
                 </motion.button>
               );
@@ -226,7 +226,7 @@ export default function AccountsPage() {
               style={{ width:64, height:64, borderRadius:'50%', background:'linear-gradient(135deg,#ea580c,#f97316)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:30, color:'white', boxShadow:'0 8px 32px rgba(234,88,12,0.4)', marginBottom:20 }}
             >+</motion.div>
             <h2 style={{ fontFamily:'var(--font-display)', fontSize:22, fontWeight:800, color:'var(--text)', marginBottom:8 }}>Add New Account</h2>
-            <p style={{ color:'rgba(28,25,23,0.45)', fontSize:14, marginBottom:32, textAlign:'center', maxWidth:380 }}>Register a new Apex Legends account with credentials, rank, level, and pricing info.</p>
+            <p style={{ color:'var(--text4)', fontSize:14, marginBottom:32, textAlign:'center', maxWidth:380 }}>Register a new Apex Legends account with credentials, rank, level, and pricing info.</p>
             <PremiumButton onClick={()=>setAddOpen(true)} style={{ padding:'13px 40px' }}>
               + Add Account
             </PremiumButton>
@@ -238,7 +238,7 @@ export default function AccountsPage() {
               ].map((s,i)=>(
                 <motion.div key={s.label} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:0.2+i*0.08}} style={{ textAlign:'center' }}>
                   <div style={{ fontSize:32, fontWeight:800, color:s.col, fontFamily:'var(--font-display)', lineHeight:1 }}>{s.val}</div>
-                  <div style={{ fontSize:11, color:'rgba(28,25,23,0.35)', fontWeight:600, textTransform:'uppercase', letterSpacing:1.5, marginTop:5 }}>{s.label}</div>
+                  <div style={{ fontSize:11, color:'var(--text4)', fontWeight:600, textTransform:'uppercase', letterSpacing:1.5, marginTop:5 }}>{s.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -251,7 +251,7 @@ export default function AccountsPage() {
             {/* Filters */}
             <div className="filters-row" style={{ display:'flex', gap:10, flexWrap:'wrap', alignItems:'center', marginBottom:16 }}>
               <div style={{ position:'relative', flex:'1 1 200px', minWidth:0 }}>
-                <svg style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:'rgba(28,25,23,0.3)', pointerEvents:'none' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <svg style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:'var(--text4)', pointerEvents:'none' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search email, recovery…"
                   style={{ background:'var(--hover-bg)', border:'1px solid var(--border)', borderRadius:9, padding:'9px 14px 9px 34px', fontSize:13.5, color:'var(--text)', outline:'none', width:'100%', transition:'all 0.18s' }}
                   onFocus={e=>{e.target.style.borderColor='rgba(234,88,12,0.5)';e.target.style.boxShadow='0 0 0 3px rgba(234,88,12,0.1)';}}
@@ -264,13 +264,13 @@ export default function AccountsPage() {
               ].map((f,i)=>(
                 // FIX: was `color: f.val ? 'white' : ...` — white text on near-white background when active
                 <select key={i} value={f.val} onChange={e=>f.set(e.target.value)}
-                  style={{ background: f.val ? 'rgba(234,88,12,0.08)' : 'var(--hover-bg)', border: `1px solid ${f.val ? 'rgba(234,88,12,0.35)' : 'var(--border)'}`, borderRadius:9, padding:'9px 12px', fontSize:13.5, color: f.val ? '#ea580c' : 'rgba(28,25,23,0.45)', cursor:'pointer', minWidth:135, outline:'none', fontWeight: f.val ? 600 : 400, transition:'all 0.18s' }}>
+                  style={{ background: f.val ? 'rgba(234,88,12,0.08)' : 'var(--hover-bg)', border: `1px solid ${f.val ? 'rgba(234,88,12,0.35)' : 'var(--border)'}`, borderRadius:9, padding:'9px 12px', fontSize:13.5, color: f.val ? '#ea580c' : 'var(--text4)', cursor:'pointer', minWidth:135, outline:'none', fontWeight: f.val ? 600 : 400, transition:'all 0.18s' }}>
                   {f.opts.map(o=><option key={o.v} value={o.v} style={{ background:'var(--surface)',color:'var(--text)' }}>{o.l}</option>)}
                 </select>
               ))}
               {(search||filterStatus||filterSales)&&(
                 <motion.button type="button" whileTap={{scale:0.95}} onClick={()=>{setSearch('');setFilterStatus('');setFilterSales('');}}
-                  style={{ padding:'8px 14px', borderRadius:9, background:'var(--border-sm)', border:'1px solid var(--border)', color:'rgba(28,25,23,0.55)', fontSize:13, fontWeight:500, cursor:'pointer' }}>✕ Clear</motion.button>
+                  style={{ padding:'8px 14px', borderRadius:9, background:'var(--border-sm)', border:'1px solid var(--border)', color:'var(--text4)', fontSize:13, fontWeight:500, cursor:'pointer' }}>✕ Clear</motion.button>
               )}
             </div>
 
@@ -302,15 +302,15 @@ export default function AccountsPage() {
                             >
                               {(tab==='edit'||tab==='remove')&&<td><input type="checkbox" checked={selected.includes(acc._id)} onChange={()=>toggleSel(acc._id)} style={{ cursor:'pointer', width:14, height:14 }}/></td>}
                               <td style={{ textAlign:'center' }}><BanStatusBadge status={acc.accountStatus}/></td>
-                              <td><div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ maxWidth:165, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', color:'rgba(28,25,23,0.85)', fontFamily:'var(--font-mono)', fontSize:12 }}>{acc.accountEmail}</span><CopyBtn text={acc.accountEmail} id={'em'+acc._id}/></div></td>
-                              <td>{acc.apexUsername?<span style={{ fontFamily:'var(--font-mono)', color:'#ea580c', fontSize:12 }}>{acc.apexUsername}</span>:<span style={{ color:'rgba(28,25,23,0.18)' }}>—</span>}</td>
-                              <td><div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ fontFamily:'var(--font-mono)', color:'rgba(28,25,23,0.5)', fontSize:12, letterSpacing:showPws[acc._id]?0.3:1.5 }}>{showPws[acc._id]?acc.accountPassword:'••••••••'}</span><EyeBtn id={acc._id}/>{showPws[acc._id]&&<CopyBtn text={acc.accountPassword} id={'pw'+acc._id}/>}</div></td>
-                              <td><div style={{ display:'flex', alignItems:'center', gap:4 }}><span style={{ color:'rgba(28,25,23,0.55)', fontSize:12.5 }}>{acc.accountRecovery||'—'}</span>{acc.accountRecovery&&<CopyBtn text={acc.accountRecovery} id={'rc'+acc._id}/>}</div></td>
+                              <td><div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ maxWidth:165, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', color:'var(--text4)', fontFamily:'var(--font-mono)', fontSize:12 }}>{acc.accountEmail}</span><CopyBtn text={acc.accountEmail} id={'em'+acc._id}/></div></td>
+                              <td>{acc.apexUsername?<span style={{ fontFamily:'var(--font-mono)', color:'#ea580c', fontSize:12 }}>{acc.apexUsername}</span>:<span style={{ color:'var(--text4)' }}>—</span>}</td>
+                              <td><div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ fontFamily:'var(--font-mono)', color:'var(--text4)', fontSize:12, letterSpacing:showPws[acc._id]?0.3:1.5 }}>{showPws[acc._id]?acc.accountPassword:'••••••••'}</span><EyeBtn id={acc._id}/>{showPws[acc._id]&&<CopyBtn text={acc.accountPassword} id={'pw'+acc._id}/>}</div></td>
+                              <td><div style={{ display:'flex', alignItems:'center', gap:4 }}><span style={{ color:'var(--text4)', fontSize:12.5 }}>{acc.accountRecovery||'—'}</span>{acc.accountRecovery&&<CopyBtn text={acc.accountRecovery} id={'rc'+acc._id}/>}</div></td>
                               <td><span style={{ fontFamily:'var(--font-display)', fontWeight:700, color:'#ea580c', fontSize:14 }}>Lv.{acc.accountLevel}</span></td>
                               <td><Lv20Badge level={acc.accountLevel} rfrBought={acc.rfrBought}/></td>
                               <td><RankBadge rank={acc.rank}/></td>
                               <td><SalesBadge status={acc.salesStatus}/></td>
-                              <td><span style={{ color:'rgba(28,25,23,0.3)', fontSize:12 }}>—</span></td>
+                              <td><span style={{ color:'var(--text4)', fontSize:12 }}>—</span></td>
                               <td>
                                 <div style={{ display:'flex', gap:5 }}>
                                   {tab==='view'&&<button type="button" onClick={()=>setViewAccount(acc)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(234,88,12,0.12)', color:'#ea580c', minHeight:'auto', minWidth:'auto' }}>View</button>}
@@ -339,7 +339,7 @@ export default function AccountsPage() {
                         {(tab==='edit'||tab==='remove')&&<input type="checkbox" checked={selected.includes(acc._id)} onChange={()=>toggleSel(acc._id)} style={{ cursor:'pointer', width:18, height:18 }}/>}
                       </div>
                       {/* FIX: was color rgba(255,255,255,0.8) — white text on white card */}
-                      <div style={{ fontFamily:'var(--font-mono)', color:'rgba(28,25,23,0.8)', marginBottom:6, wordBreak:'break-all', fontSize:13 }}>{acc.accountEmail}</div>
+                      <div style={{ fontFamily:'var(--font-mono)', color:'var(--text4)', marginBottom:6, wordBreak:'break-all', fontSize:13 }}>{acc.accountEmail}</div>
                       <div style={{ display:'flex', gap:10, flexWrap:'wrap', marginBottom:12, alignItems:'center' }}>
                         <span style={{ fontFamily:'var(--font-display)', fontWeight:700, color:'#ea580c', fontSize:14 }}>Lv.{acc.accountLevel}</span>
                         <RankBadge rank={acc.rank}/>

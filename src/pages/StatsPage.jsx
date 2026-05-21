@@ -19,7 +19,7 @@ const DarkTip = ({ active, payload, label, color = '#ea580c' }) => {
       boxShadow: `0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px ${color}20`,
       fontSize: 12,
     }}>
-      <p style={{ color: 'rgba(28,25,23,0.45)', marginBottom: 3, fontSize: 11 }}>{label}</p>
+      <p style={{ color: 'var(--text4)', marginBottom: 3, fontSize: 11 }}>{label}</p>
       <p style={{ color, fontWeight: 700, fontSize: 15 }}>{payload[0]?.value}</p>
     </div>
   );
@@ -34,7 +34,7 @@ const card = {
 };
 
 const sl = {
-  fontSize: 11, fontWeight: 600, color: 'rgba(28,25,23,0.45)',
+  fontSize: 11, fontWeight: 600, color: 'var(--text4)',
   letterSpacing: 1, textTransform: 'uppercase',
   marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8,
 };
@@ -118,8 +118,8 @@ export default function StatsPage() {
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={levelDist} margin={{ top: 4, right: 4, left: -28, bottom: 0 }} barSize={20}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--hover-bg)" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'rgba(28,25,23,0.35)' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: 'rgba(28,25,23,0.35)' }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--text4)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--text4)' }} axisLine={false} tickLine={false} />
               <Tooltip content={<DarkTip color="#a78bfa" />} />
               <Bar dataKey="count" radius={[5, 5, 0, 0]} animationBegin={200} animationDuration={1000}>
                 {levelDist.map((_, i) => (
@@ -142,8 +142,8 @@ export default function StatsPage() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--hover-bg)" vertical={false} />
-              <XAxis dataKey="day" tick={{ fontSize: 10, fill: 'rgba(28,25,23,0.35)' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: 'rgba(28,25,23,0.35)' }} axisLine={false} tickLine={false} allowDecimals={false} />
+              <XAxis dataKey="day" tick={{ fontSize: 10, fill: 'var(--text4)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--text4)' }} axisLine={false} tickLine={false} allowDecimals={false} />
               <Tooltip content={<DarkTip color="#ea580c" />} />
               <Area type="monotone" dataKey="count" stroke="#ea580c" strokeWidth={2.5} fill="url(#statsGrad)"
                 dot={{ r: 3, fill: '#ea580c', strokeWidth: 0 }}
@@ -184,7 +184,7 @@ export default function StatsPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                       <div style={{ width: 6, height: 6, borderRadius: '50%', background: d.fill, boxShadow: `0 0 6px ${d.fill}` }} />
-                      <span style={{ fontSize: 12.5, color: 'rgba(28,25,23,0.55)', fontWeight: 500 }}>{d.name}</span>
+                      <span style={{ fontSize: 12.5, color: 'var(--text4)', fontWeight: 500 }}>{d.name}</span>
                     </div>
                     <span style={{ fontSize: 13, fontWeight: 700, color: d.fill }}>{d.value}</span>
                   </div>

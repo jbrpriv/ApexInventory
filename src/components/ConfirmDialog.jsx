@@ -20,7 +20,7 @@ export default function ConfirmDialog({ title, message, onConfirm, onCancel, con
           </div>
           <div style={{ fontFamily:'var(--font-display)', fontWeight:700, fontSize:18, color:'var(--text)', marginBottom:8 }}>{title}</div>
           {/* FIX: was rgba(255,255,255,0.45) — white text on white card background, now readable dark */}
-          <div style={{ fontSize:14, color:'rgba(28,25,23,0.55)', lineHeight:1.65 }}>{message}</div>
+          <div style={{ fontSize:14, color:'var(--text4)', lineHeight:1.65 }}>{message}</div>
         </div>
         <div style={{ padding:'0 26px 26px', display:'flex', gap:10 }}>
           <button onClick={onCancel} style={{ flex:1, padding:'11px', borderRadius:10, fontSize:14, fontWeight:600, background:'var(--hover-bg)', border:'1px solid var(--border)', color:'var(--text2)', cursor:'pointer', transition:'all 0.15s' }}
