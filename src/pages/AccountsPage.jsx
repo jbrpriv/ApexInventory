@@ -322,9 +322,9 @@ export default function AccountsPage() {
                               {(tab==='edit'||tab==='remove')&&<td><input type="checkbox" checked={selected.includes(acc._id)} onChange={()=>toggleSel(acc._id)} style={{ cursor:'pointer', width:14, height:14 }}/></td>}
                               <td style={{ textAlign:'center' }}><BanStatusBadge status={acc.accountStatus}/></td>
                               <td><div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ maxWidth:165, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', color:'var(--text4)', fontFamily:'var(--font-mono)', fontSize:12 }}>{acc.accountEmail}</span><CopyBtn text={acc.accountEmail} id={'em'+acc._id}/></div></td>
-                              <td>{acc.apexUsername?<span style={{ fontFamily:'var(--font-mono)', color:'#ea580c', fontSize:12 }}>{acc.apexUsername}</span>:<span style={{ color:'var(--text4)' }}>—</span>}</td>
+                              <td>{acc.apexUsername?<span style={{ fontFamily:'var(--font-mono)', color:'#ea580c', fontSize:12 }}>{acc.apexUsername}</span>:<div style={{ textAlign:'center', color:'var(--text4)' }}>—</div>}</td>
                               <td><div style={{ display:'flex', alignItems:'center', gap:5 }}><span style={{ fontFamily:'var(--font-mono)', color:'var(--text4)', fontSize:12, letterSpacing:showPws[acc._id]?0.3:1.5 }}>{showPws[acc._id]?acc.accountPassword:'••••••••'}</span><EyeBtn id={acc._id}/>{showPws[acc._id]&&<CopyBtn text={acc.accountPassword} id={'pw'+acc._id}/>}</div></td>
-                              <td><div style={{ display:'flex', alignItems:'center', gap:4 }}><span style={{ maxWidth:120, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', color:'var(--text4)', fontSize:12.5, fontFamily:'var(--font-mono)' }}>{acc.accountRecovery||'—'}</span>{acc.accountRecovery&&<CopyBtn text={acc.accountRecovery} id={'rc'+acc._id}/>}</div></td>
+                              <td>{acc.accountRecovery ? <div style={{ display:'flex', alignItems:'center', gap:4 }}><span style={{ maxWidth:120, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', color:'var(--text4)', fontSize:12.5, fontFamily:'var(--font-mono)' }}>{acc.accountRecovery}</span><CopyBtn text={acc.accountRecovery} id={'rc'+acc._id}/></div> : <div style={{ textAlign:'center', color:'var(--text4)' }}>—</div>}</td>
                               <td><span style={{ fontFamily:'var(--font-display)', fontWeight:700, color:'#ea580c', fontSize:14 }}>Lv.{acc.accountLevel}</span></td>
                               <td><Lv20Badge level={acc.accountLevel} rfrBought={acc.rfrBought}/></td>
                               <td><RankBadge rank={acc.rank}/></td>
@@ -336,7 +336,7 @@ export default function AccountsPage() {
                                     + Add Apex ID
                                   </button>
                                 ) : (
-                                  <span style={{ color:'var(--text4)', fontSize:12 }}>—</span>
+                                  <div style={{ width:'100%', textAlign:'center', color:'var(--text4)', fontSize:12 }}>—</div>
                                 )}
                               </td>
                               <td>
