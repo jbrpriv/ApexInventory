@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts, updateAccount, uploadAccountImages } from '../api';
 import AccountModal from '../components/AccountModal';
+import AccountViewModal from '../components/AccountViewModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { BanStatusBadge, SalesBadge } from '../components/StatusBadge';
 import RankBadge, { RANK_ORDER } from '../components/RankBadge';
@@ -437,7 +438,7 @@ export default function AccountsPage() {
       </motion.div>
 
       {addOpen     &&<AccountModal mode="add"  onClose={()=>setAddOpen(false)}    onSaved={handleSaved}/>}
-      {viewAccount &&<AccountModal mode="view" account={viewAccount} onClose={()=>setViewAccount(null)} onSaved={()=>setViewAccount(null)}/>}
+      {viewAccount &&<AccountViewModal account={viewAccount} onClose={()=>setViewAccount(null)}/>}
       {editAccount &&<AccountModal mode="edit" account={editAccount} onClose={()=>setEditAccount(null)} onSaved={()=>{setEditAccount(null);load();}}/>}
       {confirmDel  &&<ConfirmDialog title={confirmDel==='bulk'?`Delete ${selected.length} Accounts`:'Delete Account'} message={confirmDel==='bulk'?`Permanently delete ${selected.length} accounts? This cannot be undone.`:'Permanently delete this account? This cannot be undone.'} confirmLabel={confirmDel==='bulk'?`Delete ${selected.length}`:'Delete'} onConfirm={doDelete} onCancel={()=>setConfirmDel(null)}/>}
 
