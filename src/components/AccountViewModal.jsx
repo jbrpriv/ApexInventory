@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BanStatusBadge, SalesBadge } from './StatusBadge';
 import RankBadge from './RankBadge';
@@ -10,7 +11,7 @@ export default function AccountViewModal({ account, onClose }) {
 
   if (!account) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
         style={{
@@ -152,6 +153,7 @@ export default function AccountViewModal({ account, onClose }) {
           </div>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

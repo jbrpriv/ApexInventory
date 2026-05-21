@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation } from 'react-router-dom';
 import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts, updateAccount, uploadAccountImages, getAccount } from '../api';
 import AccountModal from '../components/AccountModal';
@@ -473,7 +474,7 @@ export default function AccountsPage() {
 
       {/* Quick Add Apex ID Modal */}
       <AnimatePresence>
-        {quickApexIdAcc && (
+        {quickApexIdAcc && createPortal(
           <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
             style={{ position:'fixed', inset:0, zIndex:9999, background:'rgba(0,0,0,0.4)', backdropFilter:'blur(4px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
             <motion.div initial={{scale:0.95,y:10}} animate={{scale:1,y:0}} exit={{scale:0.95,y:10}}
@@ -498,13 +499,14 @@ export default function AccountsPage() {
                 </button>
               </div>
             </motion.div>
-          </motion.div>
+          </motion.div>,
+          document.body
         )}
       </AnimatePresence>
 
       {/* Image Upload Modal */}
       <AnimatePresence>
-        {missingImagesAcc && (
+        {missingImagesAcc && createPortal(
           <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
             style={{ position:'fixed', inset:0, zIndex:9999, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(6px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
             <motion.div initial={{scale:0.95,y:10}} animate={{scale:1,y:0}} exit={{scale:0.95,y:10}}
@@ -552,7 +554,8 @@ export default function AccountsPage() {
                 </button>
               </div>
             </motion.div>
-          </motion.div>
+          </motion.div>,
+          document.body
         )}
       </AnimatePresence>
     </div>
