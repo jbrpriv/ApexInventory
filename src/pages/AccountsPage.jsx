@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts } from '../api';
+import { getAccounts, deleteAccount, bulkDelete, bulkUpdate, syncAllAccounts, updateAccount } from '../api';
 import AccountModal from '../components/AccountModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { BanStatusBadge, SalesBadge } from '../components/StatusBadge';
@@ -76,6 +76,9 @@ export default function AccountsPage() {
   const [syncResult,    setSyncResult]    = useState(null);
   const [showConfetti,  setShowConfetti]  = useState(false);
   const [windowSize,    setWindowSize]    = useState({ width:window.innerWidth, height:window.innerHeight });
+  const [quickApexIdAcc, setQuickApexIdAcc] = useState(null);
+  const [quickApexIdVal, setQuickApexIdVal] = useState('');
+  const [quickLoading,   setQuickLoading]   = useState(false);
   const cardListRef = useRef(null);
 
   useEffect(() => {
@@ -125,6 +128,22 @@ export default function AccountsPage() {
     finally{setSyncing(false);}
   };
   const handleSaved=()=>{ setAddOpen(false); setShowConfetti(true); load(); setTimeout(()=>setShowConfetti(false),4000); toast.success('Account added! 🎉',{duration:2500}); };
+
+  const saveQuickApexId = async () => {
+    if (!quickApexIdVal.trim() || !quickApexIdAcc) return;
+    setQuickLoading(true);
+    try {
+      await updateAccount(quickApexIdAcc._id, { apexUsername: quickApexIdVal.trim() });
+      toast.success('Apex ID added!');
+      setQuickApexIdAcc(null);
+      setQuickApexIdVal('');
+      load();
+    } catch {
+      toast.error('Failed to update Apex ID');
+    } finally {
+      setQuickLoading(false);
+    }
+  };
 
   const SortIcon=({field})=>(<span style={{marginLeft:4,opacity:sortField===field?1:0.25,fontSize:9}}>{sortField===field?(sortDir==='asc'?'▲':'▼'):'▼'}</span>);
 
@@ -310,7 +329,16 @@ export default function AccountsPage() {
                               <td><Lv20Badge level={acc.accountLevel} rfrBought={acc.rfrBought}/></td>
                               <td><RankBadge rank={acc.rank}/></td>
                               <td><SalesBadge status={acc.salesStatus}/></td>
-                              <td><span style={{ color:'var(--text4)', fontSize:12 }}>—</span></td>
+                              <td>
+                                {!acc.apexUsername ? (
+                                  <button type="button" onClick={() => { setQuickApexIdAcc(acc); setQuickApexIdVal(''); }}
+                                    style={{ padding:'4px 10px', borderRadius:6, fontSize:11, fontWeight:600, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.25)', color:'#ea580c', cursor:'pointer', whiteSpace:'nowrap' }}>
+                                    + Add Apex ID
+                                  </button>
+                                ) : (
+                                  <span style={{ color:'var(--text4)', fontSize:12 }}>—</span>
+                                )}
+                              </td>
                               <td>
                                 <div style={{ display:'flex', gap:5 }}>
                                   {tab==='view'&&<button type="button" onClick={()=>setViewAccount(acc)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(234,88,12,0.12)', color:'#ea580c', minHeight:'auto', minWidth:'auto' }}>View</button>}
@@ -346,6 +374,18 @@ export default function AccountsPage() {
                         {acc.price>0&&<span style={{ color:'#d97706', fontWeight:600, fontSize:13, fontFamily:'var(--font-mono)' }}>Rs {Number(acc.price).toLocaleString('en-PK')}</span>}
                         {acc.apexUsername&&<span style={{ fontFamily:'var(--font-mono)', color:'#ea580c', fontSize:12 }}>@{acc.apexUsername}</span>}
                       </div>
+                      
+                      {/* Tasks (Mobile) */}
+                      {!acc.apexUsername && (
+                        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 12px', background:'var(--hover-bg)', borderRadius:8, marginBottom:12 }}>
+                          <span style={{ fontSize:12, color:'var(--text3)', fontWeight:600 }}>Task</span>
+                          <button type="button" onClick={() => { setQuickApexIdAcc(acc); setQuickApexIdVal(''); }}
+                            style={{ padding:'4px 10px', borderRadius:6, fontSize:11, fontWeight:600, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.25)', color:'#ea580c', cursor:'pointer' }}>
+                            + Add Apex ID
+                          </button>
+                        </div>
+                      )}
+
                       <div style={{ display:'flex', gap:8 }}>
                         {tab==='view'&&<button type="button" onClick={()=>setViewAccount(acc)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(234,88,12,0.1)', border:'1px solid rgba(234,88,12,0.2)', color:'#ea580c', fontSize:13, fontWeight:600, cursor:'pointer' }}>View Details</button>}
                         {tab==='edit'&&<button type="button" onClick={()=>setEditAccount(acc)} style={{ flex:1, padding:'10px', borderRadius:9, background:'rgba(56,189,248,0.1)', border:'1px solid rgba(56,189,248,0.2)', color:'#0284c7', fontSize:13, fontWeight:600, cursor:'pointer' }}>Edit</button>}
@@ -364,6 +404,37 @@ export default function AccountsPage() {
       {viewAccount &&<AccountModal mode="view" account={viewAccount} onClose={()=>setViewAccount(null)} onSaved={()=>setViewAccount(null)}/>}
       {editAccount &&<AccountModal mode="edit" account={editAccount} onClose={()=>setEditAccount(null)} onSaved={()=>{setEditAccount(null);load();}}/>}
       {confirmDel  &&<ConfirmDialog title={confirmDel==='bulk'?`Delete ${selected.length} Accounts`:'Delete Account'} message={confirmDel==='bulk'?`Permanently delete ${selected.length} accounts? This cannot be undone.`:'Permanently delete this account? This cannot be undone.'} confirmLabel={confirmDel==='bulk'?`Delete ${selected.length}`:'Delete'} onConfirm={doDelete} onCancel={()=>setConfirmDel(null)}/>}
+
+      {/* Quick Add Apex ID Modal */}
+      <AnimatePresence>
+        {quickApexIdAcc && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
+            style={{ position:'fixed', inset:0, zIndex:9999, background:'rgba(0,0,0,0.4)', backdropFilter:'blur(4px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
+            <motion.div initial={{scale:0.95,y:10}} animate={{scale:1,y:0}} exit={{scale:0.95,y:10}}
+              style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:16, width:'100%', maxWidth:320, padding:20, boxShadow:'0 10px 40px rgba(0,0,0,0.5)' }}>
+              <h3 style={{ fontSize:16, fontWeight:700, marginBottom:10, color:'var(--text)' }}>Add Apex ID</h3>
+              <p style={{ fontSize:13, color:'var(--text4)', marginBottom:16, lineHeight:1.5 }}>
+                Enter the Apex Legends ID for <strong style={{ color:'var(--text2)' }}>{quickApexIdAcc.accountEmail}</strong>.
+              </p>
+              <input autoFocus value={quickApexIdVal} onChange={e=>setQuickApexIdVal(e.target.value)} onKeyDown={e=>e.key==='Enter'&&saveQuickApexId()}
+                placeholder="e.g. TSM_ImperialHal"
+                style={{ width:'100%', padding:'10px 14px', borderRadius:8, background:'var(--surface2)', border:'1.5px solid var(--border)', color:'var(--text)', fontSize:13.5, marginBottom:16, outline:'none' }}
+              />
+              <div style={{ display:'flex', gap:10 }}>
+                <button type="button" onClick={()=>setQuickApexIdAcc(null)}
+                  style={{ flex:1, padding:'9px', borderRadius:8, background:'var(--hover-bg)', border:'none', color:'var(--text)', fontSize:13, fontWeight:600, cursor:'pointer', transition:'background 0.15s' }}
+                  onMouseEnter={e=>e.currentTarget.style.background='var(--border-sm)'} onMouseLeave={e=>e.currentTarget.style.background='var(--hover-bg)'}>
+                  Cancel
+                </button>
+                <button type="button" onClick={saveQuickApexId} disabled={quickLoading || !quickApexIdVal.trim()}
+                  style={{ flex:1, padding:'9px', borderRadius:8, background:'#ea580c', border:'none', color:'white', fontSize:13, fontWeight:600, cursor:quickLoading||!quickApexIdVal.trim()?'not-allowed':'pointer', opacity:quickLoading||!quickApexIdVal.trim()?0.6:1, transition:'opacity 0.15s' }}>
+                  {quickLoading ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
