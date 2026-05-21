@@ -290,7 +290,7 @@ export default function AccountsPage() {
                         <tr>
                           {/* FIX: checkbox th had background:'#050507' (near-black) — removed, uses standard thead style */}
                           {(tab==='edit'||tab==='remove')&&<th style={{ width:42, cursor:'default' }}><input type="checkbox" checked={selected.length===sorted.length&&sorted.length>0} onChange={toggleAll} style={{ cursor:'pointer', width:14, height:14 }}/></th>}
-                          {[{f:'accountStatus',l:'Ban'},{f:'accountEmail',l:'Email'},{f:'apexUsername',l:'Apex ID'},{f:'accountPassword',l:'Password'},{f:'accountRecovery',l:'Recovery'},{f:'accountLevel',l:'Level'},{f:'lv20',l:'Lv 20'},{f:'rank',l:'Rank'},{f:'salesStatus',l:'Sales'},{f:'price',l:'Price'},{f:'lastSynced',l:'Synced'}].map(c=><th key={c.f} onClick={()=>handleSort(c.f)}>{c.l}<SortIcon field={c.f}/></th>)}
+                          {[{f:'accountStatus',l:'Ban'},{f:'accountEmail',l:'Email'},{f:'apexUsername',l:'Apex ID'},{f:'accountPassword',l:'Password'},{f:'accountRecovery',l:'Recovery'},{f:'accountLevel',l:'Level'},{f:'lv20',l:'Lv 20'},{f:'rank',l:'Rank'},{f:'salesStatus',l:'Sales'},{f:'tasks',l:'Tasks'}].map(c=><th key={c.f} onClick={()=>handleSort(c.f)}>{c.l}<SortIcon field={c.f}/></th>)}
                           <th style={{ cursor:'default' }}>Actions</th>
                         </tr>
                       </thead>
@@ -310,8 +310,7 @@ export default function AccountsPage() {
                               <td><Lv20Badge level={acc.accountLevel} rfrBought={acc.rfrBought}/></td>
                               <td><RankBadge rank={acc.rank}/></td>
                               <td><SalesBadge status={acc.salesStatus}/></td>
-                              <td><span style={{ fontFamily:'var(--font-mono)', fontWeight:600, color:'#d97706', fontSize:13 }}>{acc.price>0?'Rs '+Number(acc.price).toLocaleString('en-PK'):'—'}</span></td>
-                              <td>{acc.lastSynced?<div style={{ fontSize:11.5, color:acc.syncError?'#e11d48':'#16a34a' }}>{acc.syncError?'⚠ Error':new Date(acc.lastSynced).toLocaleDateString('en-PK',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>:<span style={{ color:'rgba(28,25,23,0.18)', fontSize:12 }}>Never</span>}</td>
+                              <td><span style={{ color:'rgba(28,25,23,0.3)', fontSize:12 }}>—</span></td>
                               <td>
                                 <div style={{ display:'flex', gap:5 }}>
                                   {tab==='view'&&<button type="button" onClick={()=>setViewAccount(acc)} className="compact-btn" style={{ padding:'5px 12px', borderRadius:6, fontSize:12, fontWeight:600, border:'none', cursor:'pointer', background:'rgba(234,88,12,0.12)', color:'#ea580c', minHeight:'auto', minWidth:'auto' }}>View</button>}
