@@ -86,20 +86,19 @@ export default function Navbar() {
         {/* Logo */}
         <NavLink to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0, marginRight: 8 }}>
           <div style={{
-            width: 34, height: 34, borderRadius: 9,
-            background: 'linear-gradient(135deg, #ea580c, #f97316)',
+            width: 32, height: 32, borderRadius: 6,
+            background: 'var(--primary)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 800, color: 'white',
-            boxShadow: '0 2px 12px rgba(234,88,12,0.45)',
+            fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 700, color: 'var(--bg)',
+            boxShadow: 'var(--sh-xs)',
           }}>A</div>
           <div>
-            {/* FIX: was 'white' — now dark so it reads on the cream navbar background */}
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1 }}>Apex</div>
-            <div style={{ fontSize: 8.5, color: '#ea580c', letterSpacing: 2, fontWeight: 600 }}>MANAGER</div>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1 }}>Apex</div>
+            <div style={{ fontSize: 9, color: 'var(--text4)', letterSpacing: 1.5, fontWeight: 600 }}>MANAGER</div>
           </div>
         </NavLink>
 
-        <div style={{ width: 1, height: 18, background: 'var(--border)', marginRight: 4 }} />
+        <div style={{ width: 1, height: 16, background: 'var(--border)', marginRight: 4 }} />
 
         {/* Links */}
         <div style={{ display: 'flex', gap: 2, flex: 1 }}>
@@ -128,16 +127,16 @@ export default function Navbar() {
           <button onClick={() => setMenuOpen(m => !m)} style={{
             display:'flex', alignItems:'center', gap:8,
             padding:'3px 12px 3px 3px', borderRadius:99, background:'transparent',
-            border:'1px solid var(--border-md)', cursor:'pointer', transition:'all 0.15s'
+            border:'1px solid var(--border)', cursor:'pointer', transition:'all 0.15s'
           }} onMouseEnter={e=>e.currentTarget.style.background='var(--hover-bg)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
             <div style={{
               width:28, height:28, borderRadius:'50%',
-              background:'linear-gradient(135deg, #0284c7, #0369a1)',
+              background:'var(--surface2)', border: '1px solid var(--border)',
               display:'flex', alignItems:'center', justifyContent:'center',
-              fontSize:13, fontWeight:800, color:'white',
+              fontSize:13, fontWeight:600, color:'var(--text)',
             }}>{initial}</div>
-            <span style={{ fontSize:14, fontWeight:600, color:'var(--text2)' }}>{user?.username || 'Admin'}</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: menuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
+            <span style={{ fontSize:13, fontWeight:500, color:'var(--text2)' }}>{user?.username || 'Admin'}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: menuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           
           {menuOpen && (
@@ -190,21 +189,21 @@ export default function Navbar() {
                     <motion.div layoutId="tab-pill"
                       style={{
                         position: 'absolute', top: 7, left: '50%', x: '-50%',
-                        width: 40, height: 34, borderRadius: 10,
-                        background: 'rgba(234,88,12,0.15)', zIndex: 0,
+                        width: 40, height: 34, borderRadius: 6,
+                        background: 'var(--hover-bg)', zIndex: 0,
                       }}
                       transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                     />
                   )}
                   <motion.div className="bottom-tab-icon"
-                    animate={{ scale: isActive ? 1.08 : 1, y: isActive ? -1 : 0, color: isActive ? '#ea580c' : 'var(--text4)' }}
+                    animate={{ scale: isActive ? 1.05 : 1, y: isActive ? -1 : 0, color: isActive ? 'var(--primary)' : 'var(--text4)' }}
                     transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-                    style={{ color: isActive ? '#ea580c' : 'var(--text4)', position: 'relative', zIndex: 1 }}
+                    style={{ color: isActive ? 'var(--primary)' : 'var(--text4)', position: 'relative', zIndex: 1 }}
                   >
                     <NavIcon name={tab.icon} size={21} />
                   </motion.div>
                   <span className="bottom-tab-label"
-                    style={{ color: isActive ? '#ea580c' : 'var(--text4)', fontWeight: isActive ? 600 : 500 }}
+                    style={{ color: isActive ? 'var(--primary)' : 'var(--text4)', fontWeight: isActive ? 500 : 400 }}
                   >{tab.label}</span>
                 </>
               )}

@@ -21,7 +21,6 @@ function ProtectedLayout() {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', position: 'relative' }}>
-      <ParticleBackground />
       <Navbar />
       {/*
         No inline paddingTop here — mobile.css controls it via the `main` selector:
@@ -76,7 +75,7 @@ export default function App() {
             style: {
               background: 'var(--surface)', color: 'var(--text)',
               border: '1px solid var(--border)',
-              fontFamily: "'Inter', sans-serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 13.5, borderRadius: 10,
               boxShadow: 'var(--sh-md)',
             },
