@@ -1,9 +1,9 @@
 /* ── APEX MANAGER — MOBILE CSS (dark theme) ─────────────────── */
 
 :root {
-  --bottom-nav-h: 56px;
+  --bottom-nav-h: 78px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --mobile-content-bottom: calc(var(--bottom-nav-h) + max(env(safe-area-inset-bottom, 0px), 8px) + 8px);
+  --mobile-content-bottom: calc(var(--bottom-nav-h) + max(env(safe-area-inset-bottom, 0px), 8px) + 16px);
 }
 
 @media (max-width: 767px) {
@@ -22,7 +22,9 @@
 }
 
 .bottom-nav {
-  height: var(--bottom-nav-h);
+  /* nav height + safe area, so labels never sit under the iPhone home bar */
+  height: calc(var(--bottom-nav-h) + max(env(safe-area-inset-bottom, 0px), 8px)) !important;
+  box-sizing: border-box;
   align-items: stretch;
 }
 
@@ -32,17 +34,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 5px;
   padding: 8px 4px;
   text-decoration: none;
   position: relative;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
-  min-height: 56px;
+  min-height: var(--bottom-nav-h);
 }
 
 .bottom-tab-label {
-  font-size: 9.5px;
+  font-size: 11.5px;
   font-weight: 500;
   letter-spacing: 0.15px;
   line-height: 1;

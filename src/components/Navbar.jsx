@@ -191,8 +191,8 @@ export default function Navbar() {
                   {isActive && (
                     <motion.div layoutId="tab-pill"
                       style={{
-                        position: 'absolute', top: 7, left: '50%', x: '-50%',
-                        width: 40, height: 34, borderRadius: 6,
+                        position: 'absolute', top: 9, left: '50%', x: '-50%',
+                        width: 60, height: 42, borderRadius: 12,
                         background: 'var(--hover-bg)', zIndex: 0,
                       }}
                       transition={{ type: 'spring', stiffness: 380, damping: 32 }}
@@ -203,7 +203,7 @@ export default function Navbar() {
                     transition={{ type: 'spring', stiffness: 420, damping: 28 }}
                     style={{ color: isActive ? 'var(--primary)' : 'var(--text4)', position: 'relative', zIndex: 1 }}
                   >
-                    <NavIcon name={tab.icon} size={21} />
+                    <NavIcon name={tab.icon} size={27} />
                   </motion.div>
                   <span className="bottom-tab-label"
                     style={{ color: isActive ? 'var(--primary)' : 'var(--text4)', fontWeight: isActive ? 500 : 400 }}
