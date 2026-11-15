@@ -13,6 +13,7 @@ const AccountsPage = lazy(() => import('./pages/AccountsPage'));
 const StatsPage    = lazy(() => import('./pages/StatsPage'));
 const ExportPage   = lazy(() => import('./pages/ExportPage'));
 const AboutPage    = lazy(() => import('./pages/AboutPage'));
+const BotLogsPage  = lazy(() => import('./pages/BotLogsPage'));
 const ProfilePage  = lazy(() => import('./pages/ProfilePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
@@ -57,6 +58,7 @@ function AppRoutes() {
           <Route path="/accounts" element={<AccountsPage />} />
           <Route path="/stats"    element={<StatsPage />} />
           <Route path="/export"   element={<ExportPage />} />
+          <Route path="/bot-logs" element={<BotLogsPage />} />
           <Route path="/about"    element={<AboutPage />} />
           <Route path="/profile"  element={<ProfilePage />} />
         </Route>

@@ -64,3 +64,7 @@ export default api;
 export const syncAllAccounts = () => api.post('/api/sync');
 export const syncOneAccount  = (id) => api.post('/api/sync/' + id);
 export const getSyncStatus   = () => api.get('/api/sync/status');
+
+// Bot logs
+export const getBotFeed   = (after) => api.get('/api/bot/feed', { params: after ? { after } : {} });
+export const clearBotLogs = () => api.delete('/api/bot/logs');

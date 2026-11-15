@@ -10,6 +10,7 @@ const NavIcon = ({ name, size = 22 }) => {
     accounts: (<><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></>),
     stats: (<><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></>),
     export: (<><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></>),
+    bot: (<><rect x="4" y="8" width="16" height="12" rx="2" /><line x1="12" y1="4" x2="12" y2="8" /><circle cx="9" cy="14" r="1" /><circle cx="15" cy="14" r="1" /></>),
     profile: (<><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></>),
     about: (<><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></>),
   };
@@ -25,6 +26,7 @@ const BOTTOM_TABS = [
   { to: '/accounts', label: 'Accounts', icon: 'accounts', end: false },
   { to: '/stats',    label: 'Stats',    icon: 'stats',    end: false },
   { to: '/export',   label: 'Export',   icon: 'export',   end: false },
+  { to: '/bot-logs', label: 'Bot',      icon: 'bot',      end: false },
   { to: '/profile',  label: 'Profile',  icon: 'profile',  end: false },
 ];
 
@@ -33,6 +35,7 @@ const ALL_LINKS = [
   { to: '/accounts', label: 'Accounts', end: false },
   { to: '/stats',    label: 'Stats',    end: false },
   { to: '/export',   label: 'Export',   end: false },
+  { to: '/bot-logs', label: 'Bot Logs', end: false },
   { to: '/about',    label: 'About',    end: false },
   { to: '/profile',  label: 'Profile',  end: false },
 ];
