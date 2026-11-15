@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { getBotFeed, clearBotLogs } from '../api';
+import { getBotFeed, clearBotLogs, getBotScreen } from '../api';
 
 const POLL_MS = 2000;
 const MAX_LOGS = 500;
+const SCREEN_POLL_MS = 3000;
 
 const LEVEL_COLORS = {
   info:    'var(--text2)',
@@ -34,7 +35,10 @@ export default function BotLogsPage() {
   const [autoScroll, setAutoScroll] = useState(true);
   const [, setTick] = useState(0);
 
+  const [frame, setFrame] = useState(null);
+
   const lastIdRef = useRef(null);
+  const frameSinceRef = useRef(null);
   const boxRef = useRef(null);
 
   const poll = useCallback(async () => {
@@ -56,6 +60,21 @@ export default function BotLogsPage() {
     const id = setInterval(poll, POLL_MS);
     return () => clearInterval(id);
   }, [poll]);
+
+  const pollScreen = useCallback(async () => {
+    try {
+      const { data } = await getBotScreen(frameSinceRef.current);
+      if (data.unchanged || !data.image) return;
+      frameSinceRef.current = data.updatedAt;
+      setFrame({ src: data.image, at: data.updatedAt });
+    } catch { /* ignore, next poll retries */ }
+  }, []);
+
+  useEffect(() => {
+    pollScreen();
+    const id = setInterval(pollScreen, SCREEN_POLL_MS);
+    return () => clearInterval(id);
+  }, [pollScreen]);
 
   // refresh "x s ago" labels
   useEffect(() => {
@@ -86,6 +105,7 @@ export default function BotLogsPage() {
   };
 
   const active = !!status?.active;
+  const frameLive = active && !!frame && Date.now() - new Date(frame.at).getTime() < 20000;
   const dot = active ? '#16a34a' : '#e11d48';
 
   return (
@@ -125,6 +145,28 @@ export default function BotLogsPage() {
           <Meta label="Last seen" value={timeAgo(status?.lastSeen)} />
           <Meta label="Cycle" value={status?.cycle ?? 0} />
           {status?.host ? <Meta label="Machine" value={status.host} /> : null}
+        </div>
+      </div>
+
+      {/* Live Display */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden', marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderBottom: '1px solid var(--border)' }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', letterSpacing: 1, textTransform: 'uppercase' }}>
+            Live Display
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: frameLive ? '#16a34a' : 'var(--text4)' }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: frameLive ? '#16a34a' : 'var(--text4)', display: 'inline-block' }} />
+            {frameLive ? 'LIVE' : 'LAST FRAME'}{frame ? ` · ${timeAgo(frame.at)}` : ''}
+          </span>
+        </div>
+        <div style={{ background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 180 }}>
+          {frame ? (
+            <img src={frame.src} alt="Bot screen" style={{ width: '100%', display: 'block', opacity: frameLive ? 1 : 0.45, transition: 'opacity .3s' }} />
+          ) : (
+            <span style={{ color: 'var(--text4)', fontSize: 13, padding: 40 }}>
+              No screenshot yet. It appears here once the bot is running.
+            </span>
+          )}
         </div>
       </div>
 

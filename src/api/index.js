@@ -68,3 +68,4 @@ export const getSyncStatus   = () => api.get('/api/sync/status');
 // Bot logs
 export const getBotFeed   = (after) => api.get('/api/bot/feed', { params: after ? { after } : {} });
 export const clearBotLogs = () => api.delete('/api/bot/logs');
+export const getBotScreen = (since) => api.get('/api/bot/screen', { params: since ? { since } : {} });
