@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { getBotFeed, clearBotLogs, getBotScreen } from '../api';
+import { getBotFeed, clearBotLogs, getBotScreen, sendBotCommand } from '../api';
 
 const POLL_MS = 2000;
 const MAX_LOGS = 500;
@@ -36,6 +36,8 @@ export default function BotLogsPage() {
   const [, setTick] = useState(0);
 
   const [frame, setFrame] = useState(null);
+  const [mouseText, setMouseText] = useState('');
+  const [sending, setSending] = useState(false);
 
   const lastIdRef = useRef(null);
   const frameSinceRef = useRef(null);
@@ -104,6 +106,26 @@ export default function BotLogsPage() {
     }
   };
 
+  const runCommand = async (type, text) => {
+    if (sending) return;
+    setSending(true);
+    try {
+      await sendBotCommand(type, text);
+      toast.success(type === 'mouse' ? `Mouse → "${text}" sent` : `${type.replace('Btn', '').toUpperCase()} sent`);
+    } catch (e) {
+      toast.error(e.response?.data?.message || 'Failed to send command');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleMouse = (e) => {
+    e.preventDefault();
+    const t = mouseText.trim();
+    if (!t) return toast.error('Type a keyword first');
+    runCommand('mouse', t);
+  };
+
   const active = !!status?.active;
   const frameLive = active && !!frame && Date.now() - new Date(frame.at).getTime() < 20000;
   const dot = active ? '#16a34a' : '#e11d48';
@@ -170,6 +192,34 @@ export default function BotLogsPage() {
         </div>
       </div>
 
+      {/* Remote Control */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '14px 16px', marginBottom: 16 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>
+          Remote Control
+        </div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
+          <button disabled={!active || sending} onClick={() => runCommand('escBtn')} style={{ ...ctrlBtn, opacity: active ? 1 : 0.5 }}>ESC</button>
+          <button disabled={!active || sending} onClick={() => runCommand('spaceBtn')} style={{ ...ctrlBtn, opacity: active ? 1 : 0.5 }}>SPACE</button>
+          <button disabled={!active || sending} onClick={() => runCommand('enterBtn')} style={{ ...ctrlBtn, opacity: active ? 1 : 0.5 }}>ENTER</button>
+        </div>
+        <form onSubmit={handleMouse} style={{ display: 'flex', gap: 8 }}>
+          <input
+            value={mouseText}
+            onChange={e => setMouseText(e.target.value)}
+            placeholder='Move mouse to text on screen, e.g. Cancel'
+            maxLength={60}
+            style={{
+              flex: 1, minWidth: 0, background: 'var(--bg)', border: '1px solid var(--border)',
+              color: 'var(--text)', borderRadius: 8, padding: '8px 12px', fontSize: 13, outline: 'none',
+            }}
+          />
+          <button type="submit" disabled={!active || sending} style={{ ...ctrlBtn, opacity: active ? 1 : 0.5 }}>Move mouse</button>
+        </form>
+        {!active && (
+          <div style={{ fontSize: 12, color: 'var(--text4)', marginTop: 8 }}>Bot is offline. Controls are disabled.</div>
+        )}
+      </div>
+
       {error && (
         <div style={{ background: 'var(--rose-bg)', border: '1px solid var(--rose-b)', color: 'var(--rose)', padding: '10px 14px', borderRadius: 10, fontSize: 13, marginBottom: 12 }}>
           Can't reach the server. Retrying…
@@ -219,6 +269,11 @@ function Meta({ label, value }) {
     </div>
   );
 }
+
+const ctrlBtn = {
+  background: '#ea580c', border: 'none', color: '#fff',
+  borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+};
 
 const btn = {
   background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text2)',
